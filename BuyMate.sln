@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36623.8
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyMate", "BuyMate\BuyMate.csproj", "{590028B6-204A-42C9-9A1B-EB7616895C05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyMate.DAL", "BuyMate.DAL\BuyMate.DAL.csproj", "{C1EBA626-B327-47D5-9D2E-91D2D9E15092}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyMate.BLL", "BuyMate.BLL\BuyMate.BLL.csproj", "{469CE7C3-BA67-4EA4-BE7F-5AE74AC1E2CC}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{590028B6-204A-42C9-9A1B-EB7616895C05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{590028B6-204A-42C9-9A1B-EB7616895C05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{590028B6-204A-42C9-9A1B-EB7616895C05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{590028B6-204A-42C9-9A1B-EB7616895C05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1EBA626-B327-47D5-9D2E-91D2D9E15092}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1EBA626-B327-47D5-9D2E-91D2D9E15092}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1EBA626-B327-47D5-9D2E-91D2D9E15092}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1EBA626-B327-47D5-9D2E-91D2D9E15092}.Release|Any CPU.Build.0 = Release|Any CPU
+		{469CE7C3-BA67-4EA4-BE7F-5AE74AC1E2CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{469CE7C3-BA67-4EA4-BE7F-5AE74AC1E2CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{469CE7C3-BA67-4EA4-BE7F-5AE74AC1E2CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{469CE7C3-BA67-4EA4-BE7F-5AE74AC1E2CC}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7360ABBE-910A-423A-9F21-C2DF9A5B00FB}
+	EndGlobalSection
+EndGlobal

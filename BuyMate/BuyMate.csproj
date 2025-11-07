@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BuyMate.BLL\BuyMate.BLL.csproj" />
+    <ProjectReference Include="..\BuyMate.DAL\BuyMate.DAL.csproj" />
+    <ProjectReference Include="..\BuyMate.DTO\BuyMate.DTO.csproj" />
   </ItemGroup>
 
   <ItemGroup>

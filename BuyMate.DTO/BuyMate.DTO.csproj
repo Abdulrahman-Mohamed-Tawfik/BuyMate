@@ -7,12 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="GlobalHelpers\" />
-    <Folder Include="Features\" />
+    <Folder Include="Entities\User\" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\BuyMate.DTO\BuyMate.DTO.csproj" />
     <ProjectReference Include="..\BuyMate.Models\BuyMate.Model.csproj" />
   </ItemGroup>
 

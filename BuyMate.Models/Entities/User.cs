@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace BuyMate.DAL.Entities
+namespace BuyMate.Model.Entities
 {
     public class User : IdentityUser<Guid>
     {

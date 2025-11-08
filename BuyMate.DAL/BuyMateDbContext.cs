@@ -1,4 +1,4 @@
-using BuyMate.DAL.Entities;
+using BuyMate.Model.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -21,19 +21,18 @@ namespace BuyMate.DAL
             builder.Entity<IdentityRoleClaim<Guid>>().ToTable("RoleClaims");
             builder.Entity<IdentityUserClaim<Guid>>().ToTable("UserClaims");
             builder.Entity<IdentityUserLogin<Guid>>().ToTable("UserLogins");
-            // Do not create the Identity user tokens table; tokens will be stored on Users
+            // Do not create the Identity user tokens table; tokens will be stored on Users table
             builder.Ignore<IdentityUserToken<Guid>>();
 
-
             builder.Entity<User>(entity =>
- {
-     entity.Property(u => u.FirstName).HasMaxLength(100);
-     entity.Property(u => u.LastName).HasMaxLength(100);
-     entity.Property(u => u.Address).HasMaxLength(512);
-     entity.Property(u => u.ProfileImageUrl).HasMaxLength(256);
-     // Ensure proper SQL type for DateOnly
-     entity.Property(u => u.BirthDate).HasColumnType("date");
- });
+            {
+                entity.Property(u => u.FirstName).HasMaxLength(100);
+                entity.Property(u => u.LastName).HasMaxLength(100);
+                entity.Property(u => u.Address).HasMaxLength(512);
+                entity.Property(u => u.ProfileImageUrl).HasMaxLength(256);
+                // Ensure proper SQL type for DateOnly
+                entity.Property(u => u.BirthDate).HasColumnType("date");
+            });
         }
     }
 }

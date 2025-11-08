@@ -1,4 +1,4 @@
-﻿namespace BuyMate.DAL.Common
+﻿namespace BuyMate.Models.Common
 {
     public class BaseEntity
     {

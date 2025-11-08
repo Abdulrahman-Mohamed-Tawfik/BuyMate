@@ -16,10 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BuyMate.BLL\BuyMate.BLL.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
+    <ProjectReference Include="..\BuyMate.DAL\BuyMate.DAL.csproj" />
+    <ProjectReference Include="..\BuyMate.DTO\BuyMate.DTO.csproj" />
   </ItemGroup>
 
 </Project>

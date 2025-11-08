@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyMate.BLL", "BuyMate.BLL\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyMate.DTO", "BuyMate.DTO\BuyMate.DTO.csproj", "{6D9E9692-D4EC-467A-845A-19601C3C9EE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyMate.Model", "BuyMate.Models\BuyMate.Model.csproj", "{95F47AF0-E0AC-4E47-884A-33AC7B48C86E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BuyMate.Model", "BuyMate.Model\BuyMate.Model.csproj", "{BEE6C891-5271-D417-3F9F-A099C048248F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{6D9E9692-D4EC-467A-845A-19601C3C9EE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6D9E9692-D4EC-467A-845A-19601C3C9EE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6D9E9692-D4EC-467A-845A-19601C3C9EE2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{95F47AF0-E0AC-4E47-884A-33AC7B48C86E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95F47AF0-E0AC-4E47-884A-33AC7B48C86E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95F47AF0-E0AC-4E47-884A-33AC7B48C86E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95F47AF0-E0AC-4E47-884A-33AC7B48C86E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BEE6C891-5271-D417-3F9F-A099C048248F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BEE6C891-5271-D417-3F9F-A099C048248F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BEE6C891-5271-D417-3F9F-A099C048248F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BEE6C891-5271-D417-3F9F-A099C048248F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

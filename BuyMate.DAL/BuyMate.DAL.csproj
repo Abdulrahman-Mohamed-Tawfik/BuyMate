@@ -25,7 +25,7 @@
   <ItemGroup>
     <ProjectReference Include="..\BuyMate.BLL\BuyMate.BLL.csproj" />
     <ProjectReference Include="..\BuyMate.DTO\BuyMate.DTO.csproj" />
-    <ProjectReference Include="..\BuyMate.Models\BuyMate.Model.csproj" />
+    <ProjectReference Include="..\BuyMate.Model\BuyMate.Model.csproj" />
   </ItemGroup>
 
 </Project>

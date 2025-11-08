@@ -1,4 +1,4 @@
-namespace BuyMate.Models
+namespace BuyMate.Model
 {
     public class ErrorViewModel
     {

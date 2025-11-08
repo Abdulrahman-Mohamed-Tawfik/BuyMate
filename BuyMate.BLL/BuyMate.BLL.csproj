@@ -8,13 +8,12 @@
 
   <ItemGroup>
     <Folder Include="Features\User\Login\" />
-    <Folder Include="Features\User\Register\" />
     <Folder Include="GlobalHelpers\" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BuyMate.DTO\BuyMate.DTO.csproj" />
-    <ProjectReference Include="..\BuyMate.Models\BuyMate.Model.csproj" />
+    <ProjectReference Include="..\BuyMate.Model\BuyMate.Model.csproj" />
   </ItemGroup>
 
 </Project>

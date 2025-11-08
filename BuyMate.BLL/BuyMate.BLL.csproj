@@ -7,8 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Features\User\Login\" />
+    <Folder Include="Features\User\Register\" />
     <Folder Include="GlobalHelpers\" />
-    <Folder Include="Features\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -20,8 +20,4 @@
     <ProjectReference Include="..\BuyMate.DTO\BuyMate.DTO.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ViewModels\" />
-  </ItemGroup>
-
 </Project>

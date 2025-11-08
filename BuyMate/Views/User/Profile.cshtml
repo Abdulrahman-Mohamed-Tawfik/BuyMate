@@ -1,0 +1,58 @@
+@model BuyMate.ViewModels.ProfileViewModel
+@{
+    ViewData["Title"] = "Profile";
+}
+
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">My Profile</h1>
+
+    <form asp-action="UpdateProfile" method="post" class="space-y-6">
+        <div class="card p-6">
+            <h2 class="text-xl font-bold mb-4">Personal Information</h2>
+            
+            <div class="space-y-4">
+                <div>
+                    <label asp-for="Name" class="block text-sm font-medium mb-2">Full Name</label>
+                    <input asp-for="Name" class="input w-full" placeholder="Enter your full name" />
+                    <span asp-validation-for="Name" class="text-sm text-destructive"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Email" class="block text-sm font-medium mb-2">Email Address</label>
+                    <input asp-for="Email" type="email" class="input w-full" placeholder="Enter your email" />
+                    <span asp-validation-for="Email" class="text-sm text-destructive"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Phone" class="block text-sm font-medium mb-2">Phone Number</label>
+                    <input asp-for="Phone" type="tel" class="input w-full" placeholder="Enter your phone number" />
+                    <span asp-validation-for="Phone" class="text-sm text-destructive"></span>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2">Profile Picture</label>
+                    <div class="flex items-center space-x-4">
+                        @if (!string.IsNullOrEmpty(Model.Avatar))
+                        {
+                            <img src="@Model.Avatar" alt="Profile" class="w-16 h-16 rounded-full object-cover" />
+                        }
+                        else
+                        {
+                            <div class="w-16 h-16 rounded-full bg-muted flex items-center justify-center">
+                                <svg class="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                </svg>
+                            </div>
+                        }
+                        <button type="button" class="btn btn-secondary">Change Photo</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex space-x-4">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+            <a asp-controller="Account" asp-action="Orders" class="btn btn-secondary">View Orders</a>
+        </div>
+    </form>
+</div>

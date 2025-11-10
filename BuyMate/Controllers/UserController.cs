@@ -31,15 +31,21 @@ namespace BuyMate.Controllers
             };
             return View(userViewModel);
         }
+
+        [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
+
+        [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
+
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)

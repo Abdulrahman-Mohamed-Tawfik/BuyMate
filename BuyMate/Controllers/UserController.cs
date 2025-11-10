@@ -1,4 +1,4 @@
-﻿using BuyMate.ViewModels;
+﻿using BuyMate.DTO.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers

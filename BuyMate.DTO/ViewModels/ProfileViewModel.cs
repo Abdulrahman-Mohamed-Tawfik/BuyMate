@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace BuyMate.ViewModels
+namespace BuyMate.DTO.ViewModels
 {
     public class ProfileViewModel
     {

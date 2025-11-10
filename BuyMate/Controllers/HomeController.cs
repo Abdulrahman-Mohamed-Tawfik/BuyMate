@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using BuyMate.Models;
+using BuyMate.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers

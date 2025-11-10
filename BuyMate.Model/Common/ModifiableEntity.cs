@@ -1,4 +1,4 @@
-﻿namespace BuyMate.Models.Common
+﻿namespace BuyMate.Model.Common
 {
     public class ModifiableEntity : BaseEntity
     {

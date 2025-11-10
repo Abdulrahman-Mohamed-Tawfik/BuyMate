@@ -1,3 +1,4 @@
+using BuyMate.BLL;
 using BuyMate.DAL;
 
 var builder = WebApplication.CreateBuilder(args);

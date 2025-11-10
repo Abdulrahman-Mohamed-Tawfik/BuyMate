@@ -1,10 +1,20 @@
-﻿using BuyMate.DTO.ViewModels;
+﻿using BuyMate.BLL.Contracts;
+using BuyMate.DTO.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace BuyMate.Controllers
 {
     public class UserController : Controller
     {
+        private readonly IAuthService _authService;
+
+        public UserController(IAuthService authService)
+        {
+            _authService = authService;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -28,6 +38,28 @@ namespace BuyMate.Controllers
         public IActionResult Register()
         {
             return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Register(RegisterViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var result = await _authService.RegisterAsync(model);
+            if (result.Status == true)
+            {
+                TempData["Success"] = "Account created successfully. Please sign in.";
+                return RedirectToAction(nameof(Login));
+            }
+
+            foreach (var error in result.Data?.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return View(model);
         }
     }
 }

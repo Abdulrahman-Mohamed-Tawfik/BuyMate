@@ -1,10 +1,14 @@
 ﻿using BuyMate.BLL.Contracts;
+using BuyMate.BLL.Features.User.Register;
 using BuyMate.DAL.Repositories;
 using BuyMate.Model.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BuyMate.DAL
 {
@@ -18,16 +22,45 @@ namespace BuyMate.DAL
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
-            // Identity Core with Guid keys
-            services.AddIdentityCore<User>(options =>
+            services.AddIdentity<User, IdentityRole<Guid>>(options =>
             {
-                // configure identity options if needed
-            })
-            .AddRoles<IdentityRole<System.Guid>>()
-            .AddEntityFrameworkStores<BuyMateDbContext>();
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 4;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.User.RequireUniqueEmail = false;
 
-            // Repositories
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.AllowedForNewUsers = true;
+
+            }).AddEntityFrameworkStores<BuyMateDbContext>();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                var secretKey = configuration.GetValue<string>("SecretKey") ?? throw new InvalidOperationException("SecretKey not found in configuration.");
+                var secretKeyInBytes = Encoding.ASCII.GetBytes(secretKey);
+                var key = new SymmetricSecurityKey(secretKeyInBytes);
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = false, // Disable audience validation
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidIssuer = "BuyMate-BackEnd",
+                };
+            });
+
+            // Dependency Injection
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuthService, AuthService>();
 
             return services;
         }

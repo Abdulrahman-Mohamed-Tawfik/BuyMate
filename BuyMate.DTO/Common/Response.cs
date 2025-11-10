@@ -2,11 +2,11 @@
 {
     public class Response<TEntity>
     {
-        public Response(TEntity? data, string? message, bool? status)
+        public Response(TEntity? data, string? message, bool? success)
         {
             Data = data;
             Message = message;
-            Status = status;
+            Status = success;
         }
         public Response()
         {

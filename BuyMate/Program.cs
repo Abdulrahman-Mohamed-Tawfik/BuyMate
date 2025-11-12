@@ -9,6 +9,8 @@ builder.Services.AddControllersWithViews();
 // Centralized DI
 builder.Services.AddInfrastructureService(builder.Configuration);
 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

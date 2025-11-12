@@ -13,6 +13,19 @@
     </div>
 }
 
+@if (ViewData.ModelState.ErrorCount > 0)
+{
+    <div id="errorAlert" class="relative bg-red-100 border border-red-400 text-red-700 px-8 py-4 rounded mb-8 w-full max-w-md mx-auto" role="alert">
+        <ul class=" text-center list-disc pl-5">
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+        <!-- Optional progress bar -->
+        <div id="errorProgressBar" class="absolute bottom-0 left-0 h-2 bg-red-500 rounded-b" style="width:0%"></div>
+    </div>
+}
 
 <div class="max-w-md mx-auto">
     <div class="card p-8">
@@ -55,21 +68,3 @@
 </div>
 
 
-<script>
-          alertBox = document.getElementById('successAlert');
-          progress = document.getElementById('progressBar');
-
-        if (alertBox) {
-            let width = 0;
-        const interval = setInterval(() => {
-            width += 1; // 1% per tick
-        progress.style.width = width + "%";
-            if (width >= 100) {
-            clearInterval(interval);
-        alertBox.style.transition = "opacity 0.5s";
-        alertBox.style.opacity = 0;
-                setTimeout(() => alertBox.remove(), 500); // remove from DOM
-            }
-        }, 30); // 30ms per tick = ~3 seconds total
-    }
-</script>

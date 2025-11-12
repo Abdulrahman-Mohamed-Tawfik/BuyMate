@@ -1,5 +1,5 @@
 ﻿using BuyMate.BLL.Contracts;
-using BuyMate.BLL.Features.User.Register;
+using BuyMate.BLL.Features.User;
 using BuyMate.DAL.Repositories;
 using BuyMate.Model.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -35,8 +35,10 @@ namespace BuyMate.DAL
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.AllowedForNewUsers = true;
 
-            }).AddEntityFrameworkStores<BuyMateDbContext>();
+            }).AddEntityFrameworkStores<BuyMateDbContext>().AddDefaultTokenProviders(); ;
 
+
+            /*
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -56,11 +58,45 @@ namespace BuyMate.DAL
                     IssuerSigningKey = key,
                     ValidIssuer = "BuyMate-BackEnd",
                 };
+                //Handle unauthorized and forbidden
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+                        context.Response.Redirect("/User/Login");
+                        return Task.CompletedTask;
+                    },
+                    OnForbidden = context =>
+                    {
+                        context.Response.Redirect("/Home/Error");
+                        return Task.CompletedTask;
+                    },
+
+                    //Get JWT Token from Cookie
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["jwt_token"];
+                        return Task.CompletedTask;
+                    }
+            
+
+                };
+            });
+            */
+            //Handle Routes
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/User/Login"; // redirect to login if not authorized
+                options.AccessDeniedPath = "/Home/Error"; //redirect if access is denied
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                options.SlidingExpiration = true;
             });
 
             // Dependency Injection
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
+
 
             return services;
         }

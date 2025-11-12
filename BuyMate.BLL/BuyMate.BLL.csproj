@@ -7,7 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\User\Login\" />
+    <Compile Remove="Features\User\Login\**" />
+    <EmbeddedResource Remove="Features\User\Login\**" />
+    <None Remove="Features\User\Login\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="GlobalHelpers\" />
   </ItemGroup>
 

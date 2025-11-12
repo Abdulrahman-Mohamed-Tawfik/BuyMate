@@ -1,10 +1,14 @@
 ﻿using BuyMate.BLL.Contracts;
+using BuyMate.BLL.Features.User;
 using BuyMate.DAL.Repositories;
 using BuyMate.Model.Entities;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BuyMate.DAL
 {
@@ -18,16 +22,81 @@ namespace BuyMate.DAL
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
             });
 
-            // Identity Core with Guid keys
-            services.AddIdentityCore<User>(options =>
+            services.AddIdentity<User, IdentityRole<Guid>>(options =>
             {
-                // configure identity options if needed
-            })
-            .AddRoles<IdentityRole<System.Guid>>()
-            .AddEntityFrameworkStores<BuyMateDbContext>();
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 4;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+                options.User.RequireUniqueEmail = false;
 
-            // Repositories
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.AllowedForNewUsers = true;
+
+            }).AddEntityFrameworkStores<BuyMateDbContext>().AddDefaultTokenProviders(); ;
+
+
+            /*
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+            {
+                var secretKey = configuration.GetValue<string>("SecretKey") ?? throw new InvalidOperationException("SecretKey not found in configuration.");
+                var secretKeyInBytes = Encoding.ASCII.GetBytes(secretKey);
+                var key = new SymmetricSecurityKey(secretKeyInBytes);
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = true,
+                    ValidateAudience = false, // Disable audience validation
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = key,
+                    ValidIssuer = "BuyMate-BackEnd",
+                };
+                //Handle unauthorized and forbidden
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse();
+                        context.Response.Redirect("/User/Login");
+                        return Task.CompletedTask;
+                    },
+                    OnForbidden = context =>
+                    {
+                        context.Response.Redirect("/Home/Error");
+                        return Task.CompletedTask;
+                    },
+
+                    //Get JWT Token from Cookie
+                    OnMessageReceived = context =>
+                    {
+                        context.Token = context.Request.Cookies["jwt_token"];
+                        return Task.CompletedTask;
+                    }
+            
+
+                };
+            });
+            */
+            //Handle Routes
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/User/Login"; // redirect to login if not authorized
+                options.AccessDeniedPath = "/Home/Error"; //redirect if access is denied
+                options.ExpireTimeSpan = TimeSpan.FromDays(7);
+                options.SlidingExpiration = true;
+            });
+
+            // Dependency Injection
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserProfileService, UserProfileService>();
 
             return services;
         }

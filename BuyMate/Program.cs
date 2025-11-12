@@ -1,3 +1,4 @@
+using BuyMate.BLL;
 using BuyMate.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,6 +8,8 @@ builder.Services.AddControllersWithViews();
 
 // Centralized DI
 builder.Services.AddInfrastructureService(builder.Configuration);
+
+
 
 var app = builder.Build();
 

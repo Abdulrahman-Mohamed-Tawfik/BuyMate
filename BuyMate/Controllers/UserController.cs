@@ -63,7 +63,7 @@ namespace BuyMate.Controllers
             var result = await _authService.RegisterAsync(model);
             if (result.Status == true)
             {
-                TempData["Success"] = "Account created successfully. Please sign in.";
+                //TempData["Success"] = "Account created successfully. Please sign in.";
 
                 return RedirectToAction(nameof(Login));
             }

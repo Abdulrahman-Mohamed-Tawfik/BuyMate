@@ -22,7 +22,13 @@ namespace BuyMate.BLL.Features.User
         public async Task<Response<ProfileViewModel>> GetProfileAsync(System.Security.Claims.ClaimsPrincipal userPrincipal)
         {
             var user = await _userManager.GetUserAsync(userPrincipal);
-            if (user == null) return null;
+            if (user == null) 
+                return new Response<ProfileViewModel>
+                {
+                    Data = null,
+                    Status = false,
+                    Message = "User Not Found"
+                };
 
             var profile =  new ProfileViewModel
             {

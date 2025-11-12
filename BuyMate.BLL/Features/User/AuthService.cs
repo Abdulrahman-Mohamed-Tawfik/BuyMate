@@ -10,7 +10,6 @@ namespace BuyMate.BLL.Features.User
         private readonly UserManager<Model.Entities.User> _userManager;
         private readonly SignInManager<Model.Entities.User> _signInManager;
 
-     
         public AuthService(UserManager<Model.Entities.User> userManager, SignInManager<Model.Entities.User> signInManager)
         {
             _userManager = userManager;
@@ -80,19 +79,19 @@ namespace BuyMate.BLL.Features.User
                 {
                     Data = false,
                     Status = false,
-                    Message = "Login failed"
+                    Message = "Login failed Invalide Email or Password"
                 };
             }
 
-            var flag = await _userManager.CheckPasswordAsync(userByEmail, model.Password);
+            var passwordMatchFlag = await _userManager.CheckPasswordAsync(userByEmail, model.Password);
 
-            if (!flag)
+            if (!passwordMatchFlag)
             {
                 return new Response<bool>
                 {
                     Data = false,
                     Status = false,
-                    Message = "Login failed"
+                    Message = "Login failed Invalide Email or Password"
                 };
             }
 

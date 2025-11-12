@@ -28,7 +28,7 @@ namespace BuyMate.Controllers
         public async Task<IActionResult> Profile()
         {
             var result = await _userProfileService.GetProfileAsync(User);
-            if (result.Status == null)
+            if (result.Status == false)
             {
                 //TempData["Error"] = "User not found. Please login again.";
                 return RedirectToAction("Login");

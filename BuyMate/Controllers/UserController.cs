@@ -88,7 +88,7 @@ namespace BuyMate.Controllers
 
             if (result.Status == true)
             {
-                TempData["Success"] = "Login Successful.";
+                //TempData["Success"] = "Login Successful.";
 
                 return RedirectToAction("Index", "Home");
             }

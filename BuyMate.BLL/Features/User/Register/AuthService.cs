@@ -15,21 +15,23 @@ namespace BuyMate.BLL.Features.User.Register
         }
         public async Task<Response<IdentityResult>> RegisterAsync(RegisterViewModel model)
         {
-            // Basic name split (first token = FirstName, remainder = LastName)
-            var firstName = model.Name?.Trim() ?? string.Empty;
-            var lastName = string.Empty;
-            if (!string.IsNullOrWhiteSpace(model.Name))
+
+            //Check if  username is already taken
+            var existingByUsername = await _userManager.FindByNameAsync(model.UserName);
+            if (existingByUsername is not null)
             {
-                var parts = model.Name.Trim().Split(' ', StringSplitOptions.RemoveEmptyEntries);
-                if (parts.Length > 0)
+                return new Response<IdentityResult>
                 {
-                    firstName = parts[0];
-                    if (parts.Length > 1)
+                    Data = IdentityResult.Failed(new IdentityError
                     {
-                        lastName = string.Join(' ', parts.Skip(1));
-                    }
-                }
+                        Code = "DuplicateUserName",
+                        Description = "Username is already taken."
+                    }),
+                    Status = false,
+                    Message = "Registration failed due to duplicate username."
+                };
             }
+
             // Friendly duplicate checks
             var existingByEmail = await _userManager.FindByEmailAsync(model.Email);
             if (existingByEmail is not null)
@@ -63,34 +65,27 @@ namespace BuyMate.BLL.Features.User.Register
 
             var user = new Model.Entities.User
             {
-                UserName = model.Email, // Using email as username
+                UserName = model.UserName,
                 Email = model.Email,
                 PhoneNumber = model.Phone,
-                FirstName = firstName,
-                LastName = lastName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
                 EmailConfirmed = false,
                 PhoneNumberConfirmed = false
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
-            if (result.Succeeded)
+
+            return new Response<IdentityResult>
             {
-                return new Response<IdentityResult>
-                {
-                    Data = result,
-                    Status = true,
-                    Message = "User registered successfully."
-                };
-            }
-            else
-            {
-                return new Response<IdentityResult>
-                {
-                    Data = result,
-                    Status = false,
-                    Message = "User registration failed."
-                };
-            }
+                Data = result,
+                Status = true,
+                Message = result.Succeeded ?
+                 "User registered successfully." : "User registration failed."
+
+
+            };
+           
         }
     }
 }

@@ -14,11 +14,11 @@ namespace BuyMate.Controllers
         {
             _authService = authService;
         }
-
+        /*
         public IActionResult Index()
         {
             return View();
-        }
+        }*/
         public IActionResult Profile()
         {
             var userViewModel = new ProfileViewModel

@@ -4,8 +4,7 @@ namespace BuyMate.DTO.ViewModels
 {
     public class RegisterViewModel
     {
-        [Required]
-        public string UserName { get; set; } = string.Empty;
+
 
         [Required]
         [StringLength(50)]

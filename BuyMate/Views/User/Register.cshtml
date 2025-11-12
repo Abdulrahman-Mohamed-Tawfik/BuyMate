@@ -15,11 +15,7 @@
         <form asp-action="Register" method="post" class="space-y-6" asp-antiforgery="true">
             <div asp-validation-summary="ModelOnly" class="text-sm text-destructive"></div>
 
-            <div>
-                <label asp-for="UserName" class="block text-sm font-medium mb-2">Username</label>
-                <input asp-for="UserName" type="text" class="input w-full" placeholder="Enter your username" />
-                <span asp-validation-for="UserName" class="text-sm text-destructive"></span>
-            </div>
+           
 
             <div>
                 <label asp-for="FirstName" class="block text-sm font-medium mb-2">First Name</label>

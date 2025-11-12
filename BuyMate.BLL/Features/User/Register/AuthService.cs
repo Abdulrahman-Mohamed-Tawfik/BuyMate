@@ -16,22 +16,7 @@ namespace BuyMate.BLL.Features.User.Register
         public async Task<Response<IdentityResult>> RegisterAsync(RegisterViewModel model)
         {
 
-            //Check if  username is already taken
-            var existingByUsername = await _userManager.FindByNameAsync(model.UserName);
-            if (existingByUsername is not null)
-            {
-                return new Response<IdentityResult>
-                {
-                    Data = IdentityResult.Failed(new IdentityError
-                    {
-                        Code = "DuplicateUserName",
-                        Description = "Username is already taken."
-                    }),
-                    Status = false,
-                    Message = "Registration failed due to duplicate username."
-                };
-            }
-
+            
             // Friendly duplicate checks
             var existingByEmail = await _userManager.FindByEmailAsync(model.Email);
             if (existingByEmail is not null)
@@ -65,7 +50,7 @@ namespace BuyMate.BLL.Features.User.Register
 
             var user = new Model.Entities.User
             {
-                UserName = model.UserName,
+                UserName = model.Email.Split('@')[0],
                 Email = model.Email,
                 PhoneNumber = model.Phone,
                 FirstName = model.FirstName,
@@ -76,6 +61,8 @@ namespace BuyMate.BLL.Features.User.Register
 
             var result = await _userManager.CreateAsync(user, model.Password);
 
+
+         
             return new Response<IdentityResult>
             {
                 Data = result,

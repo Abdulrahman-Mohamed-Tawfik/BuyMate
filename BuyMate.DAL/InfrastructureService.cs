@@ -96,7 +96,7 @@ namespace BuyMate.DAL
             // Dependency Injection
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
-
+            services.AddScoped<IUserProfileService, UserProfileService>();
 
             return services;
         }

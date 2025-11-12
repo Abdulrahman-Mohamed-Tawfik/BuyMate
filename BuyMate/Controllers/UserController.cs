@@ -11,10 +11,12 @@ namespace BuyMate.Controllers
     public class UserController : Controller
     {
         private readonly IAuthService _authService;
+        private readonly IUserProfileService _userProfileService;
 
-        public UserController(IAuthService authService)
+        public UserController(IAuthService authService,IUserProfileService userProfileService)
         {
             _authService = authService;
+            _userProfileService = userProfileService;
         }
         /*
         public IActionResult Index()
@@ -23,17 +25,18 @@ namespace BuyMate.Controllers
         }*/
 
         [Authorize]
-        public IActionResult Profile()
+        public async Task<IActionResult> Profile()
         {
-            var userViewModel = new ProfileViewModel
+            var result = await _userProfileService.GetProfileAsync(User);
+            if (result.Status == null)
             {
-                Name = "Abdulrahman Mohamed",
-                Email = "abdulrahman.mohamed@example.com",
-                Phone = "123-456-7890",
-                Avatar = "/images/avatars/default.png"
+                //TempData["Error"] = "User not found. Please login again.";
+                return RedirectToAction("Login");
+            }
 
-            };
-            return View(userViewModel);
+            return View(result.Data);
+
+            
         }
 
         [HttpGet]

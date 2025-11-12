@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/components.css" asp-append-version="true" />
     <link rel="icon" type="image/png" href="~/images/buymate-logo.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <style>
         /* Additional component styles */
         .btn {
@@ -325,13 +327,12 @@
                 <form class="hidden md:flex flex-1 max-w-2xl mx-8" asp-controller="Shop" asp-action="Search" method="get">
                     <div class="relative w-full">
                         <input type="text" name="q" placeholder="Search products..." class="input w-full pr-12" />
-                        <button type="submit" class="absolute right-1 top-1 h-8 w-8 p-0 btn btn-primary btn-sm">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
+                        <button type="submit" class="absolute right-1 top-1 h-8 w-8 p-0 btn btn-primary btn-sm flex items-center justify-center">
+                            <i class="fas fa-magnifying-glass text-white text-lg"></i>
                         </button>
                     </div>
                 </form>
+
 
                 <!-- Header Action Buttons -->
                 <div class="flex items-center space-x-2">
@@ -464,43 +465,49 @@
         @RenderBody()
     </main>
 
-    <footer class="border-t mt-12">
-        <div class="container py-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                <div>
-                    <h3 class="font-semibold mb-4">BUYMATE</h3>
-                    <p class="text-sm text-muted-foreground">Your trusted e-commerce platform for quality products at great prices.</p>
-                </div>
-                <div>
-                    <h4 class="font-medium mb-4">Quick Links</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a asp-controller="Home" asp-action="Index" class="text-muted-foreground hover:text-primary">Home</a></li>
-                        <li><a asp-controller="Shop" asp-action="Index" class="text-muted-foreground hover:text-primary">Shop</a></li>
-                        <li><a asp-controller="Shop" asp-action="Deals" class="text-muted-foreground hover:text-primary">Deals</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-medium mb-4">Support</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="text-muted-foreground hover:text-primary">Help Center</a></li>
-                        <li><a href="#" class="text-muted-foreground hover:text-primary">Contact Us</a></li>
-                        <li><a href="#" class="text-muted-foreground hover:text-primary">Shipping Info</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="font-medium mb-4">Legal</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a asp-controller="Home" asp-action="Privacy" class="text-muted-foreground hover:text-primary">Privacy Policy</a></li>
-                        <li><a href="#" class="text-muted-foreground hover:text-primary">Terms of Service</a></li>
-                        <li><a href="#" class="text-muted-foreground hover:text-primary">Returns</a></li>
-                    </ul>
-                </div>
+    <footer class="border-t mt-12 bg-background text-foreground">
+        <div class="container py-8 flex flex-col md:flex-row md:justify-between md:items-start gap-8">
+
+            <div class="flex-1">
+                <h3 class="font-semibold mb-4">BUYMATE</h3>
+                <p class="text-sm text-muted-foreground">
+                    Your trusted e-commerce platform for quality products at great prices.
+                </p>
             </div>
-            <div class="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-                &copy; 2024 BUYMATE. All rights reserved.
+
+            <div class="flex-1">
+                <h4 class="font-medium mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a asp-controller="Home" asp-action="Index" class="text-muted-foreground hover:text-primary">Home</a></li>
+                    <li><a asp-controller="Shop" asp-action="Index" class="text-muted-foreground hover:text-primary">Shop</a></li>
+                    <li><a asp-controller="Shop" asp-action="Deals" class="text-muted-foreground hover:text-primary">Deals</a></li>
+                </ul>
+            </div>
+
+            <div class="flex-1">
+                <h4 class="font-medium mb-4">Support</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="#" class="text-muted-foreground hover:text-primary">Help Center</a></li>
+                    <li><a href="#" class="text-muted-foreground hover:text-primary">Contact Us</a></li>
+                    <li><a href="#" class="text-muted-foreground hover:text-primary">Shipping Info</a></li>
+                </ul>
+            </div>
+
+            <div class="flex-1">
+                <h4 class="font-medium mb-4">Legal</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a asp-controller="Home" asp-action="Privacy" class="text-muted-foreground hover:text-primary">Privacy Policy</a></li>
+                    <li><a href="#" class="text-muted-foreground hover:text-primary">Terms of Service</a></li>
+                    <li><a href="#" class="text-muted-foreground hover:text-primary">Returns</a></li>
+                </ul>
             </div>
         </div>
+
+        <div class="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
+            &copy; 2024 BUYMATE. All rights reserved.
+        </div>
     </footer>
+
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)

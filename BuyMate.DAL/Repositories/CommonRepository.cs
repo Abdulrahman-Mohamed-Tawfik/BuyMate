@@ -1,4 +1,4 @@
-﻿using BuyMate.BLL.Contracts;
+﻿using BuyMate.BLL.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

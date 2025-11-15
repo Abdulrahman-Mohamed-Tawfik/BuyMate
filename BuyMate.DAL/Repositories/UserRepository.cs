@@ -1,4 +1,4 @@
-﻿using BuyMate.BLL.Contracts;
+﻿using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.Model.Entities;
 
 namespace BuyMate.DAL.Repositories

@@ -1,4 +1,5 @@
 ﻿using BuyMate.BLL.Contracts;
+using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.BLL.Features.User;
 using BuyMate.DAL.Repositories;
 using BuyMate.Model.Entities;

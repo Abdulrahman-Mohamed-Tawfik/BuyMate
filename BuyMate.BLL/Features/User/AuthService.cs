@@ -19,7 +19,7 @@ namespace BuyMate.BLL.Features.User
         public async Task<Response<bool>> RegisterAsync(RegisterViewModel model)
         {
 
-            
+
             // Friendly duplicate checks
             var existingByEmail = await _userManager.FindByEmailAsync(model.Email);
             if (existingByEmail is not null)
@@ -57,7 +57,7 @@ namespace BuyMate.BLL.Features.User
             var result = await _userManager.CreateAsync(user, model.Password);
 
 
-         
+
             return new Response<bool>
             {
                 Data = true,
@@ -65,7 +65,7 @@ namespace BuyMate.BLL.Features.User
                 Message = result.Succeeded ?
                  "User registered successfully." : "User registration failed."
             };
-           
+
         }
 
         public async Task<Response<bool>> LoginAsync(LoginViewModel model)
@@ -95,7 +95,7 @@ namespace BuyMate.BLL.Features.User
                 };
             }
 
-            var result = await _signInManager.PasswordSignInAsync(userByEmail, model.Password, model.RememberMe,false);
+            var result = await _signInManager.PasswordSignInAsync(userByEmail, model.Password, model.RememberMe, false);
 
             return new Response<bool>
             {

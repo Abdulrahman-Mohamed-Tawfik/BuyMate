@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace BuyMate.BLL.Features.User
 {
-    public class UserProfileService: IUserProfileService
+    public class UserProfileService : IUserProfileService
     {
         private readonly UserManager<Model.Entities.User> _userManager;
 
@@ -22,7 +22,7 @@ namespace BuyMate.BLL.Features.User
         public async Task<Response<ProfileViewModel>> GetProfileAsync(System.Security.Claims.ClaimsPrincipal userPrincipal)
         {
             var user = await _userManager.GetUserAsync(userPrincipal);
-            if (user == null) 
+            if (user == null)
                 return new Response<ProfileViewModel>
                 {
                     Data = null,
@@ -30,7 +30,7 @@ namespace BuyMate.BLL.Features.User
                     Message = "User Not Found"
                 };
 
-            var profile =  new ProfileViewModel
+            var profile = new ProfileViewModel
             {
                 Name = $"{user.FirstName} {user.LastName}",
                 Email = user.Email,
@@ -42,7 +42,7 @@ namespace BuyMate.BLL.Features.User
             {
                 Data = profile,
                 Status = true,
-                Message="Profile"
+                Message = "Profile"
             };
 
         }

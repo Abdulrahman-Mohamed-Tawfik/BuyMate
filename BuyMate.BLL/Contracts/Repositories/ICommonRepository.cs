@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace BuyMate.BLL.Contracts
+namespace BuyMate.BLL.Contracts.Repositories
 {
     public interface ICommonRepository<TEntity>
     {

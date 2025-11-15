@@ -1,6 +1,6 @@
 ﻿using BuyMate.Model.Entities;
 
-namespace BuyMate.BLL.Contracts
+namespace BuyMate.BLL.Contracts.Repositories
 {
     public interface IUserRepository : ICommonRepository<User>
     {

@@ -1,0 +1,167 @@
+@{
+    ViewData["Title"] = "My Profile";
+}
+
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">My Profile</h1>
+
+    <div class="space-y-8">
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-6">Personal Information</h2>
+            <form class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">First Name</label>
+                        <input type="text" class="input w-full" value="John" />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Last Name</label>
+                        <input type="text" class="input w-full" value="Doe" />
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Email Address</label>
+                    <input type="email" class="input w-full" value="john.doe@example.com" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Phone Number</label>
+                    <input type="tel" class="input w-full" value="+1 (555) 123-4567" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Date of Birth</label>
+                    <input type="date" class="input w-full" value="1990-01-01" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-2">Profile Picture</label>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-20 h-20 rounded-full bg-muted flex items-center justify-center">
+                            <svg class="w-10 h-10 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </div>
+                        <button type="button" class="btn btn-secondary">Change Photo</button>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-6">Address Book</h2>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                        <h3 class="font-bold">Home Address</h3>
+                        <p class="text-muted-foreground">
+                            123 Main Street<br>
+                            Anytown, ST 12345<br>
+                            United States
+                        </p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="btn btn-secondary">Edit</button>
+                        <button class="btn btn-secondary">Delete</button>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between p-4 border rounded-lg">
+                    <div>
+                        <h3 class="font-bold">Work Address</h3>
+                        <p class="text-muted-foreground">
+                            456 Business Ave<br>
+                            Corporate City, ST 67890<br>
+                            United States
+                        </p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="btn btn-secondary">Edit</button>
+                        <button class="btn btn-secondary">Delete</button>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-primary mt-4">Add New Address</button>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-6">Account Settings</h2>
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold">Email Notifications</h3>
+                        <p class="text-sm text-muted-foreground">Receive updates about your orders and promotions</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold">SMS Notifications</h3>
+                        <p class="text-sm text-muted-foreground">Receive text messages about your orders</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold">Marketing Emails</h3>
+                        <p class="text-sm text-muted-foreground">Receive promotional offers and product updates</p>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" checked />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-6">Security</h2>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold">Change Password</h3>
+                        <p class="text-sm text-muted-foreground">Update your account password</p>
+                    </div>
+                    <button class="btn btn-secondary">Change</button>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold">Two-Factor Authentication</h3>
+                        <p class="text-sm text-muted-foreground">Add an extra layer of security to your account</p>
+                    </div>
+                    <button class="btn btn-secondary">Enable</button>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold">Login Activity</h3>
+                        <p class="text-sm text-muted-foreground">View recent login attempts and sessions</p>
+                    </div>
+                    <button class="btn btn-secondary">View</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-6">Account Actions</h2>
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold">Download Data</h3>
+                        <p class="text-sm text-muted-foreground">Download a copy of your personal data</p>
+                    </div>
+                    <button class="btn btn-secondary">Download</button>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-bold">Delete Account</h3>
+                        <p class="text-sm text-muted-foreground">Permanently delete your account and all data</p>
+                    </div>
+                    <button class="btn btn-destructive">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

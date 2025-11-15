@@ -3587,6 +3587,22 @@
   --sidebar-border: oklch(.922 0 0);
   --sidebar-ring: oklch(.708 0 0);
 }
+.carousel-caption {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 1.5rem;
+    border-radius: 12px;
+    backdrop-filter: blur(4px);
+}
+
+.category-card, .product-card {
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+    .category-card:hover, .product-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0px 8px 20px rgba(0,0,0,0.15);
+    }
 
 .dark {
   --background: oklch(.145 0 0);

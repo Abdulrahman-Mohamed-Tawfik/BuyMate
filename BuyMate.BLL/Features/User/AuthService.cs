@@ -111,6 +111,8 @@ namespace BuyMate.BLL.Features.User
             var avatarUrl = userByEmail.ProfileImageUrl;
 
             await _userManager.AddClaimAsync(userByEmail, new Claim("avatar", avatarUrl));
+            await _signInManager.RefreshSignInAsync(userByEmail);
+
 
             return new Response<bool>
             {

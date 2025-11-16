@@ -101,7 +101,7 @@
                         <!-- Profile link -->
                         <div class="dropdown dropdown-end">
                             <label tabindex="0" class="btn btn-ghost btn-sm flex items-center space-x-2">
-                                <img src="/images/@User.FindFirst("avatar")?.Value "
+                                <img src="/images/@(@User.FindFirst("avatar")?.Value ?? "UserProfileImages/Default.jpg") "
                                      alt="User Avatar"
                                      class="h-6 w-6 rounded-full object-cover" />
                                 <span>@User.Identity.Name</span>

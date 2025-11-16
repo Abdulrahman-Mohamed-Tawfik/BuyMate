@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuyMate.DAL
 {
-    public class BuyMateDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
+    public partial class BuyMateDbContext : IdentityDbContext<User, IdentityRole<Guid>, Guid>
     {
         public BuyMateDbContext(DbContextOptions<BuyMateDbContext> options)
         : base(options)
@@ -183,6 +183,11 @@ namespace BuyMate.DAL
 
 
             });
+
+
+            // filter configurations
+            OnModelCreatingPartial(builder);
         }
+        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }
 }

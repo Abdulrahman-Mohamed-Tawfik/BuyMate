@@ -1,0 +1,155 @@
+@model BuyMate.DTO.ViewModels.ProductViewModel
+@{
+ ViewData["Title"] = Model.Name;
+}
+
+<div class="max-w-6xl mx-auto">
+ <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+ <!-- Product Images -->
+ <div class="space-y-4">
+ <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+ <img src="@(Model.ImageUrl ?? "/images/placeholder.png")" alt="@Model.Name" class="w-full h-full object-cover" />
+ </div>
+ @if (Model.ImageUrls != null && Model.ImageUrls.Count >1)
+ {
+ <div class="grid grid-cols-4 gap-2">
+ @foreach (var image in Model.ImageUrls.Take(4))
+ {
+ <div class="aspect-square bg-gray-100 rounded-lg overflow-hidden cursor-pointer">
+ <img src="@image" alt="@Model.Name" class="w-full h-full object-cover" />
+ </div>
+ }
+ </div>
+ }
+ </div>
+
+ <!-- Product Details -->
+ <div class="space-y-6">
+ <div>
+ <h1 class="text-3xl font-bold mb-2">@Model.Name</h1>
+ <p class="text-muted-foreground mb-4">by @Model.Brand</p>
+ 
+ <div class="flex items-center mb-4">
+ <div class="flex items-center">
+ @for (int i =1; i <=5; i++)
+ {
+ <svg class="w-5 h-5 @(i <= Math.Round(Model.Rating) ? "text-yellow-400" : "text-gray-300")" fill="currentColor" viewBox="002020">
+ <path d="M9.0492.927c.3-.9211.603-.9211.9020l1.073.292a11000.95.69h3.462c.96901.3711.24.5881.81l-2.82.034a11000-.3641.118l1.073.292c.3.921-.7551.688-1.541.118l-2.8-2.034a11000-1.1750l-2.82.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a11000-.364-1.118L2.988.72c-.783-.57-.38-1.81.588-1.81h3.461a11000.951-.69l1.07-3.292z"></path>
+ </svg>
+ }
+ </div>
+ <span class="text-sm text-muted-foreground ml-2">@Model.Rating.ToString("F1") (@Model.ReviewCount reviews)</span>
+ </div>
+
+ <div class="flex items-center space-x-4 mb-6">
+ <span class="text-3xl font-bold">$@Model.Price</span>
+ @if (Model.OriginalPrice.HasValue)
+ {
+ <span class="text-xl text-muted-foreground line-through">$@Model.OriginalPrice</span>
+ @if (Model.Discount.HasValue)
+ {
+ <span class="badge badge-destructive">Save @Model.Discount%</span>
+ }
+ }
+ </div>
+
+ <p class="text-gray-700 mb-6">@Model.Description</p>
+
+ <div class="flex items-center space-x-4 mb-6">
+ <div class="flex items-center space-x-2">
+ <label class="text-sm font-medium">Quantity:</label>
+ <select id="quantity" class="input w-20">
+ @for (int i =1; i <= Math.Min(10, Model.Stock); i++)
+ {
+ <option value="@i">@i</option>
+ }
+ </select>
+ </div>
+ <div class="text-sm text-muted-foreground">
+ @Model.Stock items in stock
+ </div>
+ </div>
+
+ <div class="flex space-x-4">
+ <button class="btn btn-primary btn-lg flex-1" onclick="addToCart('@Model.Id')">
+ Add to Cart
+ </button>
+ <button class="btn btn-secondary btn-lg" onclick="addToWishlist('@Model.Id')">
+ <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="002424">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.3186.318a4.54.500006.364L1220.364l7.682-7.682a4.54.5000-6.364-6.364L127.636l-1.318-1.318a4.54.5000-6.3640z"></path>
+ </svg>
+ </button>
+ </div>
+ </div>
+ </div>
+ </div>
+
+ <!-- Product Specifications -->
+ @if (Model.Specifications != null && Model.Specifications.Count >0)
+ {
+ <div class="mt-12">
+ <h2 class="text-2xl font-bold mb-6">Specifications</h2>
+ <div class="card p-6">
+ <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+ @foreach (var spec in Model.Specifications)
+ {
+ <div class="flex justify-between py-2 border-b">
+ <span class="font-medium">@spec.Key</span>
+ <span class="text-muted-foreground">@spec.Value</span>
+ </div>
+ }
+ </div>
+ </div>
+ </div>
+ }
+
+ <!-- Reviews Section -->
+ <div class="mt-12">
+ <h2 class="text-2xl font-bold mb-6">Customer Reviews</h2>
+ <div class="card p-6">
+ <div class="text-center py-8">
+ <p class="text-muted-foreground">No reviews yet. Be the first to review this product!</p>
+ <button class="btn btn-primary mt-4">Write a Review</button>
+ </div>
+ </div>
+ </div>
+</div>
+
+<script>
+ function addToCart(productId) {
+ const quantity = document.getElementById('quantity').value;
+ fetch('/Cart/AddToCart', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/x-www-form-urlencoded',
+ },
+ body: `productId=${productId}&quantity=${quantity}`
+ })
+ .then(response => {
+ if (response.ok) {
+ alert('Product added to cart!');
+ }
+ })
+ .catch(error => {
+ console.error('Error:', error);
+ });
+ }
+
+ function addToWishlist(productId) {
+ fetch('/Account/AddToWishlist', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/x-www-form-urlencoded',
+ },
+ body: `productId=${productId}`
+ })
+ .then(response => {
+ if (response.ok) {
+ alert('Product added to wishlist!');
+ }
+ })
+ .catch(error => {
+ console.error('Error:', error);
+ });
+ }
+</script>

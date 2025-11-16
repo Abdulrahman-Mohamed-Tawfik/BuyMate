@@ -2,6 +2,7 @@
 using BuyMate.DTO.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;
@@ -122,6 +123,39 @@ namespace BuyMate.Controllers
             return RedirectToAction("Profile");
         }
 
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> EditProfile()
+        {
+            var result = await _userProfileService.GetProfileAsync(User);
+            if (result.Status != true || result.Data == null)
+            {
+                return RedirectToAction("Login");
+            }
 
+
+            return View(result.Data);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditProfile(ProfileViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var result = await _userProfileService.UpdateProfileAsync(model, User);
+            if (result.Status != true)
+            {
+                ModelState.AddModelError(string.Empty, result.Message);
+                return View(model);
+            }
+
+            TempData["Success"] = "Profile updated successfully.";
+            return RedirectToAction("Profile");
+        }
+
+      
     }
 }

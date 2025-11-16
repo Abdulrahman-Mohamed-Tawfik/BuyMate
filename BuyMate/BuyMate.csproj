@@ -21,4 +21,8 @@
     <ProjectReference Include="..\BuyMate.DTO\BuyMate.DTO.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\" />
+  </ItemGroup>
+
 </Project>

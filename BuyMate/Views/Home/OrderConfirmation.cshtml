@@ -1,0 +1,113 @@
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="max-w-4xl mx-auto">
+    <div class="text-center mb-8">
+        <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+        <h1 class="text-3xl font-bold text-green-600 mb-2">Order Confirmed!</h1>
+        <p class="text-muted-foreground">Thank you for your purchase. Your order has been successfully placed.</p>
+    </div>
+
+    <div class="space-y-8">
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-4">Order Details</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold mb-2">Order Number</h3>
+                    <p class="text-muted-foreground">#12345</p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Order Date</h3>
+                    <p class="text-muted-foreground">December 15, 2024</p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Total Amount</h3>
+                    <p class="text-2xl font-bold text-primary">$1,199.00</p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Payment Method</h3>
+                    <p class="text-muted-foreground">Credit Card ending in 1234</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-4">Shipping Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold mb-2">Shipping Address</h3>
+                    <p class="text-muted-foreground">
+                        John Doe<br>
+                        123 Main Street<br>
+                        Anytown, ST 12345<br>
+                        United States
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Shipping Method</h3>
+                    <p class="text-muted-foreground">Standard Shipping (5-7 business days)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-4">Order Items</h2>
+            <div class="space-y-4">
+                <div class="flex items-center space-x-4 p-4 border rounded-lg">
+                    <img src="~/images/buymate-logo.png" alt="Product" class="w-20 h-20 object-cover rounded-lg" />
+                    <div class="flex-1">
+                        <h3 class="font-bold">iPhone 15 Pro Max</h3>
+                        <p class="text-sm text-muted-foreground">Color: Space Black, Storage: 256GB</p>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <span class="text-lg font-bold text-primary">$1,199.00</span>
+                            <span class="text-sm text-muted-foreground">x1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-4">What's Next?</h2>
+            <div class="space-y-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">1</div>
+                    <div>
+                        <h3 class="font-bold">Order Processing</h3>
+                        <p class="text-sm text-muted-foreground">We're preparing your order for shipment</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-muted rounded-full flex items-center justify-center text-muted-foreground font-bold">2</div>
+                    <div>
+                        <h3 class="font-bold">Order Shipped</h3>
+                        <p class="text-sm text-muted-foreground">You'll receive a tracking number via email</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-muted rounded-full flex items-center justify-center text-muted-foreground font-bold">3</div>
+                    <div>
+                        <h3 class="font-bold">Order Delivered</h3>
+                        <p class="text-sm text-muted-foreground">Your order will arrive at your doorstep</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-4">Need Help?</h2>
+            <p class="text-muted-foreground leading-relaxed mb-6">
+                If you have any questions about your order or need to make changes, our customer service team is here to help.
+            </p>
+            <div class="flex space-x-4">
+                <a href="@Url.Action("Contact", "Home")" class="btn btn-primary">Contact Support</a>
+                <a href="@Url.Action("Orders", "Home")" class="btn btn-secondary">View All Orders</a>
+            </div>
+        </div>
+    </div>
+</div>

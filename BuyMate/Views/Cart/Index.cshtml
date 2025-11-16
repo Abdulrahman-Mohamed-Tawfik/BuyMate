@@ -1,0 +1,131 @@
+@using BuyMate.DTO.ViewModels
+@model CartViewModel
+@{
+ ViewData["Title"] = "Shopping Cart";
+}
+
+<div class="max-w-4xl mx-auto">
+ <h1 class="text-3xl font-bold mb-8">Shopping Cart</h1>
+
+ @if (Model.Items.Any())
+ {
+ <div class="space-y-6">
+ @foreach (var item in Model.Items)
+ {
+ <div class="card p-6">
+ <div class="flex items-center space-x-4">
+ <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-20 h-20 object-cover rounded-lg" />
+ <div class="flex-1">
+ <h3 class="font-medium">@item.ProductName</h3>
+ <p class="text-sm text-muted-foreground">@item.Brand</p>
+ <div class="flex items-center space-x-4 mt-2">
+ <div class="flex items-center space-x-2">
+ <label class="text-sm">Quantity:</label>
+ <select class="input w-20" onchange="updateQuantity('@item.ProductId', this.value)">
+ @for (int i =1; i <=10; i++)
+ {
+ <option value="@i" selected="@(i == item.Quantity)">@i</option>
+ }
+ </select>
+ </div>
+ <span class="font-bold">$@item.TotalPrice</span>
+ </div>
+ </div>
+ <button class="btn btn-ghost text-destructive" onclick="removeFromCart('@item.ProductId')">
+ <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="002424">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M197l-.86712.142A2200116.13821H7.862a22001-1.995-1.858L57m54v6m4-6v6m1-10V4a11000-1-1h-4a11000-11v3M47h16"></path>
+ </svg>
+ </button>
+ </div>
+ </div>
+ }
+
+ <!-- Cart Summary -->
+ <div class="card p-6">
+ <h2 class="text-xl font-bold mb-4">Order Summary</h2>
+ <div class="space-y-2">
+ <div class="flex justify-between">
+ <span>Subtotal</span>
+ <span>$@Model.Subtotal</span>
+ </div>
+ <div class="flex justify-between">
+ <span>Shipping</span>
+ <span>Free</span>
+ </div>
+ <div class="flex justify-between">
+ <span>Tax</span>
+ <span>$0.00</span>
+ </div>
+ <hr class="my-4" />
+ <div class="flex justify-between text-lg font-bold">
+ <span>Total</span>
+ <span>$@Model.Total</span>
+ </div>
+ </div>
+ <div class="mt-6 space-y-4">
+ <a asp-controller="Cart" asp-action="Checkout" class="btn btn-primary btn-lg w-full">
+ Proceed to Checkout
+ </a>
+ <a asp-controller="Shop" asp-action="Index" class="btn btn-secondary w-full">
+ Continue Shopping
+ </a>
+ </div>
+ </div>
+ </div>
+ }
+ else
+ {
+ <div class="text-center py-12">
+ <svg class="w-24 h-24 mx-auto text-muted-foreground mb-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="002424">
+ <path d="M6236v14a2200022h14a220002-2V6l-3-4Z"></path>
+ <path d="M36h18"></path>
+ <path d="M1610a44001-80"></path>
+ </svg>
+ <h2 class="text-2xl font-bold mb-2">Your cart is empty</h2>
+ <p class="text-muted-foreground mb-6">Looks like you haven't added any items to your cart yet.</p>
+ <a asp-controller="Shop" asp-action="Index" class="btn btn-primary btn-lg">
+ Start Shopping
+ </a>
+ </div>
+ }
+</div>
+
+<script>
+ function updateQuantity(productId, quantity) {
+ fetch('/Cart/UpdateQuantity', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/x-www-form-urlencoded',
+ },
+ body: `productId=${productId}&quantity=${quantity}`
+ })
+ .then(response => {
+ if (response.ok) {
+ location.reload();
+ }
+ })
+ .catch(error => {
+ console.error('Error:', error);
+ });
+ }
+
+ function removeFromCart(productId) {
+ if (confirm('Are you sure you want to remove this item from your cart?')) {
+ fetch('/Cart/RemoveFromCart', {
+ method: 'POST',
+ headers: {
+ 'Content-Type': 'application/x-www-form-urlencoded',
+ },
+ body: `productId=${productId}`
+ })
+ .then(response => {
+ if (response.ok) {
+ location.reload();
+ }
+ })
+ .catch(error => {
+ console.error('Error:', error);
+ });
+ }
+ }
+</script>

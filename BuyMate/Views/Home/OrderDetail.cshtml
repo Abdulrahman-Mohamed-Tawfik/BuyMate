@@ -1,0 +1,155 @@
+@{
+    ViewData["Title"] = "Order Detail";
+}
+
+<div class="max-w-4xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">Order Detail</h1>
+
+    <div class="space-y-8">
+        <div class="card p-8">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-bold">Order #12345</h2>
+                <div class="flex items-center space-x-2">
+                    <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Delivered</span>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold mb-2">Order Date</h3>
+                    <p class="text-muted-foreground">December 15, 2024</p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Total Amount</h3>
+                    <p class="text-2xl font-bold text-primary">$1,199.00</p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Payment Method</h3>
+                    <p class="text-muted-foreground">Credit Card ending in 1234</p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Shipping Method</h3>
+                    <p class="text-muted-foreground">Standard Shipping</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-4">Shipping Information</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h3 class="font-bold mb-2">Shipping Address</h3>
+                    <p class="text-muted-foreground">
+                        John Doe<br>
+                        123 Main Street<br>
+                        Anytown, ST 12345<br>
+                        United States
+                    </p>
+                </div>
+                <div>
+                    <h3 class="font-bold mb-2">Tracking Information</h3>
+                    <p class="text-muted-foreground">Tracking Number: 1Z999AA1234567890</p>
+                    <a href="#" class="text-primary hover:underline">Track Package</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-4">Order Items</h2>
+            <div class="space-y-4">
+                <div class="flex items-center space-x-4 p-4 border rounded-lg">
+                    <img src="~/images/buymate-logo.png" alt="Product" class="w-20 h-20 object-cover rounded-lg" />
+                    <div class="flex-1">
+                        <h3 class="font-bold">iPhone 15 Pro Max</h3>
+                        <p class="text-sm text-muted-foreground">Color: Space Black, Storage: 256GB</p>
+                        <div class="flex items-center space-x-2 mt-2">
+                            <span class="text-lg font-bold text-primary">$1,199.00</span>
+                            <span class="text-sm text-muted-foreground">x1</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="btn btn-secondary">Buy Again</button>
+                        <button class="btn btn-secondary">Return</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-4">Order Timeline</h2>
+            <div class="space-y-4">
+                <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Order Delivered</h3>
+                        <p class="text-sm text-muted-foreground">December 20, 2024 at 2:30 PM</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Out for Delivery</h3>
+                        <p class="text-sm text-muted-foreground">December 20, 2024 at 8:00 AM</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Order Shipped</h3>
+                        <p class="text-sm text-muted-foreground">December 18, 2024 at 10:00 AM</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center text-white font-bold">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-bold">Order Confirmed</h3>
+                        <p class="text-sm text-muted-foreground">December 15, 2024 at 3:45 PM</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-8">
+            <h2 class="text-2xl font-bold mb-4">Order Summary</h2>
+            <div class="space-y-2">
+                <div class="flex justify-between">
+                    <span class="text-muted-foreground">Subtotal</span>
+                    <span class="font-medium">$1,199.00</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-muted-foreground">Shipping</span>
+                    <span class="font-medium">$0.00</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-muted-foreground">Tax</span>
+                    <span class="font-medium">$0.00</span>
+                </div>
+                <div class="flex justify-between border-t pt-2">
+                    <span class="font-bold">Total</span>
+                    <span class="font-bold text-xl">$1,199.00</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="flex space-x-4">
+            <a href="@Url.Action("Orders", "Home")" class="btn btn-secondary">Back to Orders</a>
+            <button class="btn btn-primary">Download Invoice</button>
+        </div>
+    </div>
+</div>

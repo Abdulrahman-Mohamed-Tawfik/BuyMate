@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BuyMate.DAL.Migrations
 {
     [DbContext(typeof(BuyMateDbContext))]
-    [Migration("20251116131818_AddMainTables")]
+    [Migration("20251116154906_AddMainTables")]
     partial class AddMainTables
     {
         /// <inheritdoc />
@@ -896,8 +896,7 @@ namespace BuyMate.DAL.Migrations
 
             modelBuilder.Entity("BuyMate.Model.Entities.User", b =>
                 {
-                    b.Navigation("Cart")
-                        .IsRequired();
+                    b.Navigation("Cart");
 
                     b.Navigation("Orders");
 

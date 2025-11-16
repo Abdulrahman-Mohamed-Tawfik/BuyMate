@@ -1,18 +1,13 @@
 ﻿using BuyMate.Model.Common;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BuyMate.Model.Entities
 {
     public class Coupon : ModifiableEntity
     {
         [Required]
-        public string Code { get; set; }
+        public string? Code { get; set; }
 
         // "Percentage" or "Fixed"
         public string DiscountType { get; set; } = "Percentage";

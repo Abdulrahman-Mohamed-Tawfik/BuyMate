@@ -44,20 +44,9 @@ namespace BuyMate.DAL.Repositories
             if (entities == null || entities.Count == 0)
                 throw new ArgumentException("The entity list cannot be null or empty.", nameof(entities));
 
-            try
-            {
-                await _context.Set<TEntity>().AddRangeAsync(entities);
-                await _context.SaveChangesAsync();
-                return entities;
-            }
-            catch (DbUpdateException ex)
-            {
-
-                throw;
-
-                // Log exception and rethrow (or handle accordingly)
-                //throw new Exception("An error occurred while adding the entities to the database.", ex);
-            }
+            await _context.Set<TEntity>().AddRangeAsync(entities);
+            await _context.SaveChangesAsync();
+            return entities;
         }
         public virtual async Task<bool> DeletePhysicallyAsync(Guid id)
         {
@@ -145,11 +134,6 @@ namespace BuyMate.DAL.Repositories
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();
 
-            // Apply includes
-            //foreach (var include in includes)
-            //{
-            //    query = query.Include(include);
-            //}
             if (includes?.Any() == true)
             {
                 foreach (var include in includes)

@@ -12,6 +12,6 @@ namespace BuyMate.Model.Entities
         public string ImageUrl { get; set; } = string.Empty;
         public bool IsMain { get; set; } = false;
 
-        public Product Product { get; set; }
+        public Product? Product { get; set; }
     }
 }

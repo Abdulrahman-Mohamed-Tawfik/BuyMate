@@ -893,8 +893,7 @@ namespace BuyMate.DAL.Migrations
 
             modelBuilder.Entity("BuyMate.Model.Entities.User", b =>
                 {
-                    b.Navigation("Cart")
-                        .IsRequired();
+                    b.Navigation("Cart");
 
                     b.Navigation("Orders");
 

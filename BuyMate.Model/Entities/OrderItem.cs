@@ -17,7 +17,7 @@ namespace BuyMate.Model.Entities
         [Column(TypeName = "decimal(18,2)")]
         public decimal TotalPrice { get; set; }
 
-        public Order Order { get; set; }
-        public Product Product { get; set; }
+        public Order? Order { get; set; }
+        public Product? Product { get; set; }
     }
 }

@@ -7,7 +7,7 @@ namespace BuyMate.Model.Entities
     {
         public Guid UserId { get; set; }
         public Guid? CouponId { get; set; }
-        public User User { get; set; }
+        public User? User { get; set; }
         public Coupon? Coupon { get; set; }
 
 

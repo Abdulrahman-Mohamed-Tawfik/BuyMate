@@ -134,7 +134,7 @@ namespace BuyMate.BLL.Features.User
                 await _userManager.RemoveClaimAsync(user, oldClaim);
 
             //Add new avatar claim
-            var avatarUrl = user.ProfileImageUrl;
+            var avatarUrl = user.ProfileImageUrl??"";
 
             await _userManager.AddClaimAsync(user, new Claim("avatar", avatarUrl));
 

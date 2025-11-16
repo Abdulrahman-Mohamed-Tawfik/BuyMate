@@ -11,10 +11,10 @@ namespace BuyMate.Model.Entities
         [Required]
         public Guid UserId { get; set; }
         public int Rating { get; set; }
-        public string Review { get; set; }
+        public string? Review { get; set; }
 
 
-        public Product Product { get; set; }
-        public User User { get; set; }
+        public Product? Product { get; set; }
+        public User? User { get; set; }
     }
 }

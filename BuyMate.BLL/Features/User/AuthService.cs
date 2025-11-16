@@ -1,7 +1,9 @@
 ﻿using BuyMate.BLL.Contracts;
-using BuyMate.DTO.ViewModels;
-using Microsoft.AspNetCore.Identity;
 using BuyMate.DTO.Common;
+using BuyMate.DTO.ViewModels;
+using BuyMate.Model.Entities;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 namespace BuyMate.BLL.Features.User
 {
@@ -96,6 +98,19 @@ namespace BuyMate.BLL.Features.User
             }
 
             var result = await _signInManager.PasswordSignInAsync(userByEmail, model.Password, model.RememberMe, false);
+
+
+            //Adding avatar image to be used with user claim
+            //  Remove old avatar claim(if exists)
+            var oldClaim = (await _userManager.GetClaimsAsync(userByEmail))
+                          .FirstOrDefault(c => c.Type == "avatar");
+            if (oldClaim != null)
+                await _userManager.RemoveClaimAsync(userByEmail, oldClaim);
+
+            //Add new avatar claim
+            var avatarUrl = userByEmail.ProfileImageUrl;
+
+            await _userManager.AddClaimAsync(userByEmail, new Claim("avatar", avatarUrl));
 
             return new Response<bool>
             {

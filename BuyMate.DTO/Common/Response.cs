@@ -2,7 +2,7 @@
 {
     public class Response<TEntity>
     {
-        public Response(TEntity? data, string? message, bool? status)
+        public Response(TEntity? data, string message, bool status)
         {
             Data = data;
             Message = message;
@@ -14,9 +14,9 @@
         }
         public TEntity? Data { get; set; }
 
-        public string? Message { get; set; }
+        public required string Message { get; set; }
 
-        public bool? Status { get; set; }
+        public required bool Status { get; set; }
 
     }
 }

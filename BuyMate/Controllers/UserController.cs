@@ -14,7 +14,7 @@ namespace BuyMate.Controllers
         private readonly IAuthService _authService;
         private readonly IUserProfileService _userProfileService;
 
-        public UserController(IAuthService authService,IUserProfileService userProfileService)
+        public UserController(IAuthService authService, IUserProfileService userProfileService)
         {
             _authService = authService;
             _userProfileService = userProfileService;
@@ -37,7 +37,7 @@ namespace BuyMate.Controllers
 
             return View(result.Data);
 
-            
+
         }
 
         [HttpGet]
@@ -62,6 +62,7 @@ namespace BuyMate.Controllers
             }
 
             var result = await _authService.RegisterAsync(model);
+
             if (result.Status == true)
             {
                 TempData["Success"] = "Account created successfully. Please sign in.";
@@ -69,9 +70,9 @@ namespace BuyMate.Controllers
                 return RedirectToAction(nameof(Login));
             }
 
-          
+
             ModelState.AddModelError(string.Empty, result.Message);
-            
+
 
             return View(model);
         }
@@ -94,9 +95,9 @@ namespace BuyMate.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-           
-           ModelState.AddModelError(string.Empty, result.Message);
-            
+
+            ModelState.AddModelError(string.Empty, result.Message);
+
 
             return View(model);
         }
@@ -105,7 +106,7 @@ namespace BuyMate.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            if (!User.Identity.IsAuthenticated)
+            if (User.Identity != null && !User.Identity.IsAuthenticated)
             {
                 TempData["Error"] = "You are not logged in.";
                 return RedirectToAction("Login");
@@ -156,6 +157,6 @@ namespace BuyMate.Controllers
             return RedirectToAction("Profile");
         }
 
-      
+
     }
 }

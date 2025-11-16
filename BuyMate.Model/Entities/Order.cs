@@ -1,20 +1,13 @@
 ﻿using BuyMate.Model.Common;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BuyMate.Model.Entities
 {
-    public class Order : ModifiableEntity
+    public class Order : ModifiableSoftDeleteEntity
     {
-        public Guid UserID { get; set; }
-        public User User { get; set; }
-
-
+        public Guid UserId { get; set; }
         public Guid? CouponId { get; set; }
+        public User? User { get; set; }
         public Coupon? Coupon { get; set; }
 
 

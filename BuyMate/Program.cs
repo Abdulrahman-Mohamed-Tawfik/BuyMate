@@ -26,7 +26,7 @@ if (!app.Environment.IsDevelopment())
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
     var context = serviceScope.ServiceProvider.GetService<BuyMateDbContext>();
-    context.Database.Migrate();
+    context?.Database.Migrate();
     //DatabaseSeeder.SeedGamesAndModes(context);
 }
 

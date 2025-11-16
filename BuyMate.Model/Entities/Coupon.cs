@@ -17,25 +17,16 @@ namespace BuyMate.Model.Entities
         // "Percentage" or "Fixed"
         public string DiscountType { get; set; } = "Percentage";
 
-
         [Column(TypeName = "decimal(18,2)")]
         public decimal DiscountValue { get; set; }
 
         [Required]
         public DateTime ExpiryDate { get; set; }
-
-
         public bool IsActive { get; set; } = true;
-        
         public int MaxUsage { get; set; } = 1; // how many times it can be used
-
         public int UsageCount { get; set; } = 0; // how many times it has been used
 
 
         public ICollection<Order> Orders { get; set; } = new List<Order>();
-
-
-
-
     }
 }

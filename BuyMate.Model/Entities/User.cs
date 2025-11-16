@@ -18,7 +18,7 @@ namespace BuyMate.Model.Entities
         public bool IsDeleted { get; set; }
         public DateTime DeletedAt { get; set; }
 
-        public Cart Cart { get; set; }
+        public Cart? Cart { get; set; }
         public ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<ProductReview> Reviews { get; set; } = new List<ProductReview>();

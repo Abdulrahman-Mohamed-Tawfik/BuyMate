@@ -22,7 +22,9 @@ namespace BuyMate.DAL.Repositories
 
         public async Task<IQueryable<User>> SearchByNameAsync(string? Filter)
         {
-            return (await GetAsync()).Where(a => Filter == null || a.FirstName.Contains(Filter) || a.LastName.Contains(Filter));
+            return (await GetAsync()).Where(a => Filter == null ||
+            (a.FirstName != null && a.FirstName.Contains(Filter)) ||
+            (a.LastName != null && a.LastName.Contains(Filter)));
         }
     }
 }

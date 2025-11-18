@@ -86,6 +86,42 @@ namespace BuyMate.Controllers
             return View();
         }
 
-       
+        // Keep old name for compatibility, redirect to Terms view
+        public IActionResult TermsOfService()
+        {
+            return View("Terms");
+        }
+
+        // New explicit actions for pages used in layout
+        public IActionResult Terms()
+        {
+            return View();
+        }
+
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        public IActionResult Support()
+        {
+            return View();
+        }
+
+        public IActionResult FAQ()
+        {
+            return View();
+        }
+
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        public IActionResult Cookies()
+        {
+            return View();
+        }
+
     }
 }

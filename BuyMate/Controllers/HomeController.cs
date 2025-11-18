@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers
@@ -78,6 +79,11 @@ namespace BuyMate.Controllers
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
 
        

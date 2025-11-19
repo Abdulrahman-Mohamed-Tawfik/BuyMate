@@ -1,0 +1,27 @@
+﻿@{
+ ViewData["Title"] = "Access Denied";
+}
+
+<div class="container max-w-2xl mx-auto py-16">
+ <div class="card p-8 text-center">
+ <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 mx-auto text-destructive mb-4" fill="none" viewBox="002424" stroke="currentColor">
+ <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M129v3m04h.01M2112a99011-18099001180z" />
+ </svg>
+
+ <h1 class="text-2xl font-semibold mb-2">Access Denied</h1>
+ <p class="text-muted-foreground mb-6">You do not have permission to view this page. If you think this is a mistake, please contact support or sign in with an account that has the required access.</p>
+
+ <div class="flex justify-center gap-3">
+ <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Go to Home</a>
+ @if (!User.Identity?.IsAuthenticated ?? true)
+ {
+ <a asp-controller="User" asp-action="Login" class="btn btn-ghost">Sign In</a>
+ }
+ <a href="/Home/Contact" class="btn btn-secondary">Contact Support</a>
+ </div>
+
+ <div class="mt-6 text-sm text-muted-foreground">
+ <span>Status code:403</span>
+ </div>
+ </div>
+</div>

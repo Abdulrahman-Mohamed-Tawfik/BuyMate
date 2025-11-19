@@ -104,8 +104,8 @@
                         @foreach (var item in Model.CartItems)
                         {
                             <div class="flex items-center space-x-4">
-                                <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-16 h-16 object-cover rounded-lg" />
-                                <div class="flex-1">
+                                @*                                 <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-16 h-16 object-cover rounded-lg" />
+ *@                                <div class="flex-1">
                                     <h3 class="font-medium">@item.ProductName</h3>
                                     <p class="text-sm text-muted-foreground">Qty: @item.Quantity</p>
                                 </div>

@@ -757,7 +757,7 @@ namespace BuyMate.DAL.Migrations
             modelBuilder.Entity("BuyMate.Model.Entities.ProductImage", b =>
                 {
                     b.HasOne("BuyMate.Model.Entities.Product", "Product")
-                        .WithMany()
+                        .WithMany("ProductImages")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -885,6 +885,8 @@ namespace BuyMate.DAL.Migrations
                     b.Navigation("OrderItems");
 
                     b.Navigation("ProductCategories");
+
+                    b.Navigation("ProductImages");
 
                     b.Navigation("Reviews");
 

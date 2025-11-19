@@ -1,5 +1,6 @@
 ﻿using BuyMate.BLL.Contracts;
 using BuyMate.BLL.Contracts.Repositories;
+using BuyMate.BLL.Features.Cart;
 using BuyMate.BLL.Features.User;
 using BuyMate.DAL.Repositories;
 using BuyMate.Model.Entities;
@@ -98,6 +99,9 @@ namespace BuyMate.DAL
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserProfileService, UserProfileService>();
+            services.AddScoped<ICartRepository, CartRepository>();
+            services.AddScoped<ICartItemRepository, CartItemRepositoy>();
+            services.AddScoped<ICartService, CartService>();
 
             return services;
         }

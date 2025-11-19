@@ -19,6 +19,7 @@ namespace BuyMate.DTO.ViewModels
 
             // Optional additional images for gallery
             public List<string> ImageUrls { get; set; } = new();
+            public List<CategoryViewModel> Categories { get; set; } = new();
 
             // Optional original price when product is on discount
             public decimal? OriginalPrice { get; set; }

@@ -11,18 +11,14 @@
             PageNumber = pageNumber;
             PageSize = pageSize;
         }
-        public PaginatedResponse()
-        {
 
-        }
+        public PaginatedResponse() { }
+
         public TEntity? Data { get; set; }
-
         public string? Message { get; set; }
-
         public bool? Status { get; set; }
         public int TotalCount { get; set; }
         public int PageSize { get; set; }
         public int PageNumber { get; set; }
-
     }
 }

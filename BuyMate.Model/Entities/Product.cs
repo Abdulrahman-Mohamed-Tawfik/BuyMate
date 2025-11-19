@@ -21,12 +21,13 @@ namespace BuyMate.Model.Entities
         [Range(0, int.MaxValue)]
         public int StockQuantity { get; set; } = 0;
 
-
-
         public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
         public ICollection<ProductReview> Reviews { get; set; } = new List<ProductReview>();
+
+        // ⭐⭐ Navigation to ProductImages
+        public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
     }
 }

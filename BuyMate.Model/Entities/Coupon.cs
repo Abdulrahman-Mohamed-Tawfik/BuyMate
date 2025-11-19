@@ -9,8 +9,8 @@ namespace BuyMate.Model.Entities
         [Required]
         public string? Code { get; set; }
 
-        // "Percentage" or "Fixed"
-        public string DiscountType { get; set; } = "Percentage";
+        // Percentage:0 or Fixed:1
+        public int DiscountType { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
         public decimal DiscountValue { get; set; }

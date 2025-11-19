@@ -118,6 +118,13 @@ namespace BuyMate.BLL.Features.User
             user.Gender = model.Gender;
             user.Address = model.Address;
 
+
+            // First use previous avatar and check if it exists
+            if (!string.IsNullOrEmpty(model.Avatar))
+            {
+                user.ProfileImageUrl = model.Avatar;
+            }
+
             // Handle avatar file upload if provided
             if (avatarFile != null && avatarFile.Length > 0)
             {
@@ -178,14 +185,9 @@ namespace BuyMate.BLL.Features.User
                     };
                 }
             }
-            else
-            {
-                // If no file was uploaded but Avatar property contains value, keep previous behavior
-                if (!string.IsNullOrEmpty(model.Avatar))
-                {
-                    user.ProfileImageUrl = model.Avatar;
-                }
-            }
+           
+              
+
 
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)

@@ -60,13 +60,20 @@
 
  <div>
  <label class="block text-sm font-medium mb-2">Profile Picture</label>
- <div class="flex items-center space-x-4">
- @if (!string.IsNullOrEmpty(Model.Avatar))
- {
- <img src="/images/@Model.Avatar" alt="Profile" class="w-16 h-16 rounded-full object-cover" />
- }
- <input name="avatarFile" type="file" accept="image/*" class="input" />
- </div>
+                    <div class="flex items-center space-x-4">
+                        <img src="/images/@(@User.FindFirst("avatar")?.Value ?? "UserProfileImages/Default.jpg")"
+                             alt="Profile"
+                             class="w-16 h-16 rounded-full object-cover ring-2 ring-gray-200" />
+
+                        <label class="px-4 py-2 bg-blue-600 text-white text-sm rounded-lg cursor-pointer hover:bg-blue-700 transition">
+                            Upload New Image
+                            <input name="avatarFile"
+                                   type="file"
+                                   accept="image/*"
+                                   class="hidden" />
+                        </label>
+                    </div>
+
  </div>
  </div>
  </div>

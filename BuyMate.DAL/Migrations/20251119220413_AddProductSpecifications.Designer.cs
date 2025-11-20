@@ -4,6 +4,7 @@ using BuyMate.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BuyMate.DAL.Migrations
 {
     [DbContext(typeof(BuyMateDbContext))]
-    partial class BuyMateDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251119220413_AddProductSpecifications")]
+    partial class AddProductSpecifications
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -802,7 +805,7 @@ namespace BuyMate.DAL.Migrations
             modelBuilder.Entity("BuyMate.Model.Entities.ProductImage", b =>
                 {
                     b.HasOne("BuyMate.Model.Entities.Product", "Product")
-                        .WithMany("ProductImages")
+                        .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -943,8 +946,6 @@ namespace BuyMate.DAL.Migrations
                     b.Navigation("ProductCategories");
 
                     b.Navigation("ProductSpecifications");
-
-                    b.Navigation("ProductImages");
 
                     b.Navigation("Reviews");
 

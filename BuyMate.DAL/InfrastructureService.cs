@@ -90,7 +90,7 @@ namespace BuyMate.DAL
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/User/Login"; // redirect to login if not authorized
-                options.AccessDeniedPath = "/Home/Error"; //redirect if access is denied
+                options.AccessDeniedPath = "/Home/AccessDenied"; //redirect if access is denied
                 options.ExpireTimeSpan = TimeSpan.FromDays(7);
                 options.SlidingExpiration = true;
             });
@@ -103,7 +103,20 @@ namespace BuyMate.DAL
             services.AddScoped<ICartItemRepository, CartItemRepositoy>();
             services.AddScoped<ICartService, CartService>();
 
+
+
+            //Roles
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy =>
+                {
+                    policy.RequireRole("Admin");
+                });
+            });
+
             return services;
+
+
         }
     }
 }

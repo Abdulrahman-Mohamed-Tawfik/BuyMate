@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace BuyMate.Controllers;
 
+[Authorize]
 public class CartController : Controller
 {
     private readonly ICartService _cartService;
@@ -15,8 +16,8 @@ public class CartController : Controller
         _cartService = cartService;
         _userProfileService = userProfileService;
     }
+
     [HttpGet]
-    [Authorize]
     public async Task<IActionResult> Index()
     {
         var profile = await _userProfileService.GetProfileAsync(User);
@@ -26,17 +27,11 @@ public class CartController : Controller
         }
 
         var cartVm = await _cartService.GetCartAsync(profile.Data!.Id);
-        if(cartVm.Status is false)
-        {
-            //TODO: Return a view with empty cart
-            return BadRequest(cartVm.Message);
-        }
         return View(cartVm.Data);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize]
     public async Task<IActionResult> Add(Guid productId, int quantity = 1)
     {
         var profile = await _userProfileService.GetProfileAsync(User);
@@ -49,12 +44,11 @@ public class CartController : Controller
         {
             return BadRequest(result.Message);
         }
-        return RedirectToAction("Index", "Cart");
+        return RedirectToAction("Index", "Product");
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize]
     public async Task<IActionResult> UpdateQuantity(Guid itemId, int quantity)
     {
         var profile = await _userProfileService.GetProfileAsync(User);
@@ -80,7 +74,6 @@ public class CartController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize]
     public async Task<IActionResult> Remove(Guid itemId)
     {
         var response = await _cartService.RemoveFromCartAsync(itemId);

@@ -23,9 +23,13 @@ public class CartService : ICartService
         {
             return new Response<CartViewModel>
             {
-                Data = null,
-                Message = "Cart not found.",
-                Status = false
+                Data = new CartViewModel
+                {
+                    CartId = Guid.Empty,
+                    Items = new List<CartItemViewModel>()
+                },
+                Message = "Cart is empty",
+                Status = true
             };
         }
 
@@ -38,7 +42,8 @@ public class CartService : ICartService
                 ProductId = item.ProductId,
                 ProductName = item.Product.Name,
                 Quantity = item.Quantity,
-                PriceAtAddition = item.PriceAtAddition
+                PriceAtAddition = item.PriceAtAddition,
+                ImageUrl = item.Product.ProductImages.Where(p => p.IsMain == true).Select(p => p.ImageUrl).FirstOrDefault()
                 //TODO: Add ImageUrl mapping when Product images are implemented
             }).ToList()
         };

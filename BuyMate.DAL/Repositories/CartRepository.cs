@@ -19,7 +19,12 @@ public class CartRepository : CommonRepository<Cart>, ICartRepository
 
     public async Task<Cart?> GetCartWithItemsAsync(string userId)
     {
-        var query = await GetAsync(c => c.UserId.ToString() == userId, q => q.Include(c => c.Items).ThenInclude(ci => ci.Product));
+        var query = await GetAsync(
+            c => c.UserId.ToString() == userId, q => q
+            .Include(c => c.Items)
+            .ThenInclude(ci => ci.Product)
+            .ThenInclude(p => p.ProductImages)
+            );
         var cart = query.SingleOrDefault();
         return cart;
     }

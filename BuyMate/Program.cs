@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews();
 
 // Centralized DI
 builder.Services.AddInfrastructureService(builder.Configuration);
-
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
 
 var app = builder.Build();

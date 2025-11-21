@@ -147,13 +147,21 @@ public class CartService : ICartService
             };
         }
 
-        await _cartRepository.DeletePhysicallyAsync(itemToDelete.Id);
-
+        var isDeleted = await _cartItemRepository.DeletePhysicallyAsync(itemToDelete.Id);
+        if (isDeleted)
+        {
+            return new Response<bool>
+            {
+                Status = true,
+                Data = true,
+                Message = "Item removed from cart successfully."
+            };
+        }
         return new Response<bool>
         {
-            Status = true,
-            Data = true,
-            Message = "Item removed from cart successfully."
+            Status = false,
+            Data = false,
+            Message = "Failed to remove item from cart."
         };
     }
 }

@@ -1,9 +1,14 @@
 @model CartViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
 @{
     ViewData["Title"] = "Shopping Cart";
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 <div class="max-w-4xl mx-auto">
+
+    <input type="hidden" id="__RequestVerificationToken" value="@requestToken" />
+    
     <h1 class="text-3xl font-bold mb-8">Shopping Cart</h1>
 
     @if (Model.Items.Any())
@@ -19,7 +24,7 @@
                             <div class="flex items-center space-x-4 mt-2">
                                 <div class="flex items-center space-x-2">
                                     <label class="text-sm">Quantity:</label>
-                                    <select class="input w-20" onchange="updateQuantity('@item.ProductId', this.value)">
+                                    <select class="input w-20" onchange="updateQuantity('@item.ItemId', this.value)">
                                         @for (int i = 1; i <= 10; i++)
                                         {
                                             <option value="@i" selected="@(i == item.Quantity)">@i</option>
@@ -29,10 +34,8 @@
                                 <span class="font-bold">$@item.TotalPrice</span>
                             </div>
                         </div>
-                        <button class="btn btn-ghost text-destructive" onclick="removeFromCart('@item.ProductId')">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="002424">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M197l-.86712.142A2200116.13821H7.862a22001-1.995-1.858L57m54v6m4-6v6m1-10V4a11000-1-1h-4a11000-11v3M47h16"></path>
-                            </svg>
+                        <button class="btn btn-ghost" onclick="removeFromCart('@item.ItemId')">
+                            <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
                 </div>
@@ -89,32 +92,40 @@
 </div>
 
 <script>
-    function updateQuantity(productId, quantity) {
-    fetch('/Cart/UpdateQuantity', {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: `productId=${productId}&quantity=${quantity}`
-    })
-    .then(response => {
-    if (response.ok) {
-    location.reload();
-    }
-    })
-    .catch(error => {
-    console.error('Error:', error);
-    });
+    function updateQuantity(itemId, quantity) {
+        const token = document.getElementById('__RequestVerificationToken').value;
+
+        fetch('/Cart/UpdateQuantity', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': token
+            },
+            body: `itemId=${itemId}&quantity=${quantity}`
+        })
+        .then(response => {
+            if (response.ok) {
+                location.reload();
+            }
+            else{
+                console.error("Update failed", response.status);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 
-    function removeFromCart(productId) {
+    function removeFromCart(itemId) {
     if (confirm('Are you sure you want to remove this item from your cart?')) {
-    fetch('/Cart/RemoveFromCart', {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
+        const token = document.getElementById('__RequestVerificationToken').value;
+        fetch('/Cart/Remove', {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'RequestVerificationToken': token
     },
-    body: `productId=${productId}`
+    body: `itemId=${itemId}`
     })
     .then(response => {
     if (response.ok) {

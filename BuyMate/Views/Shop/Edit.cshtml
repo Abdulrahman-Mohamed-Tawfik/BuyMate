@@ -1,0 +1,239 @@
+@model BuyMate.DTO.ViewModels.ProductUpdateViewModel
+
+@{
+    ViewData["Title"] = "Edit Product";
+    var productId = ViewBag.ProductId;
+}
+
+<div class="max-w-3xl mx-auto card p-8 mt-10">
+    <h1 class="text-2xl font-bold mb-6">Edit Product</h1>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="mb-4 text-red-500">@ViewBag.Error</div>
+    }
+
+    <form method="post" asp-action="Edit" asp-route-id="@productId" id="editForm">
+
+        <!-- Name -->
+        <div class="mb-4">
+            <label class="font-medium">Name</label>
+            <input asp-for="Name" class="input w-full" />
+        </div>
+
+
+        <!-- Brand -->
+        <div class="mb-4">
+            <label class="font-medium">Brand</label>
+            <input asp-for="Brand" class="input w-full" />
+        </div>
+
+
+        <!-- Description -->
+        <div class="mb-4">
+            <label class="font-medium">Description</label>
+            <textarea asp-for="Description" class="input w-full"></textarea>
+        </div>
+
+        <!-- Price + Stock -->
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="font-medium">Price</label>
+                <input asp-for="Price" class="input w-full" />
+            </div>
+            <div>
+                <label class="font-medium">Stock Quantity</label>
+                <input asp-for="StockQuantity" class="input w-full" />
+            </div>
+        </div>
+
+        <!-- Upload new image -->
+        <div class="mb-4">
+            <label class="font-medium">Upload New Image</label>
+            <input type="file" id="imageFile" class="input w-full" accept="image/*" multiple />
+        </div>
+
+        <!-- Preview Images -->
+        <div id="imagePreview" class="grid grid-cols-3 gap-4 mb-6"></div>
+
+        <input id="imgUrls" type="hidden" />
+
+        <!-- Category IDs (manual) -->
+        <div class="mb-4">
+            <label class="font-medium">Category IDs (one per line)</label>
+            <textarea id="catList" class="input w-full h-24">@string.Join("\n", Model.CategoryIds)</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full text-lg">Save Changes</button>
+    </form>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+    <script>
+
+        // ============ VALIDATION ============
+        function validateEditForm() {
+
+            const name = document.querySelector("input[name='Name']").value.trim();
+            const brand = document.querySelector("input[name='Brand']").value.trim();
+            const desc = document.querySelector("textarea[name='Description']").value.trim();
+            const price = document.querySelector("input[name='Price']").value.trim();
+            const stock = document.querySelector("input[name='StockQuantity']").value.trim();
+            const images = document.querySelectorAll("#imagePreview img").length;
+
+            if (name === "") {
+                Swal.fire("Error", "Name cannot be empty!", "error");
+                return false;
+            }
+            if (brand === "") {
+                Swal.fire("Error", "Brand cannot be empty!", "error");
+                return false;
+            }
+            if (desc === "") {
+                Swal.fire("Error", "Description cannot be empty!", "error");
+                return false;
+            }
+            if (price === "" || Number(price) <= 0) {
+                Swal.fire("Error", "Price must be greater than 0!", "error");
+                return false;
+            }
+            if (stock === "" || Number(stock) < 0) {
+                Swal.fire("Error", "Stock quantity must be 0 or more!", "error");
+                return false;
+            }
+            if (images === 0) {
+                Swal.fire("Error", "Please upload at least one image!", "error");
+                return false;
+            }
+
+            return true;
+        }
+
+        // ------------ Load existing images ------------
+        @foreach (var img in Model.ImageUrls)
+        {
+            <text>
+                addImagePreview("@img");
+            </text>
+        }
+
+        // ------------ Drag & Drop Sorting ------------
+        new Sortable(document.getElementById("imagePreview"), {
+            animation: 150,
+            onSort: updateImageOrder
+        });
+
+        function updateImageOrder() {
+            const items = document.querySelectorAll("#imagePreview img");
+            const imgInput = document.getElementById("imgUrls");
+
+            const urls = [];
+            items.forEach(img => urls.push(img.getAttribute("src")));
+
+            imgInput.value = urls.join(",");
+        }
+
+        // ------------ Add Preview ------------
+        function addImagePreview(url) {
+            const container = document.getElementById("imagePreview");
+
+            const div = document.createElement("div");
+            div.classList = "relative";
+
+            div.innerHTML = `
+                <img src="${url}" class="w-full h-32 object-cover rounded-lg border" />
+                <button onclick="removeImage(this)"
+                        type="button"
+                        class="absolute top-1 right-1 bg-red-600 text-white w-6 h-6 rounded-full text-xs flex items-center justify-center">
+                    X
+                </button>
+            `;
+
+            container.appendChild(div);
+            updateImageOrder();
+        }
+
+        function removeImage(btn) {
+            btn.parentElement.remove();
+            updateImageOrder();
+        }
+
+        // ------------ Upload multiple images ------------ 
+        document.getElementById("imageFile").addEventListener("change", async function () {
+            if (!this.files.length) return;
+
+            for (let file of this.files) {
+                const formData = new FormData();
+                formData.append("file", file);
+
+                const response = await fetch("/upload/image", { method: "POST", body: formData });
+                if (!response.ok) {
+                    Swal.fire("Error", "One of the images failed to upload!", "error");
+                    continue;
+                }
+
+                const data = await response.json();
+                addImagePreview(data.imageUrl);
+            }
+
+            Swal.fire("Uploaded!", "All selected images uploaded successfully.", "success");
+            updateImageOrder();
+        });
+
+        // ------------ Submit with SweetAlert + Validation ------------
+        document.getElementById("editForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            if (!validateEditForm()) return;
+
+            Swal.fire({
+                title: "Save Changes?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Save",
+                cancelButtonText: "Cancel"
+            }).then(result => {
+                if (!result.isConfirmed) return;
+
+                const form = document.getElementById("editForm");
+
+                // Build ImageUrls
+                const urlsRaw = document.getElementById("imgUrls").value || "";
+                const urls = urlsRaw.split(",").map(x => x.trim()).filter(x => x);
+
+                document.querySelectorAll("input[name='ImageUrls']").forEach(el => el.remove());
+
+                urls.forEach(u => {
+                    const h = document.createElement("input");
+                    h.type = "hidden";
+                    h.name = "ImageUrls";
+                    h.value = u;
+                    form.appendChild(h);
+                });
+
+                // Build CategoryIds
+                const cats = document.getElementById("catList").value
+                    .split("\n").map(x => x.trim()).filter(x => x);
+
+                document.querySelectorAll("input[name='CategoryIds']").forEach(el => el.remove());
+
+                cats.forEach(id => {
+                    const h = document.createElement("input");
+                    h.type = "hidden";
+                    h.name = "CategoryIds";
+                    h.value = id;
+                    form.appendChild(h);
+                });
+
+                form.submit();
+            });
+        });
+
+    </script>
+}

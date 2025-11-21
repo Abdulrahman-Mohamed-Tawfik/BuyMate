@@ -127,6 +127,7 @@ namespace BuyMate.BLL.Features.Product
             var entity = new ProductEntity
             {
                 Name = model.Name,
+                Brand = model.Brand,
                 Description = model.Description,
                 Price = model.Price,
                 StockQuantity = model.StockQuantity
@@ -164,6 +165,7 @@ namespace BuyMate.BLL.Features.Product
                 return new Response<bool> { Status = false, Data = false, Message = "Not Found" };
 
             entity.Name = model.Name;
+            entity.Brand = model.Brand;
             entity.Description = model.Description;
             entity.Price = model.Price;
             entity.StockQuantity = model.StockQuantity;
@@ -211,26 +213,40 @@ namespace BuyMate.BLL.Features.Product
         }
 
         private static ProductViewModel ToViewModel(ProductEntity p, List<ProductImage> images, List<Category> categories)
-        {
-            var rating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0.0;
+{
+    var rating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0.0;
 
-            var mainImage =
-                images.FirstOrDefault(i => i.IsMain)?.ImageUrl ??
-                images.FirstOrDefault()?.ImageUrl;
+    var mainImage =
+        images.FirstOrDefault(i => i.IsMain)?.ImageUrl ??
+        images.FirstOrDefault()?.ImageUrl;
 
-            return new ProductViewModel
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Description = p.Description,
-                Price = p.Price,
-                ImageUrl = mainImage,
-                ImageUrls = images.Select(i => i.ImageUrl).ToList(),
-                Categories = categories.Select(c => new CategoryViewModel { Id = c.Id, Name = c.Name }).ToList(),
-                Rating = rating,
-                ReviewCount = p.Reviews.Count,
-                Stock = p.StockQuantity
-            };
-        }
+    return new ProductViewModel
+    {
+        Id = p.Id,
+        Name = p.Name,
+        Description = p.Description,
+        Price = p.Price,
+        Brand = p.Brand,
+        // 🔹 لو فيه DiscountPrice نحسب OriginalPrice و % الخصم
+        OriginalPrice = 7000,
+        Discount = 10,
+        
+
+        // 🔹 قيمة ثابتة مؤقتًا
+        IsFlashDeal = true,
+
+        // 🔹 Specifications مش موجودة → نخليها null
+        Specifications = null,
+
+        // باقي البيانات
+        ImageUrl = mainImage,
+        ImageUrls = images.Select(i => i.ImageUrl).ToList(),
+        Categories = categories.Select(c => new CategoryViewModel { Id = c.Id, Name = c.Name }).ToList(),
+        Rating = rating,
+        ReviewCount = p.Reviews.Count,
+        Stock = p.StockQuantity
+    };
+}
+
     }
 }

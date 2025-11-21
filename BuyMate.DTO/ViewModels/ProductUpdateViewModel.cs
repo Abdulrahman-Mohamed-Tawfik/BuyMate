@@ -17,9 +17,12 @@ namespace BuyMate.DTO.ViewModels
         [Range(0, int.MaxValue)]
         public int StockQuantity { get; set; }
 
+        [Required]
+        [StringLength(100)]
+        public string Brand { get; set; } = string.Empty;
+
         public List<string> ImageUrls { get; set; } = new();
-        
-        // ⭐ NEW: Needed for update category binding
         public List<Guid> CategoryIds { get; set; } = new();
     }
+
 }

@@ -16,10 +16,15 @@ namespace BuyMate.Model.Entities
         public decimal Price { get; set; }
 
         [Column(TypeName = "decimal(18,2)")]
-        public decimal? DiscountPrice { get; set; }
+        public decimal? DiscountPercentage { get; set; }
 
         [Range(0, int.MaxValue)]
         public int StockQuantity { get; set; } = 0;
+
+        [Required, MaxLength(100)]
+        public string? Brand { get; set; }
+
+
 
         public ICollection<ProductCategory> ProductCategories { get; set; } = new List<ProductCategory>();
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();
@@ -27,7 +32,8 @@ namespace BuyMate.Model.Entities
         public ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
         public ICollection<ProductReview> Reviews { get; set; } = new List<ProductReview>();
 
-        // ⭐⭐ Navigation to ProductImages
         public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
+        public ICollection<ProductSpecification> ProductSpecifications { get; set; } = new List<ProductSpecification>();
+
     }
 }

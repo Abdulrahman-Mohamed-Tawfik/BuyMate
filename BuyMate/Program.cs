@@ -6,10 +6,18 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+
 
 // Centralized DI
 builder.Services.AddInfrastructureService(builder.Configuration);
 
+
+builder.Services.AddHttpClient("api", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7233/"); 
+});
 
 
 var app = builder.Build();

@@ -1,0 +1,129 @@
+@model BuyMate.DTO.ViewModels.ProductCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Product";
+}
+
+<div class="max-w-3xl mx-auto card p-8 mt-10">
+    <h1 class="text-2xl font-bold mb-6">Create New Product</h1>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="mb-4 text-red-500">@ViewBag.Error</div>
+    }
+
+    <form method="post" asp-action="Create" id="createForm" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <!-- Name -->
+        <div class="mb-4">
+            <label class="font-medium">Name</label>
+            <input asp-for="Name" class="input w-full" />
+        </div>
+
+        <!-- Brand -->
+        <div class="mb-4">
+            <label class="font-medium">Brand</label>
+            <input asp-for="Brand" class="input w-full" />
+        </div>
+
+        <!-- Description -->
+        <div class="mb-4">
+            <label class="font-medium">Description</label>
+            <textarea asp-for="Description" class="input w-full"></textarea>
+        </div>
+
+        <!-- Price -->
+        <div class="mb-4">
+            <label class="font-medium">Price</label>
+            <input asp-for="Price" type="number" step="0.01" class="input w-full" />
+        </div>
+
+        <!-- Stock -->
+        <div class="mb-4">
+            <label class="font-medium">Stock Quantity</label>
+            <input asp-for="StockQuantity" type="number" class="input w-full" />
+        </div>
+
+        <!-- Upload Images (direct form submit like profile avatar) -->
+        <div class="mb-4">
+            <label class="font-medium">Images</label>
+            <input type="file" name="files" id="files" class="input w-full" accept="image/*" multiple />
+            <small class="text-muted-foreground">You can select multiple images.</small>
+        </div>
+
+        <!-- Preview Images -->
+        <div id="imagePreview" class="grid grid-cols-3 gap-4 mb-6"></div>
+
+        <!-- Category IDs -->
+        <div class="mb-4">
+            <label class="font-medium">Category IDs (comma separated)</label>
+            <input id="catIds" class="input w-full" placeholder="guid1, guid2, guid3 ..." />
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full text-lg">Create Product</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Immediate client-side preview
+        document.getElementById('files').addEventListener('change', function(){
+            const container = document.getElementById('imagePreview');
+            container.innerHTML = '';
+            for (const file of this.files) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const div = document.createElement('div');
+                    div.className = 'relative';
+                    div.innerHTML = `<img src="${e.target.result}" class="w-full h-32 object-cover rounded-lg border" />`;
+                    container.appendChild(div);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function validateCreateForm() {
+            const required = ["Name","Brand","Description","Price","StockQuantity"];            
+            for (const f of required) {
+                const el = document.querySelector(`[name='${f}']`);
+                if (!el || !el.value.trim()) { Swal.fire('Error', `${f} is required`, 'error'); return false; }
+            }
+            const price = Number(document.querySelector("input[name='Price']").value);
+            if (price <= 0) { Swal.fire('Error','Price must be greater than 0','error');return false; }
+            const stock = Number(document.querySelector("input[name='StockQuantity']").value);
+            if (stock < 0) { Swal.fire('Error','Stock must be 0 or more','error');return false; }
+            const files = document.getElementById('files').files;
+            if (files.length === 0) { Swal.fire('Error','Please select at least one image','error');return false; }
+            return true;
+        }
+
+        document.getElementById('createForm').addEventListener('submit', function(e){
+            e.preventDefault();
+            if (!validateCreateForm()) return;
+
+            Swal.fire({title:'Create Product?',icon:'question',showCancelButton:true}).then(res => {
+                if (!res.isConfirmed) return;
+
+                // Build FormData (multipart) -> replace default post
+                const form = e.target;
+                const formData = new FormData(form);
+
+                // Append category IDs
+                const cats = document.getElementById('catIds').value.split(',').map(x=>x.trim()).filter(x=>x);
+                cats.forEach(c => formData.append('CategoryIds', c));
+
+                // Send multipart to Product/Create endpoint
+                fetch(form.action, { method:'POST', body: formData })
+                    .then(r => {
+                        if (r.redirected) { window.location = r.url; return; }
+                        if (!r.ok) return r.text().then(t => { throw new Error(t); });
+                        return r.text().then(html => { document.open(); document.write(html); document.close(); });
+                    })
+                    .catch(err => Swal.fire('Error', err.message, 'error'));
+            });
+        });
+    </script>
+}

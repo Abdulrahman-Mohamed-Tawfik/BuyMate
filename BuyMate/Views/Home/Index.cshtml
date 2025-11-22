@@ -9,7 +9,7 @@
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-4xl md:text-6xl font-bold mb-4">Welcome to BUYMATE</h1>
             <p class="text-xl mb-8 text-blue-200">Discover amazing products at unbeatable prices</p>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-primary btn-lg">
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary btn-lg">
                 Shop Now
                 <svg class="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
@@ -22,7 +22,7 @@
     <section>
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold">Shop by Category</h2>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-ghost">
+            <a asp-controller="Product" asp-action="Index" class="btn btn-ghost">
                 View All
                 <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
@@ -32,7 +32,7 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             @foreach (var category in Model.Categories)
             {
-                <div class="card category-card" onclick="location.href='@Url.Action("Category", "Shop", new { id = category.Id })'">
+                <div class="card category-card" onclick="location.href='@Url.Action("Index", "Product", new { categoryId = category.Id })'">
                     <div class="card-content p-6 text-center">
                         <div class="w-12 h-12 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                             <div class="w-6 h-6 bg-primary/60 rounded"></div>
@@ -56,7 +56,7 @@
                 </svg>
                 <h2 class="text-2xl font-bold">Featured Products</h2>
             </div>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-ghost">
+            <a asp-controller="Product" asp-action="Index" class="btn btn-ghost">
                 View All
                 <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
@@ -66,7 +66,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             @foreach (var product in Model.FeaturedProducts)
             {
-                <div class="card product-card" onclick="location.href='@Url.Action("Product", "Shop", new { id = product.Id })'">
+                <div class="card product-card" onclick="location.href='@Url.Action("Product", "Product", new { id = product.Id })'">
                     <div class="relative">
                         <img src="/images/Products/@product.ImageUrl" alt="@product.Name" class="w-full h-48 object-cover rounded-t-lg" />
                         @if (product.IsFlashDeal)
@@ -118,7 +118,7 @@
                 </svg>
                 <h2 class="text-2xl font-bold">Best Sellers</h2>
             </div>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-ghost">
+            <a asp-controller="Product" asp-action="Index" class="btn btn-ghost">
                 View All
                 <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
@@ -128,7 +128,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
             @foreach (var product in Model.BestSellers)
             {
-                <div class="card product-card" onclick="location.href='@Url.Action("Product", "Shop", new { id = product.Id })'">
+                <div class="card product-card" onclick="location.href='@Url.Action("Product", "Product", new { id = product.Id })'">
                     <div class="relative">
                         <img src="/images/Products/@product.ImageUrl" alt="@product.Name" class="w-full h-32 object-cover rounded-t-lg" />
                         @if (product.IsFlashDeal)

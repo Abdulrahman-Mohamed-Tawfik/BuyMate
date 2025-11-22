@@ -1,0 +1,57 @@
+﻿@model MiniCartViewModel
+
+<div class="relative cart-container" onmouseenter="showMiniCart()" onmouseleave="hideMiniCart()">
+    <a asp-controller="Cart" asp-action="Index" class="relative btn btn-ghost btn-sm cart-icon" aria-label="Shopping cart">
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
+            <path d="M3 6h18"></path>
+            <path d="M16 10a4 4 0 0 1-8 0"></path>
+        </svg>
+        @if (Model.TotalItems > 0)
+        {
+            <span class="cart-badge badge badge-destructive badge-sm absolute -top-2 -right-2">@Model.TotalItems</span>
+        }
+    </a>
+
+    <!-- Mini cart hover popup -->
+    <div id="miniCart" class="mini-cart absolute right-0 top-full mt-2 w-80 bg-background border rounded-lg shadow-lg z-50" style="display: none;">
+        <div class="p-4 border-b">
+            <div class="flex items-center justify-between">
+                <h3 class="font-medium">Shopping Cart</h3>
+                <span class="cart-count badge badge-secondary">@(Model.TotalItems) items</span>
+            </div>
+        </div>
+
+        <div id="miniCartContent" class="max-h-64 overflow-y-auto">
+            <!-- Cart items will be dynamically inserted here -->
+        </div>
+
+        <div id="miniCartFooter" class="p-4 border-t">
+            <div class="flex items-center justify-between mb-4">
+                <span class="font-medium">Total: <span id="miniCartTotal">$@Model.TotalPrice</span></span>
+            </div>
+            <div class="space-y-2">
+                <a asp-controller="Cart" asp-action="Index" class="btn btn-primary w-full block text-center">View Cart</a>
+                <a asp-controller="Cart" asp-action="Checkout" class="btn btn-secondary w-full block text-center">Checkout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Finds the parent container of this component (usually the li or div in navbar)
+    document.currentScript.parentElement.addEventListener('click', function(e) {
+        const cart = document.getElementById('miniCart');
+        // Toggle display
+        cart.style.display = cart.style.display === 'none' ? 'block' : 'none';
+        e.stopPropagation();
+    });
+
+    // Close when clicking outside
+    document.addEventListener('click', function(e) {
+        const cart = document.getElementById('miniCart');
+        if (cart.style.display === 'block' && !cart.contains(e.target) && !e.target.closest('.indicator')) {
+            cart.style.display = 'none';
+        }
+    });
+</script>

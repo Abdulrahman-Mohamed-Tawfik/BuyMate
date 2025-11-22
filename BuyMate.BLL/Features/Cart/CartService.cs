@@ -44,7 +44,6 @@ public class CartService : ICartService
                 Quantity = item.Quantity,
                 PriceAtAddition = item.PriceAtAddition,
                 ImageUrl = item.Product.ProductImages.Where(p => p.IsMain == true).Select(p => p.ImageUrl).FirstOrDefault()
-                //TODO: Add ImageUrl mapping when Product images are implemented
             }).ToList()
         };
 

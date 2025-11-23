@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using BuyMate.BLL.Contracts;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model;
 using Microsoft.AspNetCore.Authorization;
@@ -9,10 +10,12 @@ namespace BuyMate.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IProductService _productService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IProductService productService)
         {
             _logger = logger;
+            _productService = productService;
         }
 
         public IActionResult Index()
@@ -24,23 +27,9 @@ namespace BuyMate.Controllers
             new CategoryViewModel { Id = Guid.NewGuid(), Name = "Books" }
         };
 
-            var featured = new List<ProductViewModel>
-        {
-            new ProductViewModel {
-                Id = Guid.NewGuid(),
-                Name = "iPhone 15",
-                Price = 1200,
-                ImageUrl = "iphone.jpeg",
-                IsFeatured = true
-            },
-            new ProductViewModel {
-                Id = Guid.NewGuid(),
-                Name = "Gaming Laptop",
-                Price = 2500,
-                ImageUrl = "laptop.jpg",
-                IsFeatured = true
-            }
-        };
+
+
+            var featured = _productService.GetAllPaginatedAsync(1, 10, isFeatured: true).Result.Data;
 
             var bestSellers = new List<ProductViewModel>
         {
@@ -48,14 +37,14 @@ namespace BuyMate.Controllers
                 Id = Guid.NewGuid(),
                 Name = "Wireless Mouse",
                 Price = 25,
-                ImageUrl = "mouse.jpg",
+                ImageUrl = "Products/mouse.jpg",
                 IsBestSeller = true
             },
             new ProductViewModel {
                 Id = Guid.NewGuid(),
                 Name = "Bluetooth Speaker",
                 Price = 80,
-                ImageUrl = "speaker.jpg",
+                ImageUrl = "Products/speaker.jpg",
                 IsBestSeller = true
             }
         };

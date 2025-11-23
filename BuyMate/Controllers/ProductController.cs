@@ -1,5 +1,6 @@
 using BuyMate.BLL.Contracts;
 using BuyMate.DTO.ViewModels;
+using BuyMate.Infrastructure.Contracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers
@@ -8,22 +9,36 @@ namespace BuyMate.Controllers
     public class ProductController : Controller
     {
         private readonly IProductService _service;
-        private readonly IWebHostEnvironment _env;
-
-        public ProductController(IProductService service, IWebHostEnvironment env)
+        public ProductController(IProductService service)
         {
             _service = service;
-            _env = env;
         }
+
 
         // GET: /Product?categoryId=...
         [HttpGet]
-        public async Task<IActionResult> Index(Guid? categoryId = null)
+        public async Task<IActionResult> Index(
+            string? search = null,
+            string? orderBy = null,
+            bool asc = true,
+            Guid? categoryId = null,
+            string? brand = null,
+            decimal? minPrice = null,
+            decimal? maxPrice = null,
+            bool? hasDiscount = null,
+            bool? isFeatured = null,
+            int pageNumber = 1,
+            int pageSize = 12)
         {
-            var response = await _service.GetAllAsync(null, null, true, categoryId);
-            var products = response.Data ?? new List<ProductViewModel>();
+            // Paginated query with filters
+            var paged = await _service.GetAllPaginatedAsync(pageNumber, pageSize, search, orderBy, asc, categoryId, brand, minPrice, maxPrice, hasDiscount, isFeatured);
+            var products = paged.Data ?? new List<ProductViewModel>();
 
-            var categories = products
+            // Also fetch all products (without filters) to build filter lists like brands and global price range and categories counts
+            var allResp = await _service.GetAllAsync();
+            var allProducts = allResp.Data ?? new List<ProductViewModel>();
+
+            var categories = allProducts
                 .SelectMany(p => p.Categories)
                 .GroupBy(c => new { c.Id, c.Name })
                 .Select(g => new CategoryViewModel
@@ -34,12 +49,37 @@ namespace BuyMate.Controllers
                 })
                 .ToList();
 
+            var brands = allProducts
+                .Where(p => !string.IsNullOrEmpty(p.Brand))
+                .Select(p => p.Brand!)
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(b => b)
+                .ToList();
+
             var vm = new ShopViewModel
             {
                 Products = products,
                 Categories = categories,
                 SelectedCategoryId = categoryId,
-                SelectedCategory = categories.FirstOrDefault(c => c.Id == categoryId)?.Name
+                SelectedCategory = categories.FirstOrDefault(c => c.Id == categoryId)?.Name,
+
+                Brands = brands,
+                SelectedBrand = brand,
+
+                MinPrice = allProducts.Any() ? allProducts.Min(p => p.Price) : 0,
+                MaxPrice = allProducts.Any() ? allProducts.Max(p => p.Price) : 0,
+                SelectedMinPrice = minPrice,
+                SelectedMaxPrice = maxPrice,
+
+                HasDiscount = hasDiscount,
+                IsFeatured = isFeatured,
+
+                OrderBy = orderBy,
+                Asc = asc,
+
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = paged.TotalCount
             };
 
             return View(vm); // resolves Views/Product/Index.cshtml
@@ -69,37 +109,16 @@ namespace BuyMate.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            // Handle file saving similar to avatar approach
-            if (files != null && files.Any())
+
+            var result = await _service.CreateAsync(model, files);
+
+            if (result.Status != true)
             {
-                string folder = Path.Combine(_env.WebRootPath, "images", "products");
-                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                foreach (var file in files)
-                {
-                    if (file.Length == 0) continue;
-                    var ext = Path.GetExtension(file.FileName);
-                    var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
-                    if (!allowed.Contains(ext, StringComparer.OrdinalIgnoreCase)) continue;
-
-                    string fileName = Guid.NewGuid().ToString("N") + ext.ToLowerInvariant();
-                    string path = Path.Combine(folder, fileName);
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-                    model.ImageUrls.Add($"/images/products/{fileName}");
-                }
-            }
-
-            var result = await _service.CreateAsync(model);
-            if (!result.Status)
-            {
-                ViewBag.Error = result.Message ?? "Failed to create product.";
+                ModelState.AddModelError(string.Empty, result.Message ?? "Failed to create product.");
                 return View(model);
             }
 
-            TempData["SuccessMessage"] = "Product created successfully.";
+            TempData["Success"] = "Product created successfully.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -137,29 +156,6 @@ namespace BuyMate.Controllers
                 return View(model);
             }
 
-            // Replace images if new ones uploaded
-            if (files != null && files.Any())
-            {
-                model.ImageUrls.Clear();
-                string folder = Path.Combine(_env.WebRootPath, "images", "products");
-                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
-
-                foreach (var file in files)
-                {
-                    if (file.Length == 0) continue;
-                    var ext = Path.GetExtension(file.FileName);
-                    var allowed = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
-                    if (!allowed.Contains(ext, StringComparer.OrdinalIgnoreCase)) continue;
-
-                    string fileName = Guid.NewGuid().ToString("N") + ext.ToLowerInvariant();
-                    string path = Path.Combine(folder, fileName);
-                    using (var stream = new FileStream(path, FileMode.Create))
-                    {
-                        await file.CopyToAsync(stream);
-                    }
-                    model.ImageUrls.Add($"/images/products/{fileName}");
-                }
-            }
 
             var result = await _service.UpdateAsync(id, model);
             if (!result.Status)

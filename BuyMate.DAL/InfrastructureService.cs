@@ -2,6 +2,8 @@ using BuyMate.BLL.Contracts;
 using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.BLL.Features.User;
 using BuyMate.DAL.Repositories;
+using BuyMate.Infrastructure.Contracts;
+using BuyMate.Infrastructure.Services;
 using BuyMate.Model.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -39,53 +41,7 @@ namespace BuyMate.DAL
             }).AddEntityFrameworkStores<BuyMateDbContext>().AddDefaultTokenProviders(); ;
 
 
-            /*
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-            {
-                var secretKey = configuration.GetValue<string>("SecretKey") ?? throw new InvalidOperationException("SecretKey not found in configuration.");
-                var secretKeyInBytes = Encoding.ASCII.GetBytes(secretKey);
-                var key = new SymmetricSecurityKey(secretKeyInBytes);
-                options.TokenValidationParameters = new TokenValidationParameters
-                {
-                    ValidateIssuer = true,
-                    ValidateAudience = false, // Disable audience validation
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = key,
-                    ValidIssuer = "BuyMate-BackEnd",
-                };
-                //Handle unauthorized and forbidden
-                options.Events = new JwtBearerEvents
-                {
-                    OnChallenge = context =>
-                    {
-                        context.HandleResponse();
-                        context.Response.Redirect("/User/Login");
-                        return Task.CompletedTask;
-                    },
-                    OnForbidden = context =>
-                    {
-                        context.Response.Redirect("/Home/Error");
-                        return Task.CompletedTask;
-                    },
-
-                    //Get JWT Token from Cookie
-                    OnMessageReceived = context =>
-                    {
-                        context.Token = context.Request.Cookies["jwt_token"];
-                        return Task.CompletedTask;
-                    }
-            
-
-                };
-            });
-            */
-            //Handle Routes
+           
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/User/Login"; // redirect to login if not authorized
@@ -101,7 +57,7 @@ namespace BuyMate.DAL
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductImageRepository, ProductImageRepository>();
             services.AddScoped<IProductService, BuyMate.BLL.Features.Product.ProductService>();
-
+            services.AddScoped<IFileService, FileService>();
 
 
             //Roles

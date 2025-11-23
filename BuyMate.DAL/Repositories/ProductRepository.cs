@@ -18,6 +18,7 @@ namespace BuyMate.DAL.Repositories
             return await _context.Products
                 .Include(p => p.Reviews)
                 .Include(p => p.Images)
+                .Include(p => p.ProductSpecifications)
                 .Include(p => p.ProductCategories)
                     .ThenInclude(pc => pc.Category)
                 .FirstOrDefaultAsync(p => p.Id == id);
@@ -97,6 +98,24 @@ namespace BuyMate.DAL.Repositories
                 .Where(pc => pc.ProductId == productId);
 
             _context.ProductCategories.RemoveRange(oldLinks);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task AddProductSpecificationsAsync(Guid productId, List<ProductSpecification> specifications)
+        {
+            if (specifications == null || specifications.Count == 0) return;
+            foreach (var spec in specifications)
+            {
+                spec.ProductId = productId;
+            }
+            await _context.ProductSpecifications.AddRangeAsync(specifications);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveProductSpecificationsAsync(Guid productId)
+        {
+            var specs = _context.ProductSpecifications.Where(s => s.ProductId == productId);
+            _context.ProductSpecifications.RemoveRange(specs);
             await _context.SaveChangesAsync();
         }
 

@@ -21,8 +21,13 @@ namespace BuyMate.DTO.ViewModels
         [StringLength(100)]
         public string Brand { get; set; } = string.Empty;
 
+        [Range(0, 100)]
+        public decimal? DiscountPercentage { get; set; }
+
         public List<string> ImageUrls { get; set; } = new();
         public List<Guid> CategoryIds { get; set; } = new();
+
+        public string SpecificationsJson { get; set; } = string.Empty;
     }
 
 }

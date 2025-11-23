@@ -7,12 +7,14 @@ namespace BuyMate.DTO.ViewModels
     {
         [Required]
         [StringLength(200)]
+        [RegularExpression(@"^[\p{L}\s'\-]+$", ErrorMessage = "Name must contain letters, spaces, apostrophes or hyphens only.")]
         public string Name { get; set; } = string.Empty;
 
         [Required]
         public string Description { get; set; } = string.Empty;
 
-        [Range(0, double.MaxValue)]
+        [Required]
+        [Range(0, double.MaxValue, ErrorMessage = "Price must be 0 or greater.")]
         public decimal Price { get; set; }
 
         [Range(0, int.MaxValue)]
@@ -20,6 +22,7 @@ namespace BuyMate.DTO.ViewModels
 
         [Required]
         [StringLength(100)]
+        [RegularExpression(@"^[\p{L}\p{N}\s\.\-']+$", ErrorMessage = "Brand may include letters, numbers, spaces and .-' only.")]
         public string Brand { get; set; } = string.Empty;
 
         public List<string> ImageUrls { get; set; } = new();

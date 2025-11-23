@@ -2,7 +2,9 @@ using BuyMate.BLL.Contracts;
 using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
+using BuyMate.Infrastructure.Contracts;
 using BuyMate.Model.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 // ⭐ مهم جداً
@@ -14,11 +16,18 @@ namespace BuyMate.BLL.Features.Product
     {
         private readonly IProductRepository _repo;
         private readonly IProductImageRepository _imageRepo;
+        private readonly IFileService _fileService;
 
-        public ProductService(IProductRepository repo, IProductImageRepository imageRepo)
+
+        // Configuration constants
+        private const string ProductsFolderName = "Products";
+        private static readonly string[] AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        private const long MaxFileSizeBytes = 4 * 1024 * 1024; //4 MB
+        public ProductService(IProductRepository repo, IProductImageRepository imageRepo, IFileService fileService)
         {
             _repo = repo;
             _imageRepo = imageRepo;
+            _fileService = fileService;
         }
 
         public async Task<PaginatedResponse<List<ProductViewModel>>> GetAllPaginatedAsync(
@@ -26,9 +35,20 @@ namespace BuyMate.BLL.Features.Product
             int pageSize = 10,
             string? search = null,
             string? orderBy = null,
-            bool asc = true)
+            bool asc = true,
+            Guid? categoryId = null,
+            string? brand = null,
+            decimal? minPrice = null,
+            decimal? maxPrice = null,
+            bool? hasDiscount = null,
+            bool? isFeatured = null)
         {
-            var query = await _repo.SearchAsync(search);
+            var query = categoryId.HasValue
+                ? await _repo.FilterByCategoryAsync(categoryId.Value)
+                : await _repo.SearchAsync(search);
+
+            // apply additional filters
+            query = ApplyFilters(query, brand, minPrice, maxPrice, hasDiscount, isFeatured);
 
             query = _repo.OrderBy(query, orderBy, asc)
                          .Include(p => p.ProductCategories).ThenInclude(pc => pc.Category)
@@ -66,11 +86,14 @@ namespace BuyMate.BLL.Features.Product
         }
 
         public async Task<Response<List<ProductViewModel>>> GetAllAsync(string? search = null, string? orderBy = null,
-            bool asc = true, Guid? categoryId = null)
+            bool asc = true, Guid? categoryId = null, string? brand = null, decimal? minPrice = null, decimal? maxPrice = null, bool? hasDiscount = null, bool? isFeatured = null)
         {
             var query = categoryId.HasValue
                 ? await _repo.FilterByCategoryAsync(categoryId.Value)
                 : await _repo.SearchAsync(search);
+
+            // apply additional filters
+            query = ApplyFilters(query, brand, minPrice, maxPrice, hasDiscount, isFeatured);
 
             query = _repo.OrderBy(query, orderBy, asc)
                          .Include(p => p.ProductCategories).ThenInclude(pc => pc.Category)
@@ -100,6 +123,42 @@ namespace BuyMate.BLL.Features.Product
             };
         }
 
+        private static IQueryable<ProductEntity> ApplyFilters(IQueryable<ProductEntity> query, string? brand, decimal? minPrice, decimal? maxPrice, bool? hasDiscount, bool? isFeatured)
+        {
+            if (!string.IsNullOrWhiteSpace(brand))
+            {
+                var b = brand.Trim();
+                query = query.Where(p => p.Brand != null && p.Brand.ToLower() == b.ToLower());
+            }
+
+            if (minPrice.HasValue)
+                query = query.Where(p => p.Price >= minPrice.Value);
+            if (maxPrice.HasValue)
+                query = query.Where(p => p.Price <= maxPrice.Value);
+
+            if (hasDiscount.HasValue)
+            {
+                if (hasDiscount.Value)
+                    query = query.Where(p => p.DiscountPercentage.HasValue && p.DiscountPercentage.Value > 0);
+                else
+                    query = query.Where(p => !p.DiscountPercentage.HasValue || p.DiscountPercentage.Value <= 0);
+            }
+
+            if (isFeatured.HasValue)
+            {
+                var fourteenDaysAgo = DateTime.UtcNow.AddDays(-14);
+                if (isFeatured.Value)
+                    query = query.Where(p =>
+                        // use the same logic as IsFeatured private method
+                        p.CreatedAt>=fourteenDaysAgo
+                    );
+                else
+                    query = query.Where(p => p.CreatedAt<fourteenDaysAgo);
+            }
+
+            return query;
+        }
+
         public async Task<Response<ProductViewModel?>> GetByIdAsync(Guid id)
         {
             var entity = await _repo.GetByIdAsync(id);
@@ -111,19 +170,41 @@ namespace BuyMate.BLL.Features.Product
                     Message = "Not Found"
                 };
 
+            // Load related data that may not have been included by repository
             var images = await _imageRepo.GetByProductIdAsync(id);
-            var cats = entity.ProductCategories.Select(pc => pc.Category!).ToList();
+
+            // Ensure categories are available
+            var categories = entity.ProductCategories?.Select(pc => pc.Category!).ToList() ?? new List<Category>();
 
             return new Response<ProductViewModel?>
             {
-                Data = ToViewModel(entity, images, cats),
+                Data = ToViewModel(entity, images, categories),
                 Status = true,
                 Message = "Product"
             };
         }
 
-        public async Task<Response<Guid>> CreateAsync(ProductCreateViewModel model)
+        public async Task<Response<Guid>> CreateAsync(ProductCreateViewModel model, List<IFormFile> files)
         {
+            //save images
+            var result = await _fileService.SaveImagesAsync(
+                files,
+                MaxFileSizeBytes,
+                AllowedExtensions,
+                ProductsFolderName
+                );
+            //Some Images were invalid return error
+            if (result.Status == false)
+            {
+                return new Response<Guid>
+                {
+                    Data = Guid.Empty,
+                    Status = false,
+                    Message = result.Message
+                };
+            }
+            model.ImageUrls = result.Data;
+            //create product entity
             var entity = new ProductEntity
             {
                 Name = model.Name,
@@ -132,9 +213,8 @@ namespace BuyMate.BLL.Features.Product
                 Price = model.Price,
                 StockQuantity = model.StockQuantity
             };
-
             var created = await _repo.CreateAsync(entity);
-
+            //create images
             if (model.ImageUrls.Any())
             {
                 var images = model.ImageUrls.Select((url, index) => new ProductImage
@@ -146,7 +226,7 @@ namespace BuyMate.BLL.Features.Product
 
                 await _imageRepo.CreateRangeAsync(images);
             }
-
+            //link categories
             if (model.CategoryIds.Any())
                 await _repo.AddProductCategoriesAsync(created.Id, model.CategoryIds);
 
@@ -154,7 +234,7 @@ namespace BuyMate.BLL.Features.Product
             {
                 Data = created.Id,
                 Status = true,
-                Message = "Created"
+                Message = "Product Created Successfully"
             };
         }
 
@@ -212,41 +292,112 @@ namespace BuyMate.BLL.Features.Product
             };
         }
 
-        private static ProductViewModel ToViewModel(ProductEntity p, List<ProductImage> images, List<Category> categories)
-{
-    var rating = p.Reviews.Any() ? p.Reviews.Average(r => r.Rating) : 0.0;
+        private static ProductViewModel ToViewModel(ProductEntity p, List<ProductImage> images,List<Category> categories)
+        {
+            var rating = p.Reviews != null && p.Reviews.Any()
+                ? p.Reviews.Average(r => r.Rating)
+                : 0.0;
 
-    var mainImage =
-        images.FirstOrDefault(i => i.IsMain)?.ImageUrl ??
-        images.FirstOrDefault()?.ImageUrl;
+            var mainImage =
+                images.FirstOrDefault(i => i.IsMain)?.ImageUrl ??
+                images.FirstOrDefault()?.ImageUrl;
 
-    return new ProductViewModel
-    {
-        Id = p.Id,
-        Name = p.Name,
-        Description = p.Description,
-        Price = p.Price,
-        Brand = p.Brand,
-        // 🔹 لو فيه DiscountPrice نحسب OriginalPrice و % الخصم
-        OriginalPrice = 7000,
-        Discount = 10,
-        
+            return new ProductViewModel
+            {
+                Id = p.Id,
+                Name = p.Name,
+                Description = p.Description,
+                Price = p.Price,
+                Brand = p.Brand,
 
-        // 🔹 قيمة ثابتة مؤقتًا
-        IsFlashDeal = true,
+                OriginalPrice = CalculateOriginalPrice(p),
+                Discount = p.DiscountPercentage.HasValue ? (int?)Math.Round(p.DiscountPercentage.Value) : null,
 
-        // 🔹 Specifications مش موجودة → نخليها null
-        Specifications = null,
+                Specifications = MapSpecifications(p),
 
-        // باقي البيانات
-        ImageUrl = mainImage,
-        ImageUrls = images.Select(i => i.ImageUrl).ToList(),
-        Categories = categories.Select(c => new CategoryViewModel { Id = c.Id, Name = c.Name }).ToList(),
-        Rating = rating,
-        ReviewCount = p.Reviews.Count,
-        Stock = p.StockQuantity
-    };
-}
+                IsFlashDeal = CalculateIsFlashDeal(p),
+                IsFeatured = IsFeatured(p),
+                IsBestSeller = IsBestSeller(p),
+
+                ImageUrl = mainImage,
+                ImageUrls = images.Select(i => i.ImageUrl).ToList(),
+
+                Categories = categories
+                    .Select(c => new CategoryViewModel { Id = c.Id, Name = c.Name })
+                    .ToList(),
+
+                Rating = Math.Round(rating, 2),
+                ReviewCount = p.Reviews?.Count ?? 0,
+                Stock = p.StockQuantity
+            };
+        }
+
+
+       
+
+        private static decimal? CalculateOriginalPrice(ProductEntity p)
+        {
+            if (!p.DiscountPercentage.HasValue || p.DiscountPercentage.Value <= 0 || p.DiscountPercentage.Value >= 100)
+                return null;
+
+            var percentage = p.DiscountPercentage.Value / 100m;
+            var denom = 1 - percentage;
+
+            if (denom <= 0) return null;
+
+            return Math.Round(p.Price / denom, 2);
+        }
+
+        private static bool CalculateIsFlashDeal(ProductEntity p)
+        {
+            if (!p.DiscountPercentage.HasValue || p.DiscountPercentage.Value <= 0)
+                return false;
+
+            var discount = p.DiscountPercentage.Value;
+
+            bool largeDiscount = discount >= 30;
+            bool recentProduct = (DateTime.UtcNow - p.CreatedAt).TotalDays <= 2;
+
+            return largeDiscount || (recentProduct && discount >= 15);
+        }
+
+        private static bool IsFeatured(ProductEntity p)
+        {
+            // 1️⃣ New arrivals: created within last 14 days
+            bool isNewArrival = (DateTime.UtcNow - p.CreatedAt).TotalDays <= 14;
+
+            //Add any conditions for featured products here
+
+
+
+            // If any condition is true, mark as featured
+            return isNewArrival ;
+        }
+
+
+        private static bool IsBestSeller(ProductEntity p)
+        {
+            int totalSold = p.OrderItems?.Sum(oi => oi.Quantity) ?? 0;
+
+            int recentSold = p.OrderItems?
+                .Where(oi => oi.Order != null && (DateTime.UtcNow - oi.Order.OrderDate).TotalDays <= 30)
+                .Sum(oi => oi.Quantity) ?? 0;
+
+            return totalSold >= 20 || recentSold >= 10;
+        }
+
+        private static Dictionary<string, string> MapSpecifications(ProductEntity p)
+        {
+            if (p.ProductSpecifications == null)
+                return new Dictionary<string, string>();
+
+            return p.ProductSpecifications
+                .Where(s => !string.IsNullOrEmpty(s.Key))
+                .ToDictionary(s => s.Key, s => s.Value ?? string.Empty);
+        }
+
+
+
 
     }
 }

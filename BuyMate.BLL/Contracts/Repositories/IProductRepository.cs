@@ -1,3 +1,4 @@
+using BuyMate.DTO.ViewModels;
 using BuyMate.Model.Entities;
 
 namespace BuyMate.BLL.Contracts.Repositories
@@ -17,5 +18,7 @@ namespace BuyMate.BLL.Contracts.Repositories
         // New: handle product specifications
         Task AddProductSpecificationsAsync(Guid productId, List<ProductSpecification> specifications);
         Task RemoveProductSpecificationsAsync(Guid productId);
+        Task<List<string>> GetAllBrandsAsync();
+        Task<List<CategoryViewModel>> GetAllCategoriesAsync();
     }
 }

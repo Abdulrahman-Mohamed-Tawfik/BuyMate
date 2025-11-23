@@ -7,7 +7,6 @@ namespace BuyMate.DTO.ViewModels
     {
         [Required]
         [StringLength(200)]
-        [RegularExpression(@"^[\p{L}\s'\-]+$", ErrorMessage = "Name must contain letters, spaces, apostrophes or hyphens only.")]
         public string Name { get; set; } = string.Empty;
 
         [Required]

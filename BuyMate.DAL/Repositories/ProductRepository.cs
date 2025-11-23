@@ -1,4 +1,5 @@
 using BuyMate.BLL.Contracts.Repositories;
+using BuyMate.DTO.ViewModels;
 using BuyMate.Model.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -65,6 +66,28 @@ namespace BuyMate.DAL.Repositories
             return Task.FromResult(query);
         }
 
+        public Task<List<string>> GetAllBrandsAsync()
+        {
+            var brands = _context.Products
+                .Where(p => !string.IsNullOrEmpty(p.Brand))
+                .Select(p => p.Brand!)
+                .Distinct()
+                .ToList();
+            return Task.FromResult(brands);
+        }
+        //Temp
+        public Task<List<CategoryViewModel>> GetAllCategoriesAsync()
+        {
+            var categories = _context.Categories
+                .Select(c => new CategoryViewModel
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    ProductCount = c.ProductCategories.Count(pc => !pc.Product.IsDeleted)
+                })
+                .ToList();
+            return Task.FromResult(categories);
+        }
         public Task<IQueryable<Product>> FilterByCategoryAsync(Guid categoryId)
         {
             IQueryable<Product> query = _context.Products
@@ -131,5 +154,7 @@ namespace BuyMate.DAL.Repositories
                 _ => entities
             };
         }
+
+
     }
 }

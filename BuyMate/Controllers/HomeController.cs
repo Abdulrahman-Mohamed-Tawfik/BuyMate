@@ -1,7 +1,9 @@
 using System.Diagnostics;
 using BuyMate.BLL.Contracts;
+using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,8 +30,13 @@ namespace BuyMate.Controllers
         };
 
 
-
-            var featured = _productService.GetAllPaginatedAsync(1, 10, isFeatured: true).Result.Data;
+            var filter = new ProductFilter
+            {
+                IsFeatured = true,
+                PageNumber = 1,
+                PageSize = 10
+            };
+            var featured = _productService.GetAllPaginatedAsync(filter).Result.Data;
 
             var bestSellers = new List<ProductViewModel>
         {

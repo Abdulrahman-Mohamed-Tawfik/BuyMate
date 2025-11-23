@@ -1,4 +1,5 @@
 using BuyMate.BLL.Contracts;
+using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Infrastructure.Contracts;
 using Microsoft.AspNetCore.Mvc;
@@ -17,68 +18,42 @@ namespace BuyMate.Controllers
 
         // GET: /Product?categoryId=...
         [HttpGet]
-        public async Task<IActionResult> Index(
-            string? search = null,
-            string? orderBy = null,
-            bool asc = true,
-            Guid? categoryId = null,
-            string? brand = null,
-            decimal? minPrice = null,
-            decimal? maxPrice = null,
-            bool? hasDiscount = null,
-            bool? isFeatured = null,
-            int pageNumber = 1,
-            int pageSize = 12)
+        public async Task<IActionResult> Index(ProductFilter? filter = null)
         {
+
             // Paginated query with filters
-            var paged = await _service.GetAllPaginatedAsync(pageNumber, pageSize, search, orderBy, asc, categoryId, brand, minPrice, maxPrice, hasDiscount, isFeatured);
+            var paged = await _service.GetAllPaginatedAsync(filter);
             var products = paged.Data ?? new List<ProductViewModel>();
 
-            // Also fetch all products (without filters) to build filter lists like brands and global price range and categories counts
-            var allResp = await _service.GetAllAsync();
-            var allProducts = allResp.Data ?? new List<ProductViewModel>();
+           
 
-            var categories = allProducts
-                .SelectMany(p => p.Categories)
-                .GroupBy(c => new { c.Id, c.Name })
-                .Select(g => new CategoryViewModel
-                {
-                    Id = g.Key.Id,
-                    Name = g.Key.Name,
-                    ProductCount = g.Count()
-                })
-                .ToList();
-
-            var brands = allProducts
-                .Where(p => !string.IsNullOrEmpty(p.Brand))
-                .Select(p => p.Brand!)
-                .Distinct(StringComparer.OrdinalIgnoreCase)
-                .OrderBy(b => b)
-                .ToList();
+            //get all categories
+            var categories = await _service.GetAllCategoriesAsync();
+            var brands = await _service.GetAllBrandsAsync();
 
             var vm = new ShopViewModel
             {
                 Products = products,
                 Categories = categories,
-                SelectedCategoryId = categoryId,
-                SelectedCategory = categories.FirstOrDefault(c => c.Id == categoryId)?.Name,
+                SelectedCategoryId = filter.CategoryId,
+                SelectedCategory = categories.FirstOrDefault(c => c.Id == filter.CategoryId)?.Name,
 
                 Brands = brands,
-                SelectedBrand = brand,
+                SelectedBrand = filter.Brand,
 
-                MinPrice = allProducts.Any() ? allProducts.Min(p => p.Price) : 0,
-                MaxPrice = allProducts.Any() ? allProducts.Max(p => p.Price) : 0,
-                SelectedMinPrice = minPrice,
-                SelectedMaxPrice = maxPrice,
+                MinPrice = filter.MinPrice ?? 0,
+                MaxPrice = filter.MaxPrice ?? 0,
+                SelectedMinPrice = filter.MinPrice,
+                SelectedMaxPrice = filter.MaxPrice,
 
-                HasDiscount = hasDiscount,
-                IsFeatured = isFeatured,
+                HasDiscount = filter.HasDiscount,
+                IsFeatured = filter.IsFeatured,
 
-                OrderBy = orderBy,
-                Asc = asc,
+                OrderBy = filter.OrderBy,
+                Asc = filter.Asc,
 
-                PageNumber = pageNumber,
-                PageSize = pageSize,
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize,
                 TotalCount = paged.TotalCount
             };
 

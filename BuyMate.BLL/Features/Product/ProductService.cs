@@ -31,83 +31,57 @@ namespace BuyMate.BLL.Features.Product
         }
 
         public async Task<PaginatedResponse<List<ProductViewModel>>> GetAllPaginatedAsync(
-            int pageNumber = 1,
-            int pageSize = 10,
-            string? search = null,
-            string? orderBy = null,
-            bool asc = true,
-            Guid? categoryId = null,
-            string? brand = null,
-            decimal? minPrice = null,
-            decimal? maxPrice = null,
-            bool? hasDiscount = null,
-            bool? isFeatured = null)
+            ProductFilter? filter = null)
         {
-            var query = categoryId.HasValue
-                ? await _repo.FilterByCategoryAsync(categoryId.Value)
-                : await _repo.SearchAsync(search);
+            var fullResponse = await GetAllAsync(filter);
 
-            // apply additional filters
-            query = ApplyFilters(query, brand, minPrice, maxPrice, hasDiscount, isFeatured);
-
-            query = _repo.OrderBy(query, orderBy, asc)
-                         .Include(p => p.ProductCategories).ThenInclude(pc => pc.Category)
-                         .Include(p => p.Reviews);
-
-            int totalCount = await query.CountAsync();
-
-            var products = await query
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            var ids = products.Select(x => x.Id).ToList();
-            var images = await _imageRepo.GetAllQueryable(i => ids.Contains(i.ProductId)).ToListAsync();
-
-            var groupedImages = images.GroupBy(i => i.ProductId)
-                .ToDictionary(g => g.Key, g => g.ToList());
-
-            var list = products.Select(p =>
-            {
-                var imgs = groupedImages.TryGetValue(p.Id, out var gi) ? gi : new List<ProductImage>();
-                var cats = p.ProductCategories.Select(pc => pc.Category!).ToList();
-                return ToViewModel(p, imgs, cats);
-            }).ToList();
-
+            var totalCount = fullResponse.Data?.Count ?? 0;
             return new PaginatedResponse<List<ProductViewModel>>
             {
-                Data = list,
+                Data = fullResponse.Data,
                 Message = "Products",
                 Status = true,
                 TotalCount = totalCount,
-                PageNumber = pageNumber,
-                PageSize = pageSize
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize
             };
         }
 
-        public async Task<Response<List<ProductViewModel>>> GetAllAsync(string? search = null, string? orderBy = null,
-            bool asc = true, Guid? categoryId = null, string? brand = null, decimal? minPrice = null, decimal? maxPrice = null, bool? hasDiscount = null, bool? isFeatured = null)
+        public async Task<Response<List<ProductViewModel>>> GetAllAsync(ProductFilter? filter = null)
         {
-            var query = categoryId.HasValue
-                ? await _repo.FilterByCategoryAsync(categoryId.Value)
-                : await _repo.SearchAsync(search);
+
+            filter ??= new ProductFilter();
+            //Get All Products
+            var query = _repo.GetAllQueryable();
+
 
             // apply additional filters
-            query = ApplyFilters(query, brand, minPrice, maxPrice, hasDiscount, isFeatured);
+            query = ApplyFilters(query, filter);
 
-            query = _repo.OrderBy(query, orderBy, asc)
-                         .Include(p => p.ProductCategories).ThenInclude(pc => pc.Category)
-                         .Include(p => p.Reviews);
+
+            //Get Total Numberrrs
+            int totalCount = await query.CountAsync();
+
 
             var products = await query.ToListAsync();
 
+            //if pagination
+            if (filter.Paginate == true)
+            {
+                products = products
+                    .Skip((filter.PageNumber - 1) * filter.PageSize)
+                    .Take(filter.PageSize)
+                    .ToList();
+            }
+            // Include related data
+
             var ids = products.Select(p => p.Id).ToList();
             var allImages = await _imageRepo.GetAllQueryable(i => ids.Contains(i.ProductId)).ToListAsync();
-
+            //Group images by product
             var imagesByProduct = allImages
                 .GroupBy(i => i.ProductId)
                 .ToDictionary(g => g.Key, g => g.ToList());
-
+            //Map to ViewModel
             var list = products.Select(p =>
             {
                 var imgs = imagesByProduct.TryGetValue(p.Id, out var gi) ? gi : new List<ProductImage>();
@@ -123,38 +97,52 @@ namespace BuyMate.BLL.Features.Product
             };
         }
 
-        private static IQueryable<ProductEntity> ApplyFilters(IQueryable<ProductEntity> query, string? brand, decimal? minPrice, decimal? maxPrice, bool? hasDiscount, bool? isFeatured)
+        private  IQueryable<ProductEntity> ApplyFilters(IQueryable<ProductEntity> query, ProductFilter? filter)
         {
-            if (!string.IsNullOrWhiteSpace(brand))
+            if (filter == null) return query;
+            //Filter by Category
+            if (filter.CategoryId.HasValue)
+                query = query.Where(p =>
+                    p.ProductCategories.Any(pc => pc.CategoryId == filter.CategoryId.Value)
+                );
+            //Filter by Search
+            if (!string.IsNullOrWhiteSpace(filter.Search))
+                query = query.Where(p => p.Name.Contains(filter.Search));
+            //Filter by Brand
+            if (!string.IsNullOrWhiteSpace(filter.Brand))
             {
-                var b = brand.Trim();
+                var b = filter.Brand.Trim();
                 query = query.Where(p => p.Brand != null && p.Brand.ToLower() == b.ToLower());
             }
-
-            if (minPrice.HasValue)
-                query = query.Where(p => p.Price >= minPrice.Value);
-            if (maxPrice.HasValue)
-                query = query.Where(p => p.Price <= maxPrice.Value);
-
-            if (hasDiscount.HasValue)
+            //Filter by Price Range
+            if (filter.MinPrice.HasValue)
+                query = query.Where(p => p.Price >= filter.MinPrice.Value);
+            if (filter.MaxPrice.HasValue)
+                query = query.Where(p => p.Price <= filter.MaxPrice.Value);
+            //Filter by Discount
+            if (filter.HasDiscount.HasValue)
             {
-                if (hasDiscount.Value)
+                if (filter.HasDiscount.Value)
                     query = query.Where(p => p.DiscountPercentage.HasValue && p.DiscountPercentage.Value > 0);
                 else
                     query = query.Where(p => !p.DiscountPercentage.HasValue || p.DiscountPercentage.Value <= 0);
             }
-
-            if (isFeatured.HasValue)
+            //Filter by Featured
+            if (filter.IsFeatured.HasValue)
             {
                 var fourteenDaysAgo = DateTime.UtcNow.AddDays(-14);
-                if (isFeatured.Value)
+                if (filter.IsFeatured.Value)
                     query = query.Where(p =>
                         // use the same logic as IsFeatured private method
-                        p.CreatedAt>=fourteenDaysAgo
+                        p.CreatedAt >= fourteenDaysAgo
                     );
                 else
-                    query = query.Where(p => p.CreatedAt<fourteenDaysAgo);
+                    query = query.Where(p => p.CreatedAt < fourteenDaysAgo);
             }
+            // Apply Ordering
+            query = _repo.OrderBy(query, filter.OrderBy, filter.Asc)
+                        .Include(p => p.ProductCategories).ThenInclude(pc => pc.Category)
+                        .Include(p => p.Reviews);
 
             return query;
         }
@@ -292,7 +280,7 @@ namespace BuyMate.BLL.Features.Product
             };
         }
 
-        private static ProductViewModel ToViewModel(ProductEntity p, List<ProductImage> images,List<Category> categories)
+        private static ProductViewModel ToViewModel(ProductEntity p, List<ProductImage> images, List<Category> categories)
         {
             var rating = p.Reviews != null && p.Reviews.Any()
                 ? p.Reviews.Average(r => r.Rating)
@@ -333,8 +321,17 @@ namespace BuyMate.BLL.Features.Product
         }
 
 
-       
+        Task<List<string>> IProductService.GetAllBrandsAsync()
+        {
+            return _repo.GetAllBrandsAsync();
+        }
 
+        Task<List<CategoryViewModel>> IProductService.GetAllCategoriesAsync()
+        {
+            return _repo.GetAllCategoriesAsync();
+        }
+
+        // Helper Methods
         private static decimal? CalculateOriginalPrice(ProductEntity p)
         {
             if (!p.DiscountPercentage.HasValue || p.DiscountPercentage.Value <= 0 || p.DiscountPercentage.Value >= 100)
@@ -371,7 +368,7 @@ namespace BuyMate.BLL.Features.Product
 
 
             // If any condition is true, mark as featured
-            return isNewArrival ;
+            return isNewArrival;
         }
 
 

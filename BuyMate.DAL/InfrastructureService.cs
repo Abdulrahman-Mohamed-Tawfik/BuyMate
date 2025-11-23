@@ -1,4 +1,5 @@
 ﻿using BuyMate.BLL.Contracts;
+using BuyMate.BLL.Services;
 using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.BLL.Features.User;
 using BuyMate.DAL.Repositories;
@@ -98,6 +99,8 @@ namespace BuyMate.DAL
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserProfileService, UserProfileService>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             return services;
         }

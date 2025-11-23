@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using BuyMate.BLL.Contracts;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model;
 using Microsoft.AspNetCore.Mvc;
@@ -8,20 +9,23 @@ namespace BuyMate.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ICategoryService _categoryService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService)
         {
             _logger = logger;
+            _categoryService = categoryService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var categories = new List<CategoryViewModel>
-        {
-            new CategoryViewModel { Id = Guid.NewGuid(), Name = "Electronics" },
-            new CategoryViewModel { Id = Guid.NewGuid(), Name = "Fashion" },
-            new CategoryViewModel { Id = Guid.NewGuid(), Name = "Books" }
-        };
+            var categoriesDto = await _categoryService.GetAllAsync();
+            var categories = categoriesDto.Select(c => new CategoryViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                ProductCount = 0
+            }).ToList();
 
             var featured = new List<ProductViewModel>
         {
@@ -80,6 +84,6 @@ namespace BuyMate.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-       
+
     }
 }

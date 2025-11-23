@@ -1,0 +1,28 @@
+﻿@model IEnumerable<BuyMate.DTO.Category.CategoryViewModel>
+
+<div class="container mt-4">
+    <h2>Category List</h2>
+
+    <a asp-action="Create" class="btn btn-primary mb-3">Create New Category</a>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>
+                        <button class="btn btn-sm btn-warning">Edit</button>
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

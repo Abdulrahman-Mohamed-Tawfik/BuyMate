@@ -1,0 +1,15 @@
+﻿@model BuyMate.DTO.Category.CreateCategoryDto
+
+<div class="container mt-4">
+    <h2>Create New Category</h2>
+
+    <form asp-action="Create" method="post">
+        <div class="mb-3">
+            <label class="form-label">Category Name</label>
+            <input asp-for="Name" class="form-control" placeholder="Enter category name..." />
+        </div>
+
+        <button type="submit" class="btn btn-success">Save Category</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>

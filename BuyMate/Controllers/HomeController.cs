@@ -2,7 +2,6 @@ using System.Diagnostics;
 using BuyMate.BLL.Contracts;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers
@@ -21,7 +20,7 @@ namespace BuyMate.Controllers
         public async Task<IActionResult> Index()
         {
             var categoriesDto = await _categoryService.GetAllAsync();
-            var categories = categoriesDto.Select(c => new CategoryViewModel
+            var categories = categoriesDto?.Data?.Select(c => new CategoryViewModel
             {
                 Id = c.Id,
                 Name = c.Name,

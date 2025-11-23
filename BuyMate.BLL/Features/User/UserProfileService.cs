@@ -9,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using BuyMate.BLL.GlobalHelpers;
+using BuyMate.DTO.Enum;
 
 namespace BuyMate.BLL.Features.User
 {
@@ -141,21 +143,17 @@ namespace BuyMate.BLL.Features.User
 
                 try
                 {
-                    var uploadsRoot = GetUploadsRoot();
-                    if (!Directory.Exists(uploadsRoot)) Directory.CreateDirectory(uploadsRoot);
-
                     var ext = Path.GetExtension(avatarFile.FileName).ToLowerInvariant();
                     var safeUser = string.IsNullOrWhiteSpace(user.UserName) ? user.Id.ToString() : user.UserName;
                     var fileName = $"{safeUser}_{Guid.NewGuid()}{ext}";
-                    var filePath = Path.Combine(uploadsRoot, fileName);
+                    var physicalPath = AppHelper.GetImagePhysicalPath(ImageTypes.UserProfileImages, fileName);
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    using (var stream = new FileStream(physicalPath, FileMode.Create))
                     {
                         await avatarFile.CopyToAsync(stream);
                     }
 
-                    // Prepare relative path without leading slash to match layout expectation
-                    var relativePath = Path.Combine(ProfilesFolderName, fileName).Replace("\\", "/");
+                    var relativePath = AppHelper.GetImageRelativePath(ImageTypes.UserProfileImages, fileName);
 
                     // Delete previous custom image if it was not the default
                     var currentProfileImage = user.ProfileImageUrl;
@@ -163,7 +161,7 @@ namespace BuyMate.BLL.Features.User
                     {
                         try
                         {
-                            DeleteOldFileIfExists(currentProfileImage, uploadsRoot);
+                            DeleteOldFileIfExists(currentProfileImage);
                         }
                         catch (Exception ex)
                         {
@@ -243,11 +241,6 @@ namespace BuyMate.BLL.Features.User
             return (true, null);
         }
 
-        private string GetUploadsRoot()
-        {
-            return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", ProfilesFolderName);
-        }
-
         private bool IsDefaultImage(string? profileImageUrl)
         {
             if (string.IsNullOrWhiteSpace(profileImageUrl)) return true;
@@ -258,7 +251,7 @@ namespace BuyMate.BLL.Features.User
                    || normalized.EndsWith($"{DefaultImageFileName}", StringComparison.OrdinalIgnoreCase) && normalized.Contains(ProfilesFolderName, StringComparison.OrdinalIgnoreCase);
         }
 
-        private void DeleteOldFileIfExists(string? profileImageUrl, string uploadsRoot)
+        private void DeleteOldFileIfExists(string? profileImageUrl)
         {
             if (string.IsNullOrWhiteSpace(profileImageUrl)) return;
             var normalized = profileImageUrl.Replace("\\", "/").TrimStart('/');
@@ -272,10 +265,10 @@ namespace BuyMate.BLL.Features.User
                 return;
             }
 
-            var fullPath = Path.Combine(uploadsRoot, fileName);
-            if (File.Exists(fullPath))
+            var physical = AppHelper.GetImagePhysicalPath(ImageTypes.UserProfileImages, fileName);
+            if (File.Exists(physical))
             {
-                File.Delete(fullPath);
+                File.Delete(physical);
             }
         }
     }

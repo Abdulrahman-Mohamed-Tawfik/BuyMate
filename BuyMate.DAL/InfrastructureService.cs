@@ -1,5 +1,4 @@
 ﻿using BuyMate.BLL.Contracts;
-using BuyMate.BLL.Services;
 using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.BLL.Features.User;
 using BuyMate.DAL.Repositories;
@@ -11,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using BuyMate.BLL.Features.Category;
 
 namespace BuyMate.DAL
 {

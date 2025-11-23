@@ -1,85 +1,106 @@
 ﻿using BuyMate.BLL.Contracts;
 using BuyMate.DTO.Category;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace BuyMate.Controllers
 {
-    // This ONE controller now handles everything for Categories
     public class CategoryController : Controller
     {
-        private readonly ICategoryService _service;
+        private readonly ICategoryService _categoryService;
 
-        public CategoryController(ICategoryService service)
+        public CategoryController(ICategoryService categoryService)
         {
-            _service = service;
+            _categoryService = categoryService;
         }
 
-        // ==========================
-        //  WEB PAGES (For Humans) 🖥️
-        // ==========================
-
-        // 1. LIST PAGE
         public async Task<IActionResult> Index()
         {
-            var categories = await _service.GetAllAsync();
-            // Looks for Views/Home/CategoryListing.cshtml as you requested
-            return View("~/Views/Home/CategoryListing.cshtml", categories);
+            var result = await _categoryService.GetAllAsync();
+            if (!result.Status)
+            {
+                TempData["Error"] = result.Message ?? "Failed to load categories.";
+                return View(new List<CategoryViewModel>());
+            }
+
+            return View(result.Data);
         }
 
-        // 2. CREATE PAGE (The Form)
         [HttpGet]
         public IActionResult Create()
         {
-            return View(); // Looks for Views/Category/Create.cshtml (or Home if you moved it)
+            return View();
         }
 
-        // 3. CREATE ACTION (Saves the data)
         [HttpPost]
-        public async Task<IActionResult> Create(CreateCategoryDto dto)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateCategoryDto dto, IFormFile? imageFile)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(dto);
+
+            var result = await _categoryService.CreateAsync(dto, imageFile);
+            if (result.Status)
             {
-                await _service.CreateAsync(dto);
+                TempData["Success"] = result.Message;
                 return RedirectToAction(nameof(Index));
             }
+
+            ModelState.AddModelError(string.Empty, result.Message ?? "Failed to create category.");
             return View(dto);
         }
 
-        // 4. EDIT PAGE (The Form)
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var category = await _service.GetByIdAsync(id);
-            if (category == null) return NotFound();
+            var result = await _categoryService.GetByIdAsync(id);
+            if (!result.Status || result.Data == null)
+                return NotFound();
 
-            var dto = new CreateCategoryDto { Name = category.Name };
-            ViewBag.Id = category.Id;
-
-            return View("~/Views/Home/Edit.cshtml", dto);
+            var dto = new CreateCategoryDto { Name = result.Data.Name };
+            ViewBag.Id = result.Data.Id;
+            return View(dto);
         }
 
-        // 5. EDIT ACTION (Saves updates)
         [HttpPost]
-        public async Task<IActionResult> Edit(Guid id, CreateCategoryDto dto)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(Guid id, CreateCategoryDto dto, IFormFile? imageFile)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var success = await _service.UpdateAsync(id, dto);
-                if (!success) return NotFound();
+                ViewBag.Id = id;
+                return View(dto);
+            }
+
+            var result = await _categoryService.UpdateAsync(id, dto, imageFile);
+            if (result.Status)
+            {
+                TempData["Success"] = result.Message;
                 return RedirectToAction(nameof(Index));
             }
+
+            if (result.Message != null)
+                ModelState.AddModelError(string.Empty, result.Message);
+
             ViewBag.Id = id;
             return View(dto);
         }
 
-        // 6. DELETE ACTION
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await _service.DeleteAsync(id);
+            var result = await _categoryService.DeleteAsync(id);
+            if (result.Status)
+            {
+                TempData["Success"] = result.Message;
+            }
+            else
+            {
+                TempData["Error"] = result.Message ?? "Delete failed.";
+            }
+
             return RedirectToAction(nameof(Index));
         }
-
-   
     }
 }

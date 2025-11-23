@@ -13,10 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="GlobalHelpers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\BuyMate.DTO\BuyMate.DTO.csproj" />
     <ProjectReference Include="..\BuyMate.Model\BuyMate.Model.csproj" />
   </ItemGroup>

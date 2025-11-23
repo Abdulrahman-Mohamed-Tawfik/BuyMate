@@ -4,8 +4,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Security.Claims;
+using System.Linq;
 
 namespace BuyMate.Controllers
 {
@@ -19,11 +22,7 @@ namespace BuyMate.Controllers
             _authService = authService;
             _userProfileService = userProfileService;
         }
-        /*
-        public IActionResult Index()
-        {
-            return View();
-        }*/
+       
 
         [Authorize]
         public async Task<IActionResult> Profile()
@@ -141,18 +140,18 @@ namespace BuyMate.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditProfile(ProfileViewModel model)
+        public async Task<IActionResult> EditProfile(ProfileViewModel model, IFormFile? avatarFile)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var result = await _userProfileService.UpdateProfileAsync(model, User);
+            var result = await _userProfileService.UpdateProfileAsync(model, User, avatarFile);
             if (result.Status != true)
             {
                 ModelState.AddModelError(string.Empty, result.Message);
                 return View(model);
             }
-
+            
             TempData["Success"] = "Profile updated successfully.";
             return RedirectToAction("Profile");
         }

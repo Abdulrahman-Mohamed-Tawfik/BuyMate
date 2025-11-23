@@ -4,28 +4,7 @@
     Layout = "_AuthLayout";
 
 }
-@if (TempData["Success"] != null)
-{
-    <div id="successAlert" class="relative bg-green-100 border border-green-400 text-green-700 px-8 py-8 rounded mb-8 w-full max-w-md mx-auto" role="alert">
-        <span class="block  text-center font-medium">@TempData["Success"]</span>
-    <!-- Progress bar -->
-    <div id="progressBar" class="absolute bottom-0 left-0 h-2 bg-green-500 rounded-b" style="width:0%"></div>
-    </div>
-}
 
-@if (ViewData.ModelState.ErrorCount > 0)
-{
-    <div id="errorAlert" class="relative bg-red-100 border border-red-400 text-red-700 px-8 py-4 rounded mb-8 w-full max-w-md mx-auto" role="alert">
-        <ul class=" text-center list-disc pl-5">
-            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-            {
-                <li>@error.ErrorMessage</li>
-            }
-        </ul>
-        <!-- Optional progress bar -->
-        <div id="errorProgressBar" class="absolute bottom-0 left-0 h-2 bg-red-500 rounded-b" style="width:0%"></div>
-    </div>
-}
 
 <div class="max-w-md mx-auto">
     <div class="card p-8">
@@ -43,8 +22,13 @@
 
             <div>
                 <label asp-for="Password" class="block text-sm font-medium mb-2">Password</label>
-                <input asp-for="Password" type="password" class="input w-full" placeholder="Enter your password" />
+                <input asp-for="Password" id="LoginPassword" type="password" class="input w-full" placeholder="Enter your password" />
                 <span asp-validation-for="Password" class="text-sm text-destructive"></span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <input id="showPasswordLogin" type="checkbox" class="mr-2" />
+                <label for="showPasswordLogin" class="text-sm">Show password</label>
             </div>
 
             <div class="flex items-center justify-between">
@@ -60,11 +44,22 @@
 
         <div class="mt-6 text-center">
             <p class="text-sm text-muted-foreground">
-                Don't have an account? 
+                Don't have an account?
                 <a asp-action="Register" class="text-primary hover:underline">Sign up</a>
             </p>
         </div>
     </div>
 </div>
+
+<script>
+    (function(){
+        var toggle = document.getElementById('showPasswordLogin');
+        if (!toggle) return;
+        toggle.addEventListener('change', function(){
+            var el = document.getElementById('LoginPassword');
+            if (el) el.type = this.checked ? 'text' : 'password';
+        });
+    })();
+</script>
 
 

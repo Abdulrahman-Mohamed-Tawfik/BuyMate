@@ -14,23 +14,6 @@
 
         <form asp-action="Register" method="post" class="space-y-6" asp-antiforgery="true">
 
-            @if (ViewData.ModelState.ErrorCount > 0)
-            {
-                <div id="errorAlert" class="relative bg-red-100 border border-red-400 text-red-700 px-8 py-4 rounded mb-8 w-full max-w-md mx-auto" role="alert">
-                    <ul class=" text-center list-disc pl-5">
-                        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                        {
-                            <li>@error.ErrorMessage</li>
-                        }
-                    </ul>
-                    <!-- Optional progress bar -->
-                    <div id="errorProgressBar" class="absolute bottom-0 left-0 h-2 bg-red-500 rounded-b" style="width:0%"></div>
-                </div>
-            }
-
-
-           
-
             <div>
                 <label asp-for="FirstName" class="block text-sm font-medium mb-2">First Name</label>
                 <input asp-for="FirstName" type="text" class="input w-full" placeholder="Enter your first name" />
@@ -57,14 +40,19 @@
 
             <div>
                 <label asp-for="Password" class="block text-sm font-medium mb-2">Password</label>
-                <input asp-for="Password" type="password" class="input w-full" placeholder="Create a password" />
+                <input asp-for="Password" id="Password" type="password" class="input w-full" placeholder="Create a password" />
                 <span asp-validation-for="Password" class="text-sm text-destructive"></span>
             </div>
 
             <div>
                 <label asp-for="ConfirmPassword" class="block text-sm font-medium mb-2">Confirm Password</label>
-                <input asp-for="ConfirmPassword" type="password" class="input w-full" placeholder="Confirm your password" />
+                <input asp-for="ConfirmPassword" id="ConfirmPassword" type="password" class="input w-full" placeholder="Confirm your password" />
                 <span asp-validation-for="ConfirmPassword" class="text-sm text-destructive"></span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <input id="showPasswordRegister" type="checkbox" class="mr-2" />
+                <label for="showPasswordRegister" class="text-sm">Show password</label>
             </div>
 
             <button type="submit" class="btn btn-primary w-full btn-lg">Create Account</button>
@@ -78,5 +66,19 @@
         </div>
     </div>
 </div>
+
+<script>
+    (function(){
+     var toggle = document.getElementById('showPasswordRegister');
+     if (!toggle) return;
+     toggle.addEventListener('change', function(){
+     var show = this.checked;
+     ['Password','ConfirmPassword'].forEach(function(id){
+     var el = document.getElementById(id);
+     if (el) el.type = show ? 'text' : 'password';
+     });
+     });
+    })();
+</script>
 
 

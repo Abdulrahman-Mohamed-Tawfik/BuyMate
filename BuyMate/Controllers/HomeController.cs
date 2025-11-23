@@ -2,6 +2,7 @@ using System.Diagnostics;
 using BuyMate.BLL.Contracts;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers
@@ -84,6 +85,47 @@ namespace BuyMate.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
+
+        // Keep old name for compatibility, redirect to Terms view
+        public IActionResult TermsOfService()
+        {
+            return View("Terms");
+        }
+
+        // New explicit actions for pages used in layout
+        public IActionResult Terms()
+        {
+            return View();
+        }
+
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        public IActionResult Support()
+        {
+            return View();
+        }
+
+        public IActionResult FAQ()
+        {
+            return View();
+        }
+
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        public IActionResult Cookies()
+        {
+            return View();
+        }
 
     }
 }

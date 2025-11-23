@@ -1,3 +1,4 @@
+using BuyMate.DTO.Common;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -26,6 +27,10 @@ namespace BuyMate.DTO.ViewModels
 
         public List<string> ImageUrls { get; set; } = new();
         public List<Guid> CategoryIds { get; set; } = new();
+
+        public List<ProductSpecficationInput> Specifications { get; set; } = new();
+
+
     }
 
 }

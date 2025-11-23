@@ -58,11 +58,6 @@ namespace BuyMate.BLL.Features.Product
             // apply additional filters
             query = ApplyFilters(query, filter);
 
-
-            //Get Total Numberrrs
-            int totalCount = await query.CountAsync();
-
-
             var products = await query.ToListAsync();
 
             //if pagination
@@ -217,6 +212,20 @@ namespace BuyMate.BLL.Features.Product
             //link categories
             if (model.CategoryIds.Any())
                 await _repo.AddProductCategoriesAsync(created.Id, model.CategoryIds);
+
+            // After creating 'created' entity and categories:
+            if (model.Specifications != null && model.Specifications.Any())
+            {
+                var specs = model.Specifications.Select(s => new ProductSpecification
+                {
+                    Key = s.Key,
+                    Value = s.Value,
+                    ProductId = created.Id
+                }).ToList();
+
+                await _repo.AddProductSpecificationsAsync(created.Id, specs);
+            }
+
 
             return new Response<Guid>
             {

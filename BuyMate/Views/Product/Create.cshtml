@@ -57,6 +57,17 @@
 			<small class="text-muted-foreground">Selecting categories is optional. Hold Ctrl/Cmd to select multiple if desired.</small>
 		</div>
 
+		<div class="mb-6">
+			<label class="font-medium">Specifications</label>
+
+			<div id="specificationContainer" class="space-y-3"></div>
+
+			<button type="button" id="addSpecBtn" class="btn btn-outline mt-2">
+				Add Specification
+			</button>
+		</div>
+
+
 		<!-- Upload Images (improved UI) -->
 		<div class="mb-4">
 			<label class="font-medium">Images</label>
@@ -153,6 +164,27 @@
 
 			return true;
 		}
+
+		document.getElementById("addSpecBtn").addEventListener("click", function () {
+					const container = document.getElementById("specificationContainer");
+
+					const row = document.createElement("div");
+					row.className = "flex gap-3";
+
+					row.innerHTML = `
+						<input name="Specifications[${container.children.length}].Key"
+							   class="input w-1/2" placeholder="Key (e.g., Color)" />
+
+						<input name="Specifications[${container.children.length}].Value"
+							   class="input w-1/2" placeholder="Value (e.g., Red)" />
+
+						<button type="button" class="btn btn-danger removeSpecBtn">X</button>
+					`;
+
+					container.appendChild(row);
+
+					row.querySelector(".removeSpecBtn").addEventListener("click", () => row.remove());
+		});
 
 		document.getElementById('createForm').addEventListener('submit', function(e){
 			e.preventDefault();

@@ -10,6 +10,8 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using BuyMate.BLL.GlobalHelpers;
+using BuyMate.DTO.Enum;
 
 namespace BuyMate.BLL.Features.User
 {
@@ -149,13 +151,21 @@ namespace BuyMate.BLL.Features.User
                     // Save the image using the file service
                     var relativePath = response.Data;
 
+
+                    // Prepare relative path without leading slash to match layout expectation
+                    var relativePath = Path.Combine(ProfilesFolderName, fileName).Replace("\\", "/");
+
+
+                    // Prepare relative path without leading slash to match layout expectation
+                            _fileService.DeleteImage(currentProfileImage);
+
                     // Delete previous custom image if it was not the default
                     var currentProfileImage = user.ProfileImageUrl;
-                    if (!IsDefaultImage(currentProfileImage))
+                            DeleteOldFileIfExists(currentProfileImage, uploadsRoot);
                     {
                         try
                         {
-                            _fileService.DeleteImage(currentProfileImage);
+                            DeleteOldFileIfExists(currentProfileImage, uploadsRoot);
                         }
                         catch (Exception ex)
                         {
@@ -210,25 +220,35 @@ namespace BuyMate.BLL.Features.User
             {
                 _logger.LogWarning(ex, "Failed to refresh sign-in for user {UserId}", user.Id);
             }
-
-            return new Response<bool>
-            {
-                Status = true,
-                Message = "Profile updated successfully",
-                Data = true
-            };
-        }
       
 
-        private bool IsDefaultImage(string? profileImageUrl)
-        {
-            if (string.IsNullOrWhiteSpace(profileImageUrl)) return true;
-            var normalized = profileImageUrl.Replace("\\", "/");
-            // Support both "UserProfileImages/Default.jpg" and "/UserProfileImages/Default.jpg"
-            return normalized.EndsWith($"/{DefaultImageFileName}", StringComparison.OrdinalIgnoreCase)
-                   || normalized.Equals(DefaultImageFileName, StringComparison.OrdinalIgnoreCase)
-                   || normalized.EndsWith($"{DefaultImageFileName}", StringComparison.OrdinalIgnoreCase) && normalized.Contains(ProfilesFolderName, StringComparison.OrdinalIgnoreCase);
+
+            return (true, null);
         }
+
+        private string GetUploadsRoot()
+        {
+            return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", ProfilesFolderName);
+        }
+
        
+                return;
+            }
+
+            var fullPath = Path.Combine(uploadsRoot, fileName);
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+        }
+                return;
+            }
+
+            var fullPath = Path.Combine(uploadsRoot, fileName);
+            if (File.Exists(fullPath))
+            {
+                File.Delete(fullPath);
+            }
+        }
     }
 }

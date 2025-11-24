@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using BuyMate.BLL.Features.Category;
 
 namespace BuyMate.DAL
 {
@@ -58,6 +59,9 @@ namespace BuyMate.DAL
             services.AddScoped<IProductImageRepository, ProductImageRepository>();
             services.AddScoped<IProductService, BuyMate.BLL.Features.Product.ProductService>();
             services.AddScoped<IFileService, FileService>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryService, CategoryService>();
+
 
 
             //Roles

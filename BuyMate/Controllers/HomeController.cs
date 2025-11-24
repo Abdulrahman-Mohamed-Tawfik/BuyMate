@@ -12,22 +12,26 @@ namespace BuyMate.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
 
+        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService)
         public HomeController(ILogger<HomeController> logger, IProductService productService)
         {
             _logger = logger;
+            _categoryService = categoryService;
             _productService = productService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var categories = new List<CategoryViewModel>
-        {
-            new CategoryViewModel { Id = Guid.NewGuid(), Name = "Electronics" },
-            new CategoryViewModel { Id = Guid.NewGuid(), Name = "Fashion" },
-            new CategoryViewModel { Id = Guid.NewGuid(), Name = "Books" }
-        };
+            var categoriesDto = await _categoryService.GetAllAsync();
+            var categories = categoriesDto?.Data?.Select(c => new CategoryViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                ProductCount = 0
+            }).ToList();
 
 
             var filter = new ProductFilter

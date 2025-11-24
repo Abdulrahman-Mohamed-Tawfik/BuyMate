@@ -17,9 +17,17 @@ public class CartSummaryViewComponent : ViewComponent
     public async Task<IViewComponentResult> InvokeAsync()
     {
         var profile = await _userProfileService.GetProfileAsync(HttpContext.User);
-        var cartVm = await _cartService.GetCartAsync(profile.Data!.Id);
+        if(profile.Status is false)
+        {
+            return View(new MiniCartViewModel
+            {
+                TotalItems = 0,
+                TotalPrice = 0
+            });
+        }
 
-        if (cartVm.Status is false || profile.Status is false)
+        var cartVm = await _cartService.GetCartAsync(profile.Data!.Id);
+        if (cartVm.Status is false)
         {
             return View(new MiniCartViewModel
             {

@@ -37,24 +37,8 @@ namespace BuyMate.Controllers
             };
             var featured = _productService.GetAllPaginatedAsync(filter).Result.Data;
 
-            var bestSellers = new List<ProductViewModel>
-        {
-            new ProductViewModel {
-                Id = Guid.NewGuid(),
-                Name = "Wireless Mouse",
-                Price = 25,
-                ImageUrl = "Products/mouse.jpg",
-                IsBestSeller = true
-            },
-            new ProductViewModel {
-                Id = Guid.NewGuid(),
-                Name = "Bluetooth Speaker",
-                Price = 80,
-                ImageUrl = "Products/speaker.jpg",
-                IsBestSeller = true
-            }
-        };
-
+            var bestSellers = new List<ProductViewModel>();
+        
             var home = new HomeViewModel
             {
                 Categories = categories,

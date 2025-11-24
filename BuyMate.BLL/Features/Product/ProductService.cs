@@ -51,7 +51,7 @@ namespace BuyMate.BLL.Features.Product
                 .Take(filter.PageSize)
                 .ToListAsync();
 
-           
+
 
             // Include related data
 
@@ -79,7 +79,7 @@ namespace BuyMate.BLL.Features.Product
                 PageSize = filter.PageSize
             };
         }
-       
+
         private IQueryable<ProductEntity> ApplyFilters(IQueryable<ProductEntity> query, ProductFilter? filter)
         {
             if (filter == null) return query;
@@ -98,10 +98,26 @@ namespace BuyMate.BLL.Features.Product
                 query = query.Where(p => p.Brand != null && p.Brand.ToLower() == b.ToLower());
             }
             //Filter by Price Range
+            // Use the effective price (discounted price when discount applies) for filtering
             if (filter.MinPrice.HasValue)
-                query = query.Where(p => p.Price >= filter.MinPrice.Value);
+            {
+                var min = filter.MinPrice.Value;
+                query = query.Where(p =>
+                ((
+                p.DiscountPercentage.HasValue && p.DiscountPercentage.Value > 0 && p.DiscountPercentage.Value < 100)
+                   ? p.Price * (1 - p.DiscountPercentage.Value / 100m)
+                    : p.Price) >= min
+                );
+            }
             if (filter.MaxPrice.HasValue)
-                query = query.Where(p => p.Price <= filter.MaxPrice.Value);
+            {
+                var max = filter.MaxPrice.Value;
+                query = query.Where(p =>
+ ((p.DiscountPercentage.HasValue && p.DiscountPercentage.Value > 0 && p.DiscountPercentage.Value < 100)
+ ? p.Price * (1 - p.DiscountPercentage.Value / 100m)
+ : p.Price) <= max
+ );
+            }
             //Filter by Discount
             if (filter.HasDiscount.HasValue)
             {
@@ -248,7 +264,7 @@ namespace BuyMate.BLL.Features.Product
             }
 
 
-                await _repo.UpdateAsync(entity);
+            await _repo.UpdateAsync(entity);
 
             // If ImageUrls is provided (even empty), user intends to control images: remove and recreate
             if (model.ImageUrls != null && model.ImageUrls.Count != 0)
@@ -322,7 +338,7 @@ namespace BuyMate.BLL.Features.Product
         public async Task<Response<bool>> DeleteAsync(Guid id)
         {
 
-            
+
             var ok = await _repo.SoftDeleteAsync(id);
 
             return new Response<bool>
@@ -351,7 +367,7 @@ namespace BuyMate.BLL.Features.Product
                 Price = CalculateDiscountPrice(p),
                 Brand = p.Brand,
 
-                OriginalPrice = CalculateDiscountPrice(p) != p.Price ?p.Price: null,
+                OriginalPrice = CalculateDiscountPrice(p) != p.Price ? p.Price : null,
                 Discount = p.DiscountPercentage.HasValue ? (int?)Math.Round(p.DiscountPercentage.Value) : null,
 
                 Specifications = MapSpecifications(p),
@@ -379,7 +395,7 @@ namespace BuyMate.BLL.Features.Product
             return _repo.GetAllBrandsAsync();
         }
 
-      
+
 
         // Helper Methods
         private static decimal CalculateDiscountPrice(ProductEntity p)

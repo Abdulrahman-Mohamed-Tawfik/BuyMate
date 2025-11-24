@@ -16,6 +16,11 @@ public class CartSummaryViewComponent : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync()
     {
+        if (!(HttpContext?.User?.Identity?.IsAuthenticated ?? false))
+        {
+            return View(new MiniCartViewModel { TotalItems = 0, TotalPrice = 0 });
+        }
+
         var profile = await _userProfileService.GetProfileAsync(HttpContext.User);
         if(profile.Status is false)
         {
@@ -38,9 +43,10 @@ public class CartSummaryViewComponent : ViewComponent
 
         var miniCartVm = new MiniCartViewModel
         {
-            TotalItems = cartVm.Data!.Items.Sum(i => i.Quantity),
+            TotalItems = cartVm.Data.Items?.Sum(i => i.Quantity) ?? 0,
             TotalPrice = cartVm.Data.Total
         };
+
         return View(miniCartVm);
     }
 }

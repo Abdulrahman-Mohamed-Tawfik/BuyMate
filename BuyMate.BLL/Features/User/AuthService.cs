@@ -1,13 +1,9 @@
 ﻿using BuyMate.BLL.Contracts;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
-using BuyMate.Model.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
-using System.Linq;
-using System.Threading.Tasks;
-using System;
 
 namespace BuyMate.BLL.Features.User
 {
@@ -32,23 +28,13 @@ namespace BuyMate.BLL.Features.User
                 var existingByEmail = await _userManager.FindByEmailAsync(model.Email);
                 if (existingByEmail is not null)
                 {
-                    return new Response<bool>
-                    {
-                        Data = false,
-                        Status = false,
-                        Message = "Email is already in use."
-                    };
+                    return Response<bool>.Fail("Email is already registered.");
                 }
 
                 var phoneExists = _userManager.Users.Any(u => u.PhoneNumber == model.Phone);
                 if (phoneExists)
                 {
-                    return new Response<bool>
-                    {
-                        Data = false,
-                        Status = false,
-                        Message = "Phone number is already registered."
-                    };
+                    return Response<bool>.Fail("Phone number is already registered.");
                 }
 
                 var user = new Model.Entities.User
@@ -69,30 +55,15 @@ namespace BuyMate.BLL.Features.User
                     var errors = string.Join("; ", result.Errors.Select(e => e.Description));
                     _logger.LogWarning("User registration failed for {Email}: {Errors}", model.Email, errors);
 
-                    return new Response<bool>
-                    {
-                        Data = false,
-                        Status = false,
-                        Message = string.IsNullOrWhiteSpace(errors) ? "User registration failed." : errors
-                    };
+                    return Response<bool>.Fail("Registration failed: " + errors);
                 }
 
-                return new Response<bool>
-                {
-                    Data = true,
-                    Status = true,
-                    Message = "User registered successfully."
-                };
+                return Response<bool>.Success(true, "Account created successfully. Please log in.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error during registration for {Email}", model.Email);
-                return new Response<bool>
-                {
-                    Data = false,
-                    Status = false,
-                    Message = "An unexpected error occurred while creating the account."
-                };
+                return Response<bool>.Fail("An unexpected error occurred during registration.");
             }
         }
 
@@ -101,15 +72,12 @@ namespace BuyMate.BLL.Features.User
             try
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                if (user is null)
-                {
-                    return Failure("Invalid email or password.");
-                }
+                
+                var valid = user != null && await _userManager.CheckPasswordAsync(user, model.Password);
 
-                var passwordMatch = await _userManager.CheckPasswordAsync(user, model.Password);
-                if (!passwordMatch)
+                if (user is null || !valid)
                 {
-                    return Failure("Invalid email or password.");
+                    return Response<bool>.Fail("Invalid email or password.");
                 }
 
                 var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
@@ -117,7 +85,7 @@ namespace BuyMate.BLL.Features.User
                 if (!signInResult.Succeeded)
                 {
                     _logger.LogInformation("Sign-in failed for user {UserId}. Result: {Result}", user.Id, signInResult);
-                    return Failure("Login failed. Invalid email or password.");
+                    return Response<bool>.Fail("Login failed. Please try again.");
                 }
 
                 // Ensure avatar claim exists and is up-to-date
@@ -126,20 +94,14 @@ namespace BuyMate.BLL.Features.User
                 // Refresh sign-in to apply claims (if needed)
                 await _signInManager.RefreshSignInAsync(user);
 
-                return new Response<bool>
-                {
-                    Data = true,
-                    Status = true,
-                    Message = "Logged in successfully."
-                };
+                return Response<bool>.Success(true, "Login successful.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unexpected error during login for {Email}", model.Email);
-                return Failure("An unexpected error occurred during login.");
+                return Response<bool>.Fail("An unexpected error occurred during login.");
             }
 
-            static Response<bool> Failure(string message) => new Response<bool> { Data = false, Status = false, Message = message };
         }
 
         public async Task<Response<bool>> LogoutAsync()
@@ -147,22 +109,12 @@ namespace BuyMate.BLL.Features.User
             try
             {
                 await _signInManager.SignOutAsync();
-                return new Response<bool>
-                {
-                    Status = true,
-                    Message = "Logged out successfully",
-                    Data = true
-                };
+                return Response<bool>.Success(true, "Logout successful.");
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error during logout");
-                return new Response<bool>
-                {
-                    Status = false,
-                    Message = "An error occurred while logging out.",
-                    Data = false
-                };
+                return Response<bool>.Fail("An unexpected error occurred during logout.");
             }
         }
 

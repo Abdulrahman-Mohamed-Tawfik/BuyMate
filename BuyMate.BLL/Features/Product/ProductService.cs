@@ -344,10 +344,10 @@ namespace BuyMate.BLL.Features.Product
                 Id = p.Id,
                 Name = p.Name,
                 Description = p.Description,
-                Price = p.Price,
+                Price = CalculateDiscountPrice(p),
                 Brand = p.Brand,
 
-                OriginalPrice = CalculateOriginalPrice(p),
+                OriginalPrice = CalculateDiscountPrice(p) != p.Price ?p.Price: null,
                 Discount = p.DiscountPercentage.HasValue ? (int?)Math.Round(p.DiscountPercentage.Value) : null,
 
                 Specifications = MapSpecifications(p),
@@ -375,23 +375,20 @@ namespace BuyMate.BLL.Features.Product
             return _repo.GetAllBrandsAsync();
         }
 
-        Task<List<CategoryViewModel>> IProductService.GetAllCategoriesAsync()
-        {
-            return _repo.GetAllCategoriesAsync();
-        }
+      
 
         // Helper Methods
-        private static decimal? CalculateOriginalPrice(ProductEntity p)
+        private static decimal CalculateDiscountPrice(ProductEntity p)
         {
             if (!p.DiscountPercentage.HasValue || p.DiscountPercentage.Value <= 0 || p.DiscountPercentage.Value >= 100)
-                return null;
+                return p.Price;
 
             var percentage = p.DiscountPercentage.Value / 100m;
             var denom = 1 - percentage;
 
-            if (denom <= 0) return null;
+            if (denom <= 0) return p.Price;
 
-            return Math.Round(p.Price / denom, 2);
+            return Math.Round(p.Price * denom, 2);
         }
 
         private static bool CalculateIsFlashDeal(ProductEntity p)

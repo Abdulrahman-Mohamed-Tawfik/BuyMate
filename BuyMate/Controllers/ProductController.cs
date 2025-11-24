@@ -13,11 +13,13 @@ namespace BuyMate.Controllers
     {
         private readonly IProductService _productService;
         private readonly IFileService _fileService;
+        private readonly ICategoryService _categoryService;
 
-        public ProductController(IProductService productService, IFileService fileService)
+        public ProductController(IProductService productService, IFileService fileService, ICategoryService categoryService)
         {
             _productService = productService;
-            _fileService = fileService; 
+            _fileService = fileService;
+            _categoryService = categoryService;
         }
 
 
@@ -33,7 +35,8 @@ namespace BuyMate.Controllers
            
 
             //get all categories
-            var categories = await _productService.GetAllCategoriesAsync();
+            var categoriesResponse = await _categoryService.GetAllAsync();
+            var categories = categoriesResponse.Data;
             var brands = await _productService.GetAllBrandsAsync();
 
             var vm = new ShopViewModel
@@ -76,8 +79,13 @@ namespace BuyMate.Controllers
 
         // GET: /Product/Create
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var categoriesResponse = await _categoryService.GetAllAsync();
+
+            ViewBag.Categories = categoriesResponse.Data;
+
+
             return View(new ProductCreateViewModel()); // resolves Views/Product/Create.cshtml
         }
 
@@ -116,7 +124,8 @@ namespace BuyMate.Controllers
                 Id = resp.Data.Id,
                 Name = resp.Data.Name,
                 Description = resp.Data.Description ?? string.Empty,
-                Price = resp.Data.Price,
+                Price = resp.Data.OriginalPrice ?? resp.Data.Price,
+                DiscountPercentage = resp.Data.Discount,
                 StockQuantity = resp.Data.Stock,
                 Brand = resp.Data.Brand ?? string.Empty,
                 ImageUrls = resp.Data.ImageUrls ?? new List<string>(),
@@ -125,7 +134,9 @@ namespace BuyMate.Controllers
             };
 
             ViewBag.ProductId = id;
-            ViewBag.Categories = await _productService.GetAllCategoriesAsync();
+            var categoriesResponse = await _categoryService.GetAllAsync();
+
+            ViewBag.Categories =categoriesResponse.Data;
 
             return View(vm);
         }
@@ -136,7 +147,9 @@ namespace BuyMate.Controllers
         public async Task<IActionResult> Edit(Guid id, [FromForm] ProductUpdateViewModel model, List<IFormFile>? files)
         {
             // ensure categories available for re-render
-            ViewBag.Categories = await _productService.GetAllCategoriesAsync();
+            var categoriesResponse = await _categoryService.GetAllAsync();
+
+            ViewBag.Categories = categoriesResponse.Data;
             ViewBag.ProductId = id;
 
             if (!ModelState.IsValid)

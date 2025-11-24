@@ -2,6 +2,7 @@
 using BuyMate.DTO.Category;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
+using BuyMate.DTO.ViewModels;
 
 namespace BuyMate.Controllers
 {

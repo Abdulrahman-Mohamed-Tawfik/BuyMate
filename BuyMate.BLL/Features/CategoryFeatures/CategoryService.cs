@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using BuyMate.Infrastructure.Contracts;
+using BuyMate.DTO.ViewModels;
 
 namespace BuyMate.BLL.Features.CategoryFeatures
 {
@@ -33,7 +34,8 @@ namespace BuyMate.BLL.Features.CategoryFeatures
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    ImageUrl = x.ImageUrl
+                    ImageUrl = x.ImageUrl,
+                    ProductCount = x.ProductCategories.Count(pc => !pc.Product.IsDeleted)
                 }).ToListAsync();
 
             return Response<List<CategoryViewModel>>.Success(list);

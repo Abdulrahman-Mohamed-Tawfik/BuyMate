@@ -23,7 +23,7 @@ public class CartRepository : CommonRepository<Cart>, ICartRepository
             c => c.UserId.ToString() == userId, q => q
             .Include(c => c.Items)
             .ThenInclude(ci => ci.Product)
-            .ThenInclude(p => p.ProductImages)
+            .ThenInclude(p => p.Images)
             );
         var cart = query.SingleOrDefault();
         return cart;

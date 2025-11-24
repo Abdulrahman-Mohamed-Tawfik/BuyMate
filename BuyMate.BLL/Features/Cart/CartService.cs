@@ -43,7 +43,7 @@ public class CartService : ICartService
                 ProductName = item.Product.Name,
                 Quantity = item.Quantity,
                 PriceAtAddition = item.PriceAtAddition,
-                ImageUrl = item.Product.ProductImages.Where(p => p.IsMain == true).Select(p => p.ImageUrl).FirstOrDefault()
+                ImageUrl = item.Product.Images.Where(p => p.IsMain == true).Select(p => p.ImageUrl).FirstOrDefault()
             }).ToList()
         };
 

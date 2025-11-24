@@ -16,23 +16,30 @@ public class CartSummaryViewComponent : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var profile = await _userProfileService.GetProfileAsync(HttpContext.User);
-        var cartVm = await _cartService.GetCartAsync(profile.Data!.Id);
-
-        if (cartVm.Status is false || profile.Status is false)
+        // Return empty summary for anonymous users
+        if (!(HttpContext?.User?.Identity?.IsAuthenticated ?? false))
         {
-            return View(new MiniCartViewModel
-            {
-                TotalItems = 0,
-                TotalPrice = 0
-            });
+            return View(new MiniCartViewModel { TotalItems = 0, TotalPrice = 0 });
+        }
+
+        var profile = await _userProfileService.GetProfileAsync(HttpContext.User);
+        if (profile?.Status != true || profile.Data is null || string.IsNullOrWhiteSpace(profile.Data.Id))
+        {
+            return View(new MiniCartViewModel { TotalItems = 0, TotalPrice = 0 });
+        }
+
+        var cartVm = await _cartService.GetCartAsync(profile.Data.Id);
+        if (cartVm?.Status != true || cartVm.Data is null)
+        {
+            return View(new MiniCartViewModel { TotalItems = 0, TotalPrice = 0 });
         }
 
         var miniCartVm = new MiniCartViewModel
         {
-            TotalItems = cartVm.Data!.Items.Sum(i => i.Quantity),
+            TotalItems = cartVm.Data.Items?.Sum(i => i.Quantity) ?? 0,
             TotalPrice = cartVm.Data.Total
         };
+
         return View(miniCartVm);
     }
 }

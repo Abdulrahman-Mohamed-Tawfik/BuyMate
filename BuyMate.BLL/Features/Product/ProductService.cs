@@ -318,32 +318,7 @@ namespace BuyMate.BLL.Features.Product
         public async Task<Response<bool>> DeleteAsync(Guid id)
         {
 
-            /* Delete Images
-             *  // fetch existing images so we can delete files that are removed
-                var existingImages = await _imageRepo.GetByProductIdAsync(id);
-
-                // determine which urls were removed by the user
-                var kept = new HashSet<string>(model.ImageUrls ?? new List<string>());
-                var toDelete = existingImages
-                    .Select(i => i.ImageUrl)
-                    .Where(url => !kept.Contains(url))
-                    .ToList();
-
-                // remove DB records
-                await _imageRepo.RemoveByProductIdAsync(id);
-
-                // delete physical files for removed images (best-effort)
-                foreach (var url in toDelete)
-                {
-                    try
-                    {
-                        _fileService.DeleteImage(url);
-                    }
-                    catch
-                    {
-                        // ignore file deletion errors to not fail the update
-                    }
-                }*/
+            
             var ok = await _repo.SoftDeleteAsync(id);
 
             return new Response<bool>

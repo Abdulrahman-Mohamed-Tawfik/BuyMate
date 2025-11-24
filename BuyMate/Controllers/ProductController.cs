@@ -95,10 +95,15 @@ namespace BuyMate.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductCreateViewModel model, List<IFormFile>? files)
         {
+
+            var categoriesResponse = await _categoryService.GetAllAsync();
+            ViewBag.Categories = categoriesResponse.Data;
+
             if (!ModelState.IsValid)
+            {
                 return View(model);
-
-
+            }
+                
             var result = await _productService.CreateAsync(model, files);
 
             if (result.Status != true)

@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
 namespace BuyMate.BLL.Contracts.Repositories
@@ -10,6 +10,7 @@ namespace BuyMate.BLL.Contracts.Repositories
         Task CreateRangeAsync(IEnumerable<TEntity> tutorialSteps);
         Task<TEntity> CreateAsync(TEntity entity);
         TEntity Create(TEntity entity);
+        Task<TEntity> UpdateAsync(TEntity entity);
         IQueryable<TEntity> OrderBy(IQueryable<TEntity> entities, string? orderBy, bool isAccending = true);
         Task<bool> DeletePhysicallyAsync(Guid id);
         Task<bool> DeletePhysicallyAsync(long id);

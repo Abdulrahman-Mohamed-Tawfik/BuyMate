@@ -1,0 +1,186 @@
+@model BuyMate.DTO.ViewModels.ProductUpdateViewModel
+@{
+	ViewData["Title"] = "Edit Product"; var productId = ViewBag.ProductId;
+}
+<div class="max-w-3xl mx-auto card p-8 mt-10">
+	<h1 class="text-2xl font-bold mb-6">Edit Product</h1>
+	@if (ViewBag.Error != null)
+	{
+		<div class="mb-4 text-red-500">@ViewBag.Error</div>
+	}
+	<form method="post" asp-controller="Product" asp-action="Edit" asp-route-id="@productId" id="editForm" enctype="multipart/form-data">
+		@Html.AntiForgeryToken()
+		<div class="mb-4"><label class="font-medium">Name</label><input asp-for="Name" class="input w-full" /></div>
+		<div class="mb-4"><label class="font-medium">Brand</label><input asp-for="Brand" class="input w-full" /></div>
+		<div class="mb-4"><label class="font-medium">Description</label><textarea asp-for="Description" class="input w-full"></textarea></div>
+		<div class="grid grid-cols-3 gap-4 mb-4"><div><label class="font-medium">Price</label><input asp-for="Price" type="number" step="0.01" class="input w-full" /></div><div><label class="font-medium">Stock Quantity</label><input asp-for="StockQuantity" type="number" class="input w-full" /></div><div><label class="font-medium">Discount % <span class="text-sm text-muted-foreground">(optional)</span></label><input asp-for="DiscountPercentage" type="number" min="0" max="100" step="0.01" class="input w-full" /></div></div>
+
+		<div class="mb-4">
+			<label class="font-medium">Category <span class="text-sm text-muted-foreground">(optional)</span></label>
+			<select id="categorySelect" name="CategoryIds" class="input w-full" multiple>
+				@if (ViewBag.Categories != null)
+				{
+					foreach (var c in ViewBag.Categories as List<BuyMate.DTO.ViewModels.CategoryViewModel>)
+					{
+						@if (Model.CategoryIds.Contains(c.Id))
+						{
+							<option value="@c.Id" selected>@c.Name (@c.ProductCount)</option>
+						}
+						else
+						{
+							<option value="@c.Id">@c.Name (@c.ProductCount)</option>
+						}
+					}
+				}
+				else
+				{
+					<option disabled>No categories available</option>
+				}
+			</select>
+			<small class="text-muted-foreground">Hold Ctrl/Cmd to select multiple.</small>
+		</div>
+
+		<div class="mb-6">
+			<label class="font-medium">Specifications</label>
+			<div id="specificationContainer" class="space-y-3">
+				@if (Model.Specifications != null && Model.Specifications.Any())
+				{
+					for (int i =0; i < Model.Specifications.Count; i++)
+					{
+						<div class="flex gap-3">
+							<input name="Specifications[@i].Key" value="@Model.Specifications[i].Key" class="input w-1/2" />
+							<input name="Specifications[@i].Value" value="@Model.Specifications[i].Value" class="input w-1/2" />
+							<button type="button" onclick="removeImage(this)" class="btn btn-danger removeSpecBtn">X</button>
+						</div>
+					}
+				}
+			</div>
+			<button type="button" id="addSpecBtn" class="btn btn-outline mt-2">Add Specification</button>
+		</div>
+
+		<div class="mb-4">
+			<label class="font-medium">Upload New Image(s)</label>
+			<div class="flex items-center gap-3"><label for="files" class="btn btn-outline">Select images</label><span id="selectedFiles" class="text-sm text-muted-foreground">No files chosen</span></div>
+			<input type="file" name="files" id="files" class="hidden" accept="image/*" multiple />
+			<small class="text-muted-foreground block mt-1">You can select multiple images. Max each4MB. Allowed: jpg, jpeg, png, gif, webp.</small>
+		</div>
+
+		<div id="imagePreview" class="grid grid-cols-3 gap-4 mb-6"></div>
+		<input id="imgUrls" type="hidden" />
+		<button type="submit" class="btn btn-primary w-full text-lg">Save Changes</button>
+	</form>
+</div>
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script>
+		const MAX_FILE_SIZE =4 *1024 *1024; //4MB
+		const ALLOWED = ['.jpg', '.jpeg', '.png', '.gif', '.webp'];
+
+		document.getElementById('files').addEventListener('change', function(){
+			const container = document.getElementById('imagePreview');
+			const selected = document.getElementById('selectedFiles');
+			container.innerHTML = '';
+
+			// Use DataTransfer to keep only valid files
+			const dt = new DataTransfer();
+			const errors = [];
+
+			if (this.files.length ===0) {
+				selected.textContent = 'No files chosen';
+				return;
+			}
+
+			for (const file of this.files) {
+				const ext = '.' + file.name.split('.').pop().toLowerCase();
+				if (!ALLOWED.includes(ext)) {
+					errors.push(`${file.name}: unsupported extension`);
+					continue; // skip invalid
+				}
+				if (file.size > MAX_FILE_SIZE) {
+					errors.push(`${file.name}: exceeds4MB`);
+					continue; // skip large files
+				}
+
+				// valid -> add to DataTransfer and preview
+				dt.items.add(file);
+
+				const reader = new FileReader();
+				reader.onload = e => {
+					const div = document.createElement('div');
+					div.className = 'relative';
+					div.innerHTML = `<img src="${e.target.result}" class="w-full h-32 object-cover rounded-lg border" />`;
+					container.appendChild(div);
+				};
+				reader.readAsDataURL(file);
+			}
+
+			// replace file input selection with only valid files
+			this.files = dt.files;
+			if (dt.files.length ===0) selected.textContent = 'No valid files chosen';
+			else selected.textContent = `${dt.files.length} file(s) selected`;
+
+			if (errors.length) {
+				Swal.fire({
+					title: 'Some files were skipped',
+					html: errors.join('<br/>'),
+					icon: 'warning'
+				});
+			}
+		});
+		function removeImage(btn) {
+			btn.parentElement.remove();
+			updateImageOrder();
+		}
+		function validateEditForm(){
+			const name = document.querySelector("input[name='Name']").value.trim();
+			const brand = document.querySelector("input[name='Brand']").value.trim();
+			const desc = document.querySelector("textarea[name='Description']").value.trim();
+			const price = Number(document.querySelector("input[name='Price']").value);
+			const stock = Number(document.querySelector("input[name='StockQuantity']").value);
+			if (name===''){ Swal.fire('Error','Name is required','error'); return false; }
+			if (brand===''){ Swal.fire('Error','Brand is required','error'); return false; }
+			if (desc===''){ Swal.fire('Error','Description is required','error'); return false; }
+			if (!price || price <=0){ Swal.fire('Error','Price must be greater than0','error'); return false; }
+			if (isNaN(stock) || stock <0){ Swal.fire('Error','Stock must be0 or more','error'); return false; }
+			return true;
+		}
+
+		document.getElementById("addSpecBtn").addEventListener('click', function(){
+			const container = document.getElementById('specificationContainer');
+			const idx = container.children.length;
+			const row = document.createElement('div');
+			row.className = 'flex gap-3';
+			row.innerHTML = `
+			<input name="Specifications[${idx}].Key" class="input w-1/2" placeholder="Key (e.g., Color)" />
+			<input name="Specifications[${idx}].Value" class="input w-1/2" placeholder="Value (e.g., Red)" />
+			<button type="button" class="btn btn-danger removeSpecBtn">X</button>
+			`;
+			container.appendChild(row);
+			row.querySelector('.removeSpecBtn').addEventListener('click', ()=> row.remove());
+		});
+
+		document.getElementById('editForm').addEventListener('submit', function(e){
+			e.preventDefault();
+			if (!validateEditForm()) return;
+			Swal.fire({title:'Save Changes?',icon:'question',showCancelButton:true,confirmButtonText:'Save'}).then(result => {
+				if (!result.isConfirmed) return;
+				const form = document.getElementById('editForm');
+
+				// Prepare categories: no hidden inputs needed — FormData(form) includes selects
+
+				// if there are new files selected, use FormData(form) to include files and all fields
+				const files = document.getElementById('files').files;
+				if (files && files.length){
+					const fd = new FormData(form);
+					// Fetch with FormData (includes files automatically)
+					fetch(form.action, { method: 'POST', body: fd })
+					.then(r=>{ if (r.redirected) window.location = r.url; else if (!r.ok) return r.text().then(t=>{ throw new Error(t); }); else return r.text().then(h=> { document.open(); document.write(h); document.close(); }); })
+					.catch(err=> Swal.fire('Error', err.message, 'error'));
+				} else {
+					form.submit();
+				}
+			});
+		});
+	</script>
+}

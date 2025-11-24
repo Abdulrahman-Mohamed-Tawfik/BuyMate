@@ -9,7 +9,7 @@
         <div class="max-w-4xl mx-auto text-center">
             <h1 class="text-4xl md:text-6xl font-bold mb-4">Welcome to BUYMATE</h1>
             <p class="text-xl mb-8 text-blue-200">Discover amazing products at unbeatable prices</p>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-primary btn-lg">
+            <a asp-controller="Product" asp-action="Index" class="btn btn-primary btn-lg">
                 Shop Now
                 <svg class="ml-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
@@ -22,7 +22,7 @@
     <section>
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-2xl font-bold">Shop by Category</h2>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-ghost">
+            <a asp-controller="Shop" asp-action="Categories" class="btn btn-ghost">
                 View All
                 <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
@@ -32,7 +32,7 @@
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             @foreach (var category in Model.Categories)
             {
-                <div class="card category-card" onclick="location.href='@Url.Action("Category", "Shop", new { id = category.Id })'">
+                <div class="card category-card" onclick="location.href='@Url.Action("Index", "Product", new { categoryId = category.Id })'">
                     <div class="card-content p-6 text-center">
                         <div class="w-12 h-12 mx-auto mb-4 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                             <div class="w-6 h-6 bg-primary/60 rounded"></div>
@@ -56,52 +56,58 @@
                 </svg>
                 <h2 class="text-2xl font-bold">Featured Products</h2>
             </div>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-ghost">
+            <a asp-controller="Product" asp-action="Index" class="btn btn-ghost">
                 View All
                 <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                 </svg>
             </a>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-8">
             @foreach (var product in Model.FeaturedProducts)
             {
-                <div class="card product-card" onclick="location.href='@Url.Action("Product", "Shop", new { id = product.Id })'">
+                <div class="card product-card flex flex-col h-full" onclick="location.href='@Url.Action("Product", "Product", new { id = product.Id })'">
                     <div class="relative">
-                        <img src="/images/Products/@product.ImageUrl" alt="@product.Name" class="w-full h-48 object-cover rounded-t-lg" />
+                        <img src="@(String.IsNullOrEmpty(product.ImageUrl) ? "/images/placeholder.png" : "/images/" + product.ImageUrl)" alt="@product.Name" class="w-full h-64 object-cover rounded-t-lg" />
                         @if (product.IsFlashDeal)
                         {
                             <span class="absolute top-2 left-2 badge badge-destructive">Flash Deal</span>
                         }
-                        @if (product.Discount.HasValue)
+                        @if (product.Discount.HasValue && product.Discount > 0)
                         {
                             <span class="absolute top-2 right-2 badge badge-secondary">-@product.Discount%</span>
                         }
                     </div>
-                    <div class="card-content p-4">
-                        <h3 class="font-medium mb-2 line-clamp-2">@product.Name</h3>
-                        <div class="flex items-center mb-2">
-                            <div class="flex items-center">
-                                @for (int i = 1; i <= 5; i++)
-                                {
-                                    <svg class="w-4 h-4 @(i <= product.Rating ? "text-yellow-400" : "text-gray-300")" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                    </svg>
-                                }
+
+                    <div class="card-content p-6 flex flex-col justify-between flex-1">
+                        <div>
+                            <h3 class="font-medium mb-2 line-clamp-2">@product.Name</h3>
+                            <p class="text-sm text-muted-foreground mb-2">@product.Brand</p>
+                            <div class="flex items-center mb-2">
+                                <div class="flex items-center">
+                                    @{ var roundedRating = (int)Math.Round(product.Rating); }
+                                    @for (int i =1; i <=5; i++)
+                                    {
+                                        <svg class="w-4 h-4 @(i <= roundedRating ? "text-yellow-400" : "text-gray-300")" fill="currentColor" viewBox="002020"><path d="M9.0492.927c.3-.9211.603-.9211.9020l1.073.292a11000.95.69h3.462c.96901.3711.24.5881.81l-2.82.034a11000-.3641.118l1.073.292c.3.921-.7551.688-1.541.118l-2.8-2.034a11000-1.1750l-2.82.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a11000-.364-1.118L2.988.72c-.783-.57-.38-1.81.588-1.81h3.461a11000.951-.69l1.07-3.292z" /></svg>
+                                    }
+                                </div>
+                                <span class="text-sm text-muted-foreground ml-2">@product.Rating.ToString("F1") (@product.ReviewCount)</span>
                             </div>
-                            <span class="text-sm text-muted-foreground ml-2">(@product.ReviewCount)</span>
                         </div>
-                        <div class="flex items-center justify-between">
-                            <div>
-                                <span class="text-lg font-bold">$@product.Price</span>
-                                @if (product.OriginalPrice.HasValue)
-                                {
-                                    <span class="text-sm text-muted-foreground line-through ml-2">$@product.OriginalPrice</span>
-                                }
+
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <span class="text-2xl font-bold">$@product.Price</span>
+                                    @if (product.OriginalPrice.HasValue)
+                                    {
+                                        <span class="text-sm text-muted-foreground line-through ml-3">$@product.OriginalPrice</span>
+                                    }
+                                </div>
                             </div>
-                            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); addToCart('@product.Id')">
-                                Add to Cart
-                            </button>
+
+                            <button class="btn btn-primary w-full" onclick="event.stopPropagation(); addToCart('@product.Id')">Add to Cart</button>
                         </div>
                     </div>
                 </div>
@@ -113,24 +119,25 @@
     <section>
         <div class="flex items-center justify-between mb-6">
             <div class="flex items-center space-x-2">
-                <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                <svg class="h-6 w-6 text-green-500" fill="none" stroke="currentColor" viewBox="002424">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M137h8m00v8m0-8l-88-4-4-66"></path>
                 </svg>
                 <h2 class="text-2xl font-bold">Best Sellers</h2>
             </div>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-ghost">
+            <a asp-controller="Product" asp-action="Index" class="btn btn-ghost">
                 View All
-                <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                <svg class="ml-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="002424">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M178l44m00l-44m4-4H3"></path>
                 </svg>
             </a>
         </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
             @foreach (var product in Model.BestSellers)
             {
-                <div class="card product-card" onclick="location.href='@Url.Action("Product", "Shop", new { id = product.Id })'">
+                <div class="card product-card" onclick="location.href='@Url.Action("Product", "Product", new { id = product.Id })'">
                     <div class="relative">
-                        <img src="/images/Products/@product.ImageUrl" alt="@product.Name" class="w-full h-32 object-cover rounded-t-lg" />
+                        <img src="@(String.IsNullOrEmpty(product.ImageUrl) ? "/images/placeholder.png" : "/images/" + product.ImageUrl)" alt="@product.Name" class="w-full h-32 object-cover rounded-t-lg" />
                         @if (product.IsFlashDeal)
                         {
                             <span class="absolute top-2 left-2 badge badge-destructive text-xs">Flash Deal</span>
@@ -140,20 +147,17 @@
                         <h3 class="font-medium mb-1 text-sm line-clamp-2">@product.Name</h3>
                         <div class="flex items-center mb-1">
                             <div class="flex items-center">
-                                @for (int i = 1; i <= 5; i++)
+                                @{ var roundedRating = (int)Math.Round(product.Rating); }
+                                @for (int i =1; i <=5; i++)
                                 {
-                                    <svg class="w-3 h-3 @(i <= product.Rating ? "text-yellow-400" : "text-gray-300")" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                                    </svg>
+                                    <svg class="w-3 h-3 @(i <= roundedRating ? "text-yellow-400" : "text-gray-300")" fill="currentColor" viewBox="002020"><path d="M9.0492.927c.3-.9211.603-.9211.9020l1.073.292a11000.95.69h3.462c.96901.3711.24.5881.81l-2.82.034a11000-.3641.118l1.073.292c.3.921-.7551.688-1.541.118l-2.8-2.034a11000-1.1750l-2.82.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a11000-.364-1.118L2.988.72c-.783-.57-.38-1.81.588-1.81h3.461a11000.951-.69l1.07-3.292z" /></svg>
                                 }
                             </div>
-                            <span class="text-xs text-muted-foreground ml-1">(@product.ReviewCount)</span>
+                            <span class="text-xs text-muted-foreground ml-1">@product.Rating.ToString("F1") (@product.ReviewCount)</span>
                         </div>
                         <div class="flex items-center justify-between">
                             <span class="text-sm font-bold">$@product.Price</span>
-                            <button class="btn btn-primary btn-sm text-xs" onclick="event.stopPropagation(); addToCart('@product.Id')">
-                                Add
-                            </button>
+                            <button class="btn btn-primary btn-sm text-xs" onclick="event.stopPropagation(); addToCart('@product.Id')">Add</button>
                         </div>
                     </div>
                 </div>

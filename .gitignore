@@ -150,5 +150,4 @@ yarn-error.log*
 # Rider solution-wide caches
 /.idea/.idea.*
 /BuyMate/wwwroot/images/UserProfileImages
-/BuyMate/BuyMate.csproj
-/BuyMate/BuyMate.csproj
+/BuyMate/wwwroot/images

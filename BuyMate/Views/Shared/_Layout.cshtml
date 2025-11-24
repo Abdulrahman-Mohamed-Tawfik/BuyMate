@@ -33,7 +33,7 @@
                 </div>
 
                 <!-- Search Bar -->
-                <form class="hidden md:flex flex-1 max-w-2xl mx-8" asp-controller="Shop" asp-action="Search" method="get">
+                <form class="hidden md:flex flex-1 max-w-2xl mx-8" asp-controller="Product" asp-action="Index" method="get">
                     <div class="relative w-full">
                         <input type="text" name="q" placeholder="Search products..." class="input w-full pr-12" />
                         <button type="submit" class="absolute right-1 top-1 h-8 w-8 p-0 btn btn-primary btn-sm flex items-center justify-center">
@@ -46,7 +46,7 @@
                 <!-- Header Action Buttons -->
                 <div class="flex items-center space-x-2">
                     <!-- Mobile search button - only visible on mobile -->
-                    <a asp-controller="Shop" asp-action="Search" class="md:hidden btn btn-ghost btn-sm" aria-label="Search products">
+                    <a asp-controller="Product" asp-action="Index" class="md:hidden btn btn-ghost btn-sm" aria-label="Search products">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                         </svg>
@@ -110,7 +110,7 @@
 
             <!-- Mobile search bar - only visible on mobile devices -->
             <div class="md:hidden pb-4">
-                <form asp-controller="Shop" asp-action="Search" method="get">
+                <form asp-controller="Product" asp-action="Index" method="get">
                     <div class="relative">
                         <input type="text" name="q" placeholder="Search products..." class="input w-full pr-12" />
                         <button type="submit" class="absolute right-1 top-1 h-8 w-8 p-0 btn btn-primary btn-sm" aria-label="Search">
@@ -129,7 +129,7 @@
                 <!-- Desktop navigation - hidden on mobile -->
                 <nav class="desktop-nav hidden lg:flex items-center space-x-8 h-12">
                     <!-- Shop dropdown with categories -->
-                    <a asp-controller="Shop" asp-action="Index" class="text-sm hover:text-primary transition-colors flex items-center space-x-1">
+                    <a asp-controller="Product" asp-action="Index" class="text-sm hover:text-primary transition-colors flex items-center space-x-1">
                         <span>Shop</span>
                         <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -145,7 +145,7 @@
                 <!-- Mobile navigation - only visible when menu is open -->
                 <nav class="mobile-menu lg:hidden py-4 space-y-2" style="display: none;">
                     <!-- All products link -->
-                    <a asp-controller="Shop" asp-action="Index" class="block w-full text-left py-2 text-sm hover:text-primary transition-colors font-medium">
+                    <a asp-controller="Product" asp-action="Index" class="block w-full text-left py-2 text-sm hover:text-primary transition-colors font-medium">
                         All Products
                     </a>
 
@@ -201,7 +201,7 @@
                 <h4 class="font-medium mb-4">Quick Links</h4>
                 <ul class="space-y-2 text-sm">
                     <li><a asp-controller="Home" asp-action="Index" class="text-muted-foreground hover:text-primary">Home</a></li>
-                    <li><a asp-controller="Shop" asp-action="Index" class="text-muted-foreground hover:text-primary">Shop</a></li>
+                    <li><a asp-controller="Product" asp-action="Index" class="text-muted-foreground hover:text-primary">Shop</a></li>
                     <li><a asp-controller="Shop" asp-action="Deals" class="text-muted-foreground hover:text-primary">Deals</a></li>
                     <li><a asp-controller="Home" asp-action="About" class="text-muted-foreground hover:text-primary">About</a></li>
                     <li><a asp-controller="Home" asp-action="Terms" class="text-muted-foreground hover:text-primary">Terms</a></li>

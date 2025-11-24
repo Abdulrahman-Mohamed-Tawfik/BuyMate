@@ -1,0 +1,62 @@
+﻿@model IEnumerable<BuyMate.DTO.Category.CategoryViewModel>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="max-w-5xl mx-auto mt-10">
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold">Categories</h1>
+        <a asp-action="Create" class="btn btn-primary">Add New Category</a>
+    </div>
+
+    <div class="card p-0 overflow-hidden">
+        <table class="table w-full">
+            <thead class="bg-muted">
+                <tr>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Id</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Name</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Image</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr class="border-t">
+                            <td class="px-4 py-3 text-sm">@item.Id</td>
+                            <td class="px-4 py-3 text-sm font-medium">@item.Name</td>
+                            <td class="px-4 py-3">
+                                @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                {
+                                    <img src="/@item.ImageUrl" alt="@item.Name" class="h-12 w-12 object-cover rounded border" />
+                                }
+                                else
+                                {
+                                    <span class="text-xs text-muted-foreground">No image</span>
+                                }
+                            </td>
+                            <td class="px-4 py-3 text-sm">
+                                <div class="flex items-center gap-2">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline btn-sm">Edit</a>
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Delete this category?');">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" class="px-4 py-6 text-center text-sm text-muted-foreground">No categories found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

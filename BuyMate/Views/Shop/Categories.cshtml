@@ -1,0 +1,57 @@
+﻿@model IEnumerable<BuyMate.DTO.Category.CategoryViewModel>
+@{
+    ViewData["Title"] = "All Categories";
+    var search = Context.Request.Query["q"].ToString();
+}
+
+<div class="max-w-6xl mx-auto py-8 space-y-8">
+    <h1 class="text-3xl font-bold">All Categories</h1>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <form method="get" asp-action="Categories" class="flex w-full sm:w-auto gap-3">
+            <input name="q"
+                   value="@search"
+                   placeholder="Search categories..."
+                   class="input flex-1" />
+            <button type="submit" class="btn btn-primary">Search</button>
+            @if (!string.IsNullOrWhiteSpace(search))
+            {
+                <a asp-action="Categories" class="btn btn-ghost">Clear</a>
+            }
+        </form>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center text-muted-foreground py-16 card">
+            <p class="text-sm">No categories found.</p>
+        </div>
+    }
+    else
+    {
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            @foreach (var category in Model)
+            {
+                <div class="card hover:shadow-lg transition cursor-pointer"
+                     onclick="location.href='@Url.Action("Category", "Shop", new { id = category.Id })'">
+                    <div class="aspect-square overflow-hidden rounded-t-lg bg-muted">
+                        @if (!string.IsNullOrWhiteSpace(category.ImageUrl))
+                        {
+                            <img src="/@category.ImageUrl"
+                                 alt="@category.Name"
+                                 class="w-full h-full object-cover" />
+                        }
+                        else
+                        {
+                            <div class="w-full h-full flex items-center justify-center text-xs text-muted-foreground">
+                                No Image
+                            </div>
+                        }
+                    </div>
+                    <div class="p-4">
+                        <h2 class="font-medium truncate">@category.Name</h2>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

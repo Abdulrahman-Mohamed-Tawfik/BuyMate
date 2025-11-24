@@ -1,6 +1,7 @@
 ﻿using BuyMate.BLL.Contracts;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
+using BuyMate.Infrastructure.Contracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -17,6 +18,7 @@ namespace BuyMate.BLL.Features.User
         private readonly UserManager<Model.Entities.User> _userManager;
         private readonly SignInManager<Model.Entities.User> _signInManager;
         private readonly ILogger<UserProfileService> _logger;
+        private readonly IFileService _fileService;
 
         // Configuration constants
         private const string ProfilesFolderName = "UserProfileImages";
@@ -24,11 +26,12 @@ namespace BuyMate.BLL.Features.User
         private static readonly string[] AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
         private const long MaxFileSizeBytes = 2 * 1024 * 1024; //2 MB
 
-        public UserProfileService(UserManager<Model.Entities.User> userManager, SignInManager<Model.Entities.User> signInManager, ILogger<UserProfileService> logger)
+        public UserProfileService(UserManager<Model.Entities.User> userManager, SignInManager<Model.Entities.User> signInManager, ILogger<UserProfileService> logger, IFileService fileService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _fileService = fileService;
         }
 
         public async Task<Response<ProfileViewModel>> GetProfileAsync(System.Security.Claims.ClaimsPrincipal userPrincipal)
@@ -128,34 +131,23 @@ namespace BuyMate.BLL.Features.User
             // Handle avatar file upload if provided
             if (avatarFile != null && avatarFile.Length > 0)
             {
-                var validation = ValidateAvatarFile(avatarFile);
-                if (!validation.IsValid)
-                {
-                    return new Response<bool>
-                    {
-                        Data = false,
-                        Status = false,
-                        Message = validation.ErrorMessage
-                    };
-                }
-
                 try
                 {
-                    var uploadsRoot = GetUploadsRoot();
-                    if (!Directory.Exists(uploadsRoot)) Directory.CreateDirectory(uploadsRoot);
-
-                    var ext = Path.GetExtension(avatarFile.FileName).ToLowerInvariant();
                     var safeUser = string.IsNullOrWhiteSpace(user.UserName) ? user.Id.ToString() : user.UserName;
-                    var fileName = $"{safeUser}_{Guid.NewGuid()}{ext}";
-                    var filePath = Path.Combine(uploadsRoot, fileName);
 
-                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    var response = await _fileService.SaveImageAsync(avatarFile, MaxFileSizeBytes, AllowedExtensions, ProfilesFolderName, safeUser);
+
+                    if (!response.Status)
                     {
-                        await avatarFile.CopyToAsync(stream);
+                        return new Response<bool>
+                        {
+                            Data = false,
+                            Status = false,
+                            Message = response.Message
+                        };
                     }
-
-                    // Prepare relative path without leading slash to match layout expectation
-                    var relativePath = Path.Combine(ProfilesFolderName, fileName).Replace("\\", "/");
+                    // Save the image using the file service
+                    var relativePath = response.Data;
 
                     // Delete previous custom image if it was not the default
                     var currentProfileImage = user.ProfileImageUrl;
@@ -163,7 +155,7 @@ namespace BuyMate.BLL.Features.User
                     {
                         try
                         {
-                            DeleteOldFileIfExists(currentProfileImage, uploadsRoot);
+                            _fileService.DeleteImage(currentProfileImage);
                         }
                         catch (Exception ex)
                         {
@@ -185,8 +177,8 @@ namespace BuyMate.BLL.Features.User
                     };
                 }
             }
-           
-              
+
+
 
 
             var result = await _userManager.UpdateAsync(user);
@@ -227,26 +219,6 @@ namespace BuyMate.BLL.Features.User
             };
         }
 
-        private (bool IsValid, string? ErrorMessage) ValidateAvatarFile(IFormFile file)
-        {
-            if (file.Length > MaxFileSizeBytes)
-            {
-                return (false, $"Avatar file size must be less than {MaxFileSizeBytes / 1024 / 1024} MB.");
-            }
-
-            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-            if (!AllowedExtensions.Contains(ext))
-            {
-                return (false, "Invalid file type. Allowed types: jpg, jpeg, png, gif.");
-            }
-
-            return (true, null);
-        }
-
-        private string GetUploadsRoot()
-        {
-            return Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", ProfilesFolderName);
-        }
 
         private bool IsDefaultImage(string? profileImageUrl)
         {
@@ -258,25 +230,5 @@ namespace BuyMate.BLL.Features.User
                    || normalized.EndsWith($"{DefaultImageFileName}", StringComparison.OrdinalIgnoreCase) && normalized.Contains(ProfilesFolderName, StringComparison.OrdinalIgnoreCase);
         }
 
-        private void DeleteOldFileIfExists(string? profileImageUrl, string uploadsRoot)
-        {
-            if (string.IsNullOrWhiteSpace(profileImageUrl)) return;
-            var normalized = profileImageUrl.Replace("\\", "/").TrimStart('/');
-            // expected normalized like "UserProfileImages/filename.jpg" or "UserProfileImages/Default.jpg"
-            var fileName = Path.GetFileName(normalized);
-            if (string.IsNullOrWhiteSpace(fileName)) return;
-
-            if (string.Equals(fileName, DefaultImageFileName, StringComparison.OrdinalIgnoreCase))
-            {
-                // Never delete the default image
-                return;
-            }
-
-            var fullPath = Path.Combine(uploadsRoot, fileName);
-            if (File.Exists(fullPath))
-            {
-                File.Delete(fullPath);
-            }
-        }
     }
 }

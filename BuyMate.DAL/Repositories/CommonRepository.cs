@@ -1,4 +1,4 @@
-﻿using BuyMate.BLL.Contracts.Repositories;
+using BuyMate.BLL.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
@@ -37,6 +37,12 @@ namespace BuyMate.DAL.Repositories
             _context.Set<TEntity>().Add(entity);
             _context.SaveChanges();
             _context.Entry(entity).Reload();
+            return entity;
+        }
+        public virtual async Task<TEntity> UpdateAsync(TEntity entity)
+        {
+            _context.Set<TEntity>().Update(entity);
+            await _context.SaveChangesAsync();
             return entity;
         }
         public virtual async Task<List<TEntity>> CreateAsync(List<TEntity> entities)

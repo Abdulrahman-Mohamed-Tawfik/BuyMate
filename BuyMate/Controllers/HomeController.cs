@@ -1,6 +1,9 @@
 using System.Diagnostics;
+using BuyMate.BLL.Contracts;
+using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,38 +12,34 @@ namespace BuyMate.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ICategoryService _categoryService;
+        private readonly IProductService _productService;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,ICategoryService categoryService, IProductService productService)
         {
             _logger = logger;
+            _categoryService = categoryService;
+            _productService = productService;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var categories = new List<CategoryViewModel>
-        {
-            new CategoryViewModel { Id = Guid.NewGuid(), Name = "Electronics" },
-            new CategoryViewModel { Id = Guid.NewGuid(), Name = "Fashion" },
-            new CategoryViewModel { Id = Guid.NewGuid(), Name = "Books" }
-        };
+            var categoriesDto = await _categoryService.GetAllAsync();
+            var categories = categoriesDto?.Data?.Select(c => new CategoryViewModel
+            {
+                Id = c.Id,
+                Name = c.Name,
+                ProductCount = 0
+            }).ToList();
 
-            var featured = new List<ProductViewModel>
-        {
-            new ProductViewModel {
-                Id = Guid.NewGuid(),
-                Name = "iPhone 15",
-                Price = 1200,
-                ImageUrl = "iphone.jpeg",
-                IsFeatured = true
-            },
-            new ProductViewModel {
-                Id = Guid.NewGuid(),
-                Name = "Gaming Laptop",
-                Price = 2500,
-                ImageUrl = "laptop.jpg",
-                IsFeatured = true
-            }
-        };
+
+            var filter = new ProductFilter
+            {
+                IsFeatured = true,
+                PageNumber = 1,
+                PageSize = 10
+            };
+            var featured = _productService.GetAllPaginatedAsync(filter).Result.Data;
 
             var bestSellers = new List<ProductViewModel>
         {
@@ -48,14 +47,14 @@ namespace BuyMate.Controllers
                 Id = Guid.NewGuid(),
                 Name = "Wireless Mouse",
                 Price = 25,
-                ImageUrl = "mouse.jpg",
+                ImageUrl = "Products/mouse.jpg",
                 IsBestSeller = true
             },
             new ProductViewModel {
                 Id = Guid.NewGuid(),
                 Name = "Bluetooth Speaker",
                 Price = 80,
-                ImageUrl = "speaker.jpg",
+                ImageUrl = "Products/speaker.jpg",
                 IsBestSeller = true
             }
         };

@@ -22,62 +22,21 @@ namespace BuyMate.Controllers
             _categoryService = categoryService;
         }
 
-
-        // GET: /Product?categoryId=...
+        //GET: /Product
         [HttpGet]
-        public async Task<IActionResult> Index(ProductFilter? filter = null)
+        public async Task<IActionResult> Index()
         {
-
-            // Paginated query with filters
-            var paged = await _productService.GetAllPaginatedAsync(filter);
-            var products = paged.Data ?? new List<ProductViewModel>();
-
-           
-
-            //get all categories
-            var categoriesResponse = await _categoryService.GetAllAsync();
-            var categories = categoriesResponse.Data;
-            var brands = await _productService.GetAllBrandsAsync();
-
-            var vm = new ShopViewModel
+            var filter = new ProductFilter
             {
-                Search = filter?.Search,
-                Products = products,
-                Categories = categories,
-                SelectedCategoryId = filter.CategoryId,
-                SelectedCategory = categories.FirstOrDefault(c => c.Id == filter.CategoryId)?.Name,
-
-                Brands = brands,
-                SelectedBrand = filter.Brand,
-
-                MinPrice = filter.MinPrice ?? 0,
-                MaxPrice = filter.MaxPrice ?? 0,
-                SelectedMinPrice = filter.MinPrice,
-                SelectedMaxPrice = filter.MaxPrice,
-
-                HasDiscount = filter.HasDiscount,
-                IsFeatured = filter.IsFeatured,
-
-                OrderBy = filter.OrderBy,
-                Asc = filter.Asc,
-
-                PageNumber = filter.PageNumber,
-                PageSize = filter.PageSize,
-                TotalCount = paged.TotalCount
+                PageNumber = 1,
+                PageSize = 20
             };
-
-            return View(vm); // resolves Views/Product/Index.cshtml
+            var productsResponse = await _productService.GetAllPaginatedAsync(filter);
+            var products = productsResponse.Data ?? new List<ProductViewModel>();
+            return View(products); // resolves Views/Product/Index.cshtml
         }
 
-        // GET: /Product/Product/{id}
-        [HttpGet]
-        public async Task<IActionResult> Product(Guid id)
-        {
-            var result = await _productService.GetByIdAsync(id);
-            if (!result.Status || result.Data == null) return NotFound();
-            return View(result.Data); // resolves Views/Product/Product.cshtml
-        }
-
+       
         // GET: /Product/Create
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -186,8 +145,7 @@ namespace BuyMate.Controllers
                 return View(model);
             }
 
-            // Redirect to details or index — here redirect to product details if exists
-            return RedirectToAction("Product", new { id = id });
+            return RedirectToAction("Index");
         }
 
         // POST: /Product/Delete/{id}

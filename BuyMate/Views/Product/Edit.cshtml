@@ -8,7 +8,8 @@
 	{
 		<div class="mb-4 text-red-500">@ViewBag.Error</div>
 	}
-	<form method="post" asp-controller="Product" asp-action="Edit" asp-route-id="@productId" id="editForm" enctype="multipart/form-data">
+	<form method="post" asp-controller="Product"
+	asp-action="Edit" asp-route-id="@productId" id="editForm" enctype="multipart/form-data">
 		@Html.AntiForgeryToken()
 		<div class="mb-4"><label class="font-medium">Name</label><input asp-for="Name" class="input w-full" /></div>
 		<div class="mb-4"><label class="font-medium">Brand</label><input asp-for="Brand" class="input w-full" /></div>

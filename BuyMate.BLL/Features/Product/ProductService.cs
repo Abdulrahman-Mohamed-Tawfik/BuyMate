@@ -238,13 +238,17 @@ namespace BuyMate.BLL.Features.Product
             entity.UpdatedAt = DateTime.UtcNow;
 
             // update discount if provided
-            if (model.DiscountPercentage.HasValue)
+            if (model.DiscountPercentage.HasValue && model.DiscountPercentage > 0)
             {
                 entity.DiscountPercentage = model.DiscountPercentage.Value;
             }
-           
+            else
+            {
+                entity.DiscountPercentage = null;
+            }
 
-            await _repo.UpdateAsync(entity);
+
+                await _repo.UpdateAsync(entity);
 
             // If ImageUrls is provided (even empty), user intends to control images: remove and recreate
             if (model.ImageUrls != null && model.ImageUrls.Count != 0)

@@ -32,7 +32,7 @@
             @foreach (var category in Model)
             {
                 <div class="card hover:shadow-lg transition cursor-pointer"
-                     onclick="location.href='@Url.Action("Index", "Product", new { categoryId = category.Id })'">
+                     onclick="location.href='@Url.Action("Index", "Shop", new { categoryId = category.Id })'">
                     <div class="aspect-square overflow-hidden rounded-t-lg bg-muted">
                         @if (!string.IsNullOrWhiteSpace(category.ImageUrl))
                         {

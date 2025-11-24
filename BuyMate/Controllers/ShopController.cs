@@ -1,5 +1,7 @@
 ﻿using BuyMate.BLL.Contracts;
 using BuyMate.DTO.Category;
+using BuyMate.DTO.Common;
+using BuyMate.DTO.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers
@@ -7,10 +9,12 @@ namespace BuyMate.Controllers
     public class ShopController : Controller
     {
         private readonly ICategoryService _categoryService;
+        private readonly IProductService _productService;
 
-        public ShopController(ICategoryService categoryService /*, other services */)
+        public ShopController(ICategoryService categoryService, IProductService productService)
         {
             _categoryService = categoryService;
+            _productService = productService;
         }
 
         public IActionResult Index()
@@ -36,5 +40,61 @@ namespace BuyMate.Controllers
 
             return View(data);
         }
+
+        // GET: /Product?categoryId=...
+        [HttpGet]
+        public async Task<IActionResult> Index(ProductFilter? filter = null)
+        {
+
+            // Paginated query with filters
+            var paged = await _productService.GetAllPaginatedAsync(filter);
+            var products = paged.Data ?? new List<ProductViewModel>();
+
+
+
+            //get all categories
+            var categoriesResponse = await _categoryService.GetAllAsync();
+            var categories = categoriesResponse.Data;
+            var brands = await _productService.GetAllBrandsAsync();
+
+            var vm = new ShopViewModel
+            {
+                Search = filter?.Search,
+                Products = products,
+                Categories = categories,
+                SelectedCategoryId = filter.CategoryId,
+                SelectedCategory = categories.FirstOrDefault(c => c.Id == filter.CategoryId)?.Name,
+
+                Brands = brands,
+                SelectedBrand = filter.Brand,
+
+                MinPrice = filter.MinPrice ?? 0,
+                MaxPrice = filter.MaxPrice ?? 0,
+                SelectedMinPrice = filter.MinPrice,
+                SelectedMaxPrice = filter.MaxPrice,
+
+                HasDiscount = filter.HasDiscount,
+                IsFeatured = filter.IsFeatured,
+
+                OrderBy = filter.OrderBy,
+                Asc = filter.Asc,
+
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize,
+                TotalCount = paged.TotalCount
+            };
+
+            return View(vm); // resolves Views/Product/Index.cshtml
+        }
+
+        // GET: /Product/Product/{id}
+        [HttpGet]
+        public async Task<IActionResult> Product(Guid id)
+        {
+            var result = await _productService.GetByIdAsync(id);
+            if (!result.Status || result.Data == null) return NotFound();
+            return View(result.Data); // resolves Views/Product/Product.cshtml
+        }
+
     }
 }

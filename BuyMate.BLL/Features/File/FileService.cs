@@ -95,7 +95,7 @@ namespace BuyMate.Infrastructure.Services
                 Data = savedFiles
             };
         }
-        public void DeleteImage(string? relativePath)
+        public async void DeleteImage(string? relativePath)
         {
             if (string.IsNullOrWhiteSpace(relativePath)) return;
 

@@ -40,7 +40,7 @@
 
 		<!-- Category selection dropdown (optional) -->
 		<div class="mb-4">
-			<label class="font-medium">Category <span class="text-sm text-muted-foreground">(optional)</span></label>
+			<label class="font-medium">Category </label>
 			<select id="categorySelect" class="input w-full" multiple>
 				@if (ViewBag.Categories != null)
 				{
@@ -152,15 +152,16 @@
 			const price = Number(document.querySelector("input[name='Price']").value);
 			const stock = Number(document.querySelector("input[name='StockQuantity']").value);
 			const files = document.getElementById('files').files;
-			// categories are optional
-			// const categories = Array.from(document.getElementById('categorySelect').selectedOptions).map(o=>o.value);
+			const categories = Array.from(document.getElementById('categorySelect').selectedOptions).map(o=>o.value);
+			const brand = document.querySelector("input[name='Brand']").value.trim();
 
 			if (!name) { Swal.fire('Error','Name is required','error'); return false; }
 			if (!desc) { Swal.fire('Error','Description is required','error'); return false; }
 			if (!price || price <=0) { Swal.fire('Error','Price must be greater than0','error'); return false; }
 			if (isNaN(stock) || stock <0) { Swal.fire('Error','Stock must be0 or more','error'); return false; }
 			if (files.length ===0) { Swal.fire('Error','Please select at least one valid image','error'); return false; }
-			// categories are optional now
+			if(categories.length <= 0) { Swal.fire('Error','Please select at least one category','error'); return false; }
+			if(!brand) { Swal.fire('Error','Brand is required','error'); return false; })
 
 			return true;
 		}

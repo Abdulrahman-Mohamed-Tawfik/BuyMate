@@ -51,7 +51,7 @@ namespace BuyMate.BLL.Features.Product
                 .Take(filter.PageSize)
                 .ToListAsync();
 
-           
+
 
             // Include related data
 
@@ -79,7 +79,7 @@ namespace BuyMate.BLL.Features.Product
                 PageSize = filter.PageSize
             };
         }
-       
+
         private IQueryable<ProductEntity> ApplyFilters(IQueryable<ProductEntity> query, ProductFilter? filter)
         {
             if (filter == null) return query;
@@ -98,10 +98,26 @@ namespace BuyMate.BLL.Features.Product
                 query = query.Where(p => p.Brand != null && p.Brand.ToLower() == b.ToLower());
             }
             //Filter by Price Range
+            // Use the effective price (discounted price when discount applies) for filtering
             if (filter.MinPrice.HasValue)
-                query = query.Where(p => p.Price >= filter.MinPrice.Value);
+            {
+                var min = filter.MinPrice.Value;
+                query = query.Where(p =>
+                ((
+                p.DiscountPercentage.HasValue && p.DiscountPercentage.Value > 0 && p.DiscountPercentage.Value < 100)
+                   ? p.Price * (1 - p.DiscountPercentage.Value / 100m)
+                    : p.Price) >= min
+                );
+            }
             if (filter.MaxPrice.HasValue)
-                query = query.Where(p => p.Price <= filter.MaxPrice.Value);
+            {
+                var max = filter.MaxPrice.Value;
+                query = query.Where(p =>
+ ((p.DiscountPercentage.HasValue && p.DiscountPercentage.Value > 0 && p.DiscountPercentage.Value < 100)
+ ? p.Price * (1 - p.DiscountPercentage.Value / 100m)
+ : p.Price) <= max
+ );
+            }
             //Filter by Discount
             if (filter.HasDiscount.HasValue)
             {
@@ -238,11 +254,15 @@ namespace BuyMate.BLL.Features.Product
             entity.UpdatedAt = DateTime.UtcNow;
 
             // update discount if provided
-            if (model.DiscountPercentage.HasValue)
+            if (model.DiscountPercentage.HasValue && model.DiscountPercentage > 0)
             {
                 entity.DiscountPercentage = model.DiscountPercentage.Value;
             }
-           
+            else
+            {
+                entity.DiscountPercentage = null;
+            }
+
 
             await _repo.UpdateAsync(entity);
 
@@ -318,32 +338,7 @@ namespace BuyMate.BLL.Features.Product
         public async Task<Response<bool>> DeleteAsync(Guid id)
         {
 
-            /* Delete Images
-             *  // fetch existing images so we can delete files that are removed
-                var existingImages = await _imageRepo.GetByProductIdAsync(id);
 
-                // determine which urls were removed by the user
-                var kept = new HashSet<string>(model.ImageUrls ?? new List<string>());
-                var toDelete = existingImages
-                    .Select(i => i.ImageUrl)
-                    .Where(url => !kept.Contains(url))
-                    .ToList();
-
-                // remove DB records
-                await _imageRepo.RemoveByProductIdAsync(id);
-
-                // delete physical files for removed images (best-effort)
-                foreach (var url in toDelete)
-                {
-                    try
-                    {
-                        _fileService.DeleteImage(url);
-                    }
-                    catch
-                    {
-                        // ignore file deletion errors to not fail the update
-                    }
-                }*/
             var ok = await _repo.SoftDeleteAsync(id);
 
             return new Response<bool>
@@ -369,10 +364,10 @@ namespace BuyMate.BLL.Features.Product
                 Id = p.Id,
                 Name = p.Name,
                 Description = p.Description,
-                Price = p.Price,
+                Price = CalculateDiscountPrice(p),
                 Brand = p.Brand,
 
-                OriginalPrice = CalculateOriginalPrice(p),
+                OriginalPrice = CalculateDiscountPrice(p) != p.Price ? p.Price : null,
                 Discount = p.DiscountPercentage.HasValue ? (int?)Math.Round(p.DiscountPercentage.Value) : null,
 
                 Specifications = MapSpecifications(p),
@@ -400,23 +395,20 @@ namespace BuyMate.BLL.Features.Product
             return _repo.GetAllBrandsAsync();
         }
 
-        Task<List<CategoryViewModel>> IProductService.GetAllCategoriesAsync()
-        {
-            return _repo.GetAllCategoriesAsync();
-        }
+
 
         // Helper Methods
-        private static decimal? CalculateOriginalPrice(ProductEntity p)
+        private static decimal CalculateDiscountPrice(ProductEntity p)
         {
             if (!p.DiscountPercentage.HasValue || p.DiscountPercentage.Value <= 0 || p.DiscountPercentage.Value >= 100)
-                return null;
+                return p.Price;
 
             var percentage = p.DiscountPercentage.Value / 100m;
             var denom = 1 - percentage;
 
-            if (denom <= 0) return null;
+            if (denom <= 0) return p.Price;
 
-            return Math.Round(p.Price / denom, 2);
+            return Math.Round(p.Price * denom, 2);
         }
 
         private static bool CalculateIsFlashDeal(ProductEntity p)

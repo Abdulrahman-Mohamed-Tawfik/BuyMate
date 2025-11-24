@@ -1,5 +1,6 @@
 ﻿using BuyMate.DTO.Category;
 using BuyMate.DTO.Common;
+using BuyMate.DTO.ViewModels;
 using Microsoft.AspNetCore.Http;
 
 namespace BuyMate.BLL.Contracts

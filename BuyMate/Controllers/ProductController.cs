@@ -13,71 +13,39 @@ namespace BuyMate.Controllers
     {
         private readonly IProductService _productService;
         private readonly IFileService _fileService;
+        private readonly ICategoryService _categoryService;
 
-        public ProductController(IProductService productService, IFileService fileService)
+        public ProductController(IProductService productService, IFileService fileService, ICategoryService categoryService)
         {
             _productService = productService;
-            _fileService = fileService; 
+            _fileService = fileService;
+            _categoryService = categoryService;
         }
 
-
-        // GET: /Product?categoryId=...
+        //GET: /Product
         [HttpGet]
-        public async Task<IActionResult> Index(ProductFilter? filter = null)
+        public async Task<IActionResult> Index()
         {
-
-            // Paginated query with filters
-            var paged = await _productService.GetAllPaginatedAsync(filter);
-            var products = paged.Data ?? new List<ProductViewModel>();
-
-           
-
-            //get all categories
-            var categories = await _productService.GetAllCategoriesAsync();
-            var brands = await _productService.GetAllBrandsAsync();
-
-            var vm = new ShopViewModel
+            var filter = new ProductFilter
             {
-                Products = products,
-                Categories = categories,
-                SelectedCategoryId = filter.CategoryId,
-                SelectedCategory = categories.FirstOrDefault(c => c.Id == filter.CategoryId)?.Name,
-
-                Brands = brands,
-                SelectedBrand = filter.Brand,
-
-                MinPrice = filter.MinPrice ?? 0,
-                MaxPrice = filter.MaxPrice ?? 0,
-                SelectedMinPrice = filter.MinPrice,
-                SelectedMaxPrice = filter.MaxPrice,
-
-                HasDiscount = filter.HasDiscount,
-                IsFeatured = filter.IsFeatured,
-
-                OrderBy = filter.OrderBy,
-                Asc = filter.Asc,
-
-                PageNumber = filter.PageNumber,
-                PageSize = filter.PageSize,
-                TotalCount = paged.TotalCount
+                PageNumber = 1,
+                PageSize = 20
             };
-
-            return View(vm); // resolves Views/Product/Index.cshtml
+            var productsResponse = await _productService.GetAllPaginatedAsync(filter);
+            var products = productsResponse.Data ?? new List<ProductViewModel>();
+            return View(products); // resolves Views/Product/Index.cshtml
         }
 
-        // GET: /Product/Product/{id}
-        [HttpGet]
-        public async Task<IActionResult> Product(Guid id)
-        {
-            var result = await _productService.GetByIdAsync(id);
-            if (!result.Status || result.Data == null) return NotFound();
-            return View(result.Data); // resolves Views/Product/Product.cshtml
-        }
-
+       
         // GET: /Product/Create
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var categoriesResponse = await _categoryService.GetAllAsync();
+
+            ViewBag.Categories = categoriesResponse.Data;
+
+
             return View(new ProductCreateViewModel()); // resolves Views/Product/Create.cshtml
         }
 
@@ -86,10 +54,15 @@ namespace BuyMate.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductCreateViewModel model, List<IFormFile>? files)
         {
+
+            var categoriesResponse = await _categoryService.GetAllAsync();
+            ViewBag.Categories = categoriesResponse.Data;
+
             if (!ModelState.IsValid)
+            {
                 return View(model);
-
-
+            }
+                
             var result = await _productService.CreateAsync(model, files);
 
             if (result.Status != true)
@@ -116,7 +89,8 @@ namespace BuyMate.Controllers
                 Id = resp.Data.Id,
                 Name = resp.Data.Name,
                 Description = resp.Data.Description ?? string.Empty,
-                Price = resp.Data.Price,
+                Price = resp.Data.OriginalPrice ?? resp.Data.Price,
+                DiscountPercentage = resp.Data.Discount,
                 StockQuantity = resp.Data.Stock,
                 Brand = resp.Data.Brand ?? string.Empty,
                 ImageUrls = resp.Data.ImageUrls ?? new List<string>(),
@@ -125,7 +99,9 @@ namespace BuyMate.Controllers
             };
 
             ViewBag.ProductId = id;
-            ViewBag.Categories = await _productService.GetAllCategoriesAsync();
+            var categoriesResponse = await _categoryService.GetAllAsync();
+
+            ViewBag.Categories =categoriesResponse.Data;
 
             return View(vm);
         }
@@ -136,7 +112,9 @@ namespace BuyMate.Controllers
         public async Task<IActionResult> Edit(Guid id, [FromForm] ProductUpdateViewModel model, List<IFormFile>? files)
         {
             // ensure categories available for re-render
-            ViewBag.Categories = await _productService.GetAllCategoriesAsync();
+            var categoriesResponse = await _categoryService.GetAllAsync();
+
+            ViewBag.Categories = categoriesResponse.Data;
             ViewBag.ProductId = id;
 
             if (!ModelState.IsValid)
@@ -167,8 +145,7 @@ namespace BuyMate.Controllers
                 return View(model);
             }
 
-            // Redirect to details or index — here redirect to product details if exists
-            return RedirectToAction("Product", new { id = id });
+            return RedirectToAction("Index");
         }
 
         // POST: /Product/Delete/{id}

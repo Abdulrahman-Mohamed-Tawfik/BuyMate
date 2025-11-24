@@ -19,6 +19,5 @@ namespace BuyMate.BLL.Contracts
         );
 
         Task<List<string>> GetAllBrandsAsync();
-        Task<List<CategoryViewModel>> GetAllCategoriesAsync();
     }
 }

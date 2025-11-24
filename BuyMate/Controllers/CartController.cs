@@ -10,10 +10,12 @@ namespace BuyMate.Controllers;
 public class CartController : Controller
 {
     private readonly ICartService _cartService;
+    private readonly ICheckoutService _checkoutService;
     private readonly IUserProfileService _userProfileService;
-    public CartController(ICartService cartService, IUserProfileService userProfileService)
+    public CartController(ICartService cartService,ICheckoutService checkoutService, IUserProfileService userProfileService)
     {
         _cartService = cartService;
+        _checkoutService = checkoutService;
         _userProfileService = userProfileService;
     }
 
@@ -88,6 +90,23 @@ public class CartController : Controller
         }
 
         return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Checkout()
+    {
+        var profile = await _userProfileService.GetProfileAsync(User);
+        if (profile.Status is false)
+        {
+            return RedirectToAction("Login", "User");
+        }
+        var checkoutVmResult = await _checkoutService.GetCheckoutViewModelAsync(profile.Data!.Id);
+        if (checkoutVmResult.Status is false)
+        {
+            TempData["Error"] = checkoutVmResult.Message;
+            return RedirectToAction("Index");
+        }
+        return View(checkoutVmResult.Data);
     }
 
 }

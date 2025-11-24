@@ -28,8 +28,8 @@ public class CartService : ICartService
                     CartId = Guid.Empty,
                     Items = new List<CartItemViewModel>()
                 },
-                Message = "Cart is empty",
-                Status = true
+                Message = "Cart is empty.",
+                Status = false
             };
         }
 
@@ -52,7 +52,7 @@ public class CartService : ICartService
             Data = cartViewModel,
 
             Message = cart.Items.Count == 0 ? "Cart is empty." : "Cart retrieved successfully.",
-            Status = true
+            Status = cart.Items.Count > 0
         };
 
     }

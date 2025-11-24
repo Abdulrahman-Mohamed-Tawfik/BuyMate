@@ -1,5 +1,5 @@
 @model CartViewModel
-@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Antiforgery
+
 @{
     ViewData["Title"] = "Shopping Cart";
     var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;

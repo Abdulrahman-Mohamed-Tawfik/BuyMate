@@ -1,7 +1,9 @@
 using BuyMate.BLL.Contracts;
+using BuyMate.BLL.Features.Product;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Infrastructure.Contracts;
+using BuyMate.Infrastructure.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers
@@ -9,10 +11,13 @@ namespace BuyMate.Controllers
     // UI-focused Product controller (conventional view discovery like UserController)
     public class ProductController : Controller
     {
-        private readonly IProductService _service;
-        public ProductController(IProductService service)
+        private readonly IProductService _productService;
+        private readonly IFileService _fileService;
+
+        public ProductController(IProductService productService, IFileService fileService)
         {
-            _service = service;
+            _productService = productService;
+            _fileService = fileService; 
         }
 
 
@@ -22,14 +27,14 @@ namespace BuyMate.Controllers
         {
 
             // Paginated query with filters
-            var paged = await _service.GetAllPaginatedAsync(filter);
+            var paged = await _productService.GetAllPaginatedAsync(filter);
             var products = paged.Data ?? new List<ProductViewModel>();
 
            
 
             //get all categories
-            var categories = await _service.GetAllCategoriesAsync();
-            var brands = await _service.GetAllBrandsAsync();
+            var categories = await _productService.GetAllCategoriesAsync();
+            var brands = await _productService.GetAllBrandsAsync();
 
             var vm = new ShopViewModel
             {
@@ -64,7 +69,7 @@ namespace BuyMate.Controllers
         [HttpGet]
         public async Task<IActionResult> Product(Guid id)
         {
-            var result = await _service.GetByIdAsync(id);
+            var result = await _productService.GetByIdAsync(id);
             if (!result.Status || result.Data == null) return NotFound();
             return View(result.Data); // resolves Views/Product/Product.cshtml
         }
@@ -85,7 +90,7 @@ namespace BuyMate.Controllers
                 return View(model);
 
 
-            var result = await _service.CreateAsync(model, files);
+            var result = await _productService.CreateAsync(model, files);
 
             if (result.Status != true)
             {
@@ -96,52 +101,74 @@ namespace BuyMate.Controllers
             TempData["Success"] = "Product created successfully.";
             return RedirectToAction(nameof(Index));
         }
-
         // GET: /Product/Edit/{id}
-        [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            var result = await _service.GetByIdAsync(id);
-            if (!result.Status || result.Data == null) return NotFound();
+            var resp = await _productService.GetByIdAsync(id);
+            if (!resp.Status || resp.Data == null)
+            {
+                return NotFound();
+            }
 
-            var p = result.Data;
+            // Map ProductViewModel to ProductUpdateViewModel
             var vm = new ProductUpdateViewModel
             {
-                Name = p.Name,
-                Brand = p.Brand,
-                Description = p.Description ?? string.Empty,
-                Price = p.Price,
-                StockQuantity = p.Stock,
-                ImageUrls = p.ImageUrls?.ToList() ?? new List<string>(),
-                CategoryIds = p.Categories.Select(c => c.Id).ToList()
+                Id = resp.Data.Id,
+                Name = resp.Data.Name,
+                Description = resp.Data.Description ?? string.Empty,
+                Price = resp.Data.Price,
+                StockQuantity = resp.Data.Stock,
+                Brand = resp.Data.Brand ?? string.Empty,
+                ImageUrls = resp.Data.ImageUrls ?? new List<string>(),
+                CategoryIds = resp.Data.Categories?.Select(c => c.Id).ToList() ?? new List<Guid>(),
+                Specifications = resp.Data.Specifications?.Select(kv => new BuyMate.DTO.Common.ProductSpecficationInput { Key = kv.Key, Value = kv.Value }).ToList() ?? new List<BuyMate.DTO.Common.ProductSpecficationInput>()
             };
 
             ViewBag.ProductId = id;
-            return View(vm); // resolves Views/Product/Edit.cshtml
+            ViewBag.Categories = await _productService.GetAllCategoriesAsync();
+
+            return View(vm);
         }
 
         // POST: /Product/Edit/{id}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, ProductUpdateViewModel model, List<IFormFile>? files)
+        public async Task<IActionResult> Edit(Guid id, [FromForm] ProductUpdateViewModel model, List<IFormFile>? files)
         {
+            // ensure categories available for re-render
+            ViewBag.Categories = await _productService.GetAllCategoriesAsync();
+            ViewBag.ProductId = id;
+
             if (!ModelState.IsValid)
             {
-                ViewBag.ProductId = id;
                 return View(model);
             }
 
+            // If there are uploaded files, save them and append returned URLs to model.ImageUrls
+            if (files != null && files.Any())
+            {
+                var saveResult = await _fileService.SaveImagesAsync(files.ToList(), 4 * 1024 * 1024, new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" }, "Products");
+                if (!saveResult.Status)
+                {
+                    ViewBag.Error = saveResult.Message ?? "Failed to save one or more images.";
+                    return View(model);
+                }
 
-            var result = await _service.UpdateAsync(id, model);
+                // Append saved URLs to any existing ImageUrls that were preserved on the client
+                model.ImageUrls ??= new List<string>();
+                model.ImageUrls.AddRange(saveResult.Data);
+            }
+
+            // Call update
+            var result = await _productService.UpdateAsync(id, model);
             if (!result.Status)
             {
-                ViewBag.ProductId = id;
-                ViewBag.Error = result.Message ?? "Failed to update product.";
+                ViewBag.Error = result.Message;
                 return View(model);
             }
 
-            TempData["SuccessMessage"] = "Product updated successfully.";
-            return RedirectToAction(nameof(Product), new { id });
+            // Redirect to details or index — here redirect to product details if exists
+            return RedirectToAction("Product", new { id = id });
         }
 
         // POST: /Product/Delete/{id}
@@ -149,7 +176,7 @@ namespace BuyMate.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _service.DeleteAsync(id);
+            var result = await _productService.DeleteAsync(id);
             TempData["SuccessMessage"] = result.Status ? "Product deleted successfully." : (result.Message ?? "Failed to delete product.");
             return RedirectToAction(nameof(Index));
         }

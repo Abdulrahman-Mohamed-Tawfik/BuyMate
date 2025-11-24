@@ -9,7 +9,7 @@ namespace BuyMate.DTO.Common
         public bool Asc { get; set; } = true;
 
         public int PageNumber { get; set; } = 1;
-        public int PageSize { get; set; } = 10;
+        public int PageSize { get; set; } = 6;
 
         public Guid? CategoryId { get; set; }
         public string? Brand { get; set; }

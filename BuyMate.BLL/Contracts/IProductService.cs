@@ -7,9 +7,7 @@ namespace BuyMate.BLL.Contracts
 {
     public interface IProductService
     {
-        Task<Response<List<ProductViewModel>>> GetAllAsync(
-            ProductFilter? filter = null
-        );
+     
         Task<Response<ProductViewModel?>> GetByIdAsync(Guid id);
         Task<Response<Guid>> CreateAsync(ProductCreateViewModel model, List<IFormFile> files);
         Task<Response<bool>> UpdateAsync(Guid id, ProductUpdateViewModel model);

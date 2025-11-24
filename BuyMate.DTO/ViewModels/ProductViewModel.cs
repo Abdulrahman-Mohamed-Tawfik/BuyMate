@@ -42,6 +42,7 @@ namespace BuyMate.DTO.ViewModels
             // Product specifications
             public Dictionary<string, string> Specifications { get; set; } = new();
 
+
             // Whether the product is part of a flash deal
             public bool IsFlashDeal { get; set; } = false;
 

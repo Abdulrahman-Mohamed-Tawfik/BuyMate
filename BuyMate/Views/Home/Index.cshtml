@@ -74,7 +74,7 @@
                         {
                             <span class="absolute top-2 left-2 badge badge-destructive">Flash Deal</span>
                         }
-                        @if (product.Discount.HasValue)
+                        @if (product.Discount.HasValue && product.Discount > 0)
                         {
                             <span class="absolute top-2 right-2 badge badge-secondary">-@product.Discount%</span>
                         }

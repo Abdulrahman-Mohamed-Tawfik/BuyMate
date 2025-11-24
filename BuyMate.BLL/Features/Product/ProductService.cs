@@ -33,22 +33,6 @@ namespace BuyMate.BLL.Features.Product
         public async Task<PaginatedResponse<List<ProductViewModel>>> GetAllPaginatedAsync(
             ProductFilter? filter = null)
         {
-            var fullResponse = await GetAllAsync(filter);
-
-            var totalCount = fullResponse.Data?.Count ?? 0;
-            return new PaginatedResponse<List<ProductViewModel>>
-            {
-                Data = fullResponse.Data,
-                Message = "Products",
-                Status = true,
-                TotalCount = totalCount,
-                PageNumber = filter.PageNumber,
-                PageSize = filter.PageSize
-            };
-        }
-
-        public async Task<Response<List<ProductViewModel>>> GetAllAsync(ProductFilter? filter = null)
-        {
 
             filter ??= new ProductFilter();
             //Get All Products
@@ -58,16 +42,17 @@ namespace BuyMate.BLL.Features.Product
             // apply additional filters
             query = ApplyFilters(query, filter);
 
-            var products = await query.ToListAsync();
+            int totalCount = query.Count();
 
-            //if pagination
-            if (filter.Paginate == true)
-            {
-                products = products
-                    .Skip((filter.PageNumber - 1) * filter.PageSize)
-                    .Take(filter.PageSize)
-                    .ToList();
-            }
+
+            //pagination
+            var products = await query
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .ToListAsync();
+
+           
+
             // Include related data
 
             var ids = products.Select(p => p.Id).ToList();
@@ -77,22 +62,25 @@ namespace BuyMate.BLL.Features.Product
                 .GroupBy(i => i.ProductId)
                 .ToDictionary(g => g.Key, g => g.ToList());
             //Map to ViewModel
-            var list = products.Select(p =>
+            var ProductsList = products.Select(p =>
             {
                 var imgs = imagesByProduct.TryGetValue(p.Id, out var gi) ? gi : new List<ProductImage>();
                 var cats = p.ProductCategories.Select(pc => pc.Category!).ToList();
                 return ToViewModel(p, imgs, cats);
             }).ToList();
 
-            return new Response<List<ProductViewModel>>
+            return new PaginatedResponse<List<ProductViewModel>>
             {
-                Data = list,
+                Data = ProductsList,
+                Message = "Products",
                 Status = true,
-                Message = "Products"
+                TotalCount = totalCount,
+                PageNumber = filter.PageNumber,
+                PageSize = filter.PageSize
             };
         }
-
-        private  IQueryable<ProductEntity> ApplyFilters(IQueryable<ProductEntity> query, ProductFilter? filter)
+       
+        private IQueryable<ProductEntity> ApplyFilters(IQueryable<ProductEntity> query, ProductFilter? filter)
         {
             if (filter == null) return query;
             //Filter by Category
@@ -237,6 +225,7 @@ namespace BuyMate.BLL.Features.Product
 
         public async Task<Response<bool>> UpdateAsync(Guid id, ProductUpdateViewModel model)
         {
+
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null)
                 return new Response<bool> { Status = false, Data = false, Message = "Not Found" };
@@ -248,26 +237,75 @@ namespace BuyMate.BLL.Features.Product
             entity.StockQuantity = model.StockQuantity;
             entity.UpdatedAt = DateTime.UtcNow;
 
+            // update discount if provided
+            if (model.DiscountPercentage.HasValue)
+            {
+                entity.DiscountPercentage = model.DiscountPercentage.Value;
+            }
+           
+
             await _repo.UpdateAsync(entity);
 
-            if (model.ImageUrls.Any())
+            // If ImageUrls is provided (even empty), user intends to control images: remove and recreate
+            if (model.ImageUrls != null && model.ImageUrls.Count != 0)
             {
+                // fetch existing images so we can delete files that are removed
+                var existingImages = await _imageRepo.GetByProductIdAsync(id);
+
+                // determine which urls were removed by the user
+                var kept = new HashSet<string>(model.ImageUrls ?? new List<string>());
+                var toDelete = existingImages
+                    .Select(i => i.ImageUrl)
+                    .Where(url => !kept.Contains(url))
+                    .ToList();
+
+                // remove DB records
                 await _imageRepo.RemoveByProductIdAsync(id);
 
-                var imgs = model.ImageUrls.Select((url, index) => new ProductImage
+                // delete physical files for removed images (best-effort)
+                foreach (var url in toDelete)
                 {
-                    ProductId = id,
-                    ImageUrl = url,
-                    IsMain = index == 0
-                }).ToList();
+                    try
+                    {
+                        _fileService.DeleteImage(url);
+                    }
+                    catch
+                    {
+                        // ignore file deletion errors to not fail the update
+                    }
+                }
 
-                await _imageRepo.CreateRangeAsync(imgs);
+                if (model.ImageUrls.Any())
+                {
+                    var imgs = model.ImageUrls.Select((url, index) => new ProductImage
+                    {
+                        ProductId = id,
+                        ImageUrl = url,
+                        IsMain = index == 0
+                    }).ToList();
+
+                    await _imageRepo.CreateRangeAsync(imgs);
+                }
             }
 
+            // update categories
             await _repo.RemoveProductCategoriesAsync(id);
 
             if (model.CategoryIds.Any())
                 await _repo.AddProductCategoriesAsync(id, model.CategoryIds);
+
+            // update specifications: remove old ones and add new
+            await _repo.RemoveProductSpecificationsAsync(id);
+            if (model.Specifications != null && model.Specifications.Any())
+            {
+                var specs = model.Specifications.Select(s => new ProductSpecification
+                {
+                    Key = s.Key,
+                    Value = s.Value,
+                    ProductId = id
+                }).ToList();
+                await _repo.AddProductSpecificationsAsync(id, specs);
+            }
 
             return new Response<bool>
             {
@@ -279,6 +317,33 @@ namespace BuyMate.BLL.Features.Product
 
         public async Task<Response<bool>> DeleteAsync(Guid id)
         {
+
+            /* Delete Images
+             *  // fetch existing images so we can delete files that are removed
+                var existingImages = await _imageRepo.GetByProductIdAsync(id);
+
+                // determine which urls were removed by the user
+                var kept = new HashSet<string>(model.ImageUrls ?? new List<string>());
+                var toDelete = existingImages
+                    .Select(i => i.ImageUrl)
+                    .Where(url => !kept.Contains(url))
+                    .ToList();
+
+                // remove DB records
+                await _imageRepo.RemoveByProductIdAsync(id);
+
+                // delete physical files for removed images (best-effort)
+                foreach (var url in toDelete)
+                {
+                    try
+                    {
+                        _fileService.DeleteImage(url);
+                    }
+                    catch
+                    {
+                        // ignore file deletion errors to not fail the update
+                    }
+                }*/
             var ok = await _repo.SoftDeleteAsync(id);
 
             return new Response<bool>

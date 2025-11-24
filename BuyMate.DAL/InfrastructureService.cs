@@ -12,7 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using BuyMate.BLL.Features.Category;
+using BuyMate.BLL.Features.CategoryFeatures;
 
 namespace BuyMate.DAL
 {

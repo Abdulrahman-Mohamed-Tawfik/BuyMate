@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 
-namespace BuyMate.BLL.Features.Category
+namespace BuyMate.BLL.Features.CategoryFeatures
 {
     public class CategoryService : ICategoryService
     {

@@ -15,8 +15,7 @@ namespace BuyMate.Controllers
         private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService)
-        public HomeController(ILogger<HomeController> logger, IProductService productService)
+        public HomeController(ILogger<HomeController> logger,ICategoryService categoryService, IProductService productService)
         {
             _logger = logger;
             _categoryService = categoryService;

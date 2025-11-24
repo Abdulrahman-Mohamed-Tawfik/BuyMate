@@ -26,14 +26,14 @@ namespace BuyMate.Controllers
         public async Task<IActionResult> Index()
         {
             var categoriesDto = await _categoryService.GetAllAsync();
-            var categories = categoriesDto?.Data;
+            var categories = categoriesDto?.Data?.OrderByDescending(c => c.ProductCount).Take(4).ToList();
 
 
             var filter = new ProductFilter
             {
                 IsFeatured = true,
                 PageNumber = 1,
-                PageSize = 4
+                PageSize = 3
             };
             var featured = _productService.GetAllPaginatedAsync(filter).Result.Data;
 

@@ -41,6 +41,7 @@ namespace BuyMate.Controllers
 
             var vm = new ShopViewModel
             {
+                Search = filter?.Search,
                 Products = products,
                 Categories = categories,
                 SelectedCategoryId = filter.CategoryId,

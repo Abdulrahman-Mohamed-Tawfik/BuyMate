@@ -33,9 +33,9 @@
                 </div>
 
                 <!-- Search Bar -->
-                <form class="hidden md:flex flex-1 max-w-2xl mx-8" asp-controller="Product" asp-action="Index" method="get">
+                <form class="hidden md:flex flex-1 max-w-2xl mx-8" asp-controller="Product" asp-action="Index"  method="get">
                     <div class="relative w-full">
-                        <input type="text" name="q" placeholder="Search products..." class="input w-full pr-12" />
+                        <input name="Search" type="text"  placeholder="Search products..." class="input w-full pr-12" />
                         <button type="submit" class="absolute right-1 top-1 h-8 w-8 p-0 btn btn-primary btn-sm flex items-center justify-center">
                             <i class="fas fa-magnifying-glass text-white text-lg"></i>
                         </button>

@@ -145,26 +145,25 @@
 				});
 			}
 		});
-
 		function validateCreateForm() {
-			const name = document.querySelector("input[name='Name']").value.trim();
-			const desc = document.querySelector("textarea[name='Description']").value.trim();
-			const price = Number(document.querySelector("input[name='Price']").value);
-			const stock = Number(document.querySelector("input[name='StockQuantity']").value);
-			const files = document.getElementById('files').files;
-			const categories = Array.from(document.getElementById('categorySelect').selectedOptions).map(o=>o.value);
-			const brand = document.querySelector("input[name='Brand']").value.trim();
+				const name = document.querySelector("input[name='Name']").value.trim();
+				const desc = document.querySelector("textarea[name='Description']").value.trim();
+				const price = Number(document.querySelector("input[name='Price']").value);
+				const stock = Number(document.querySelector("input[name='StockQuantity']").value);
+				const files = document.getElementById('files').files;
+				const categories = Array.from(document.getElementById('categorySelect').selectedOptions).map(o=>o.value);
+				const brand = document.querySelector("input[name='Brand']").value.trim();
 
-			if (!name) { Swal.fire('Error','Name is required','error'); return false; }
-			if (!desc) { Swal.fire('Error','Description is required','error'); return false; }
-			if (!price || price <=0) { Swal.fire('Error','Price must be greater than0','error'); return false; }
-			if (isNaN(stock) || stock <0) { Swal.fire('Error','Stock must be0 or more','error'); return false; }
-			if (files.length ===0) { Swal.fire('Error','Please select at least one valid image','error'); return false; }
-			if(categories.length <= 0) { Swal.fire('Error','Please select at least one category','error'); return false; }
-			if(!brand) { Swal.fire('Error','Brand is required','error'); return false; })
+				if (!name) { Swal.fire('Error','Name is required','error'); return false; }
+				if (!desc) { Swal.fire('Error','Description is required','error'); return false; }
+				if (!price || price <=0) { Swal.fire('Error','Price must be greater than0','error'); return false; }
+				if (isNaN(stock) || stock <0) { Swal.fire('Error','Stock must be0 or more','error'); return false; }
+				if (files.length ===0) { Swal.fire('Error','Please select at least one valid image','error'); return false; }
+				if(categories.length <=0) { Swal.fire('Error','Please select at least one category','error'); return false; }
+				if(!brand) { Swal.fire('Error','Brand is required','error'); return false; }
 
-			return true;
-		}
+				return true;
+			}
 
 		document.getElementById("addSpecBtn").addEventListener("click", function () {
 					const container = document.getElementById("specificationContainer");

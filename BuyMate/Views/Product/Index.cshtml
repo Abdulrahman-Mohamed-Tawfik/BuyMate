@@ -1,9 +1,11 @@
 @model BuyMate.DTO.ViewModels.ShopViewModel
 @{
 	ViewData["Title"] = "Shop";
+	var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 <!-- Adjusted links to Product controller -->
 <div class="space-y-8">
+	<input type="hidden" id="__RequestVerificationToken" value="@requestToken" />
 	<div class="text-center">
 		<h1 class="text-3xl font-bold mb-4">Shop All Products</h1>
 		<p class="text-muted-foreground">Discover our wide range of quality products</p>
@@ -268,20 +270,23 @@
 		</div>
 	</div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-	function addToCart(productId) { fetch('/Cart/AddToCart', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded', }, body: `productId=${productId}&quantity=1` }).then(r => { if (r.ok) { alert('Product added to cart!'); } }); }
-	document.querySelectorAll('.delete-form').forEach(f => { f.addEventListener('submit', e => { e.preventDefault(); Swal.fire({ title: 'Are you sure?', text: 'Do you want to delete this product?!', icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it', cancelButtonText: 'Cancel' }).then(res => { if (res.isConfirmed) f.submit(); }); }); });
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="~/js/cart.js" asp-append-version="true"></script>
 
-	// Filter sidebar toggle (for mobile)
-	document.addEventListener('DOMContentLoaded', function () {
-	var toggle = document.getElementById('filterToggle');
-	var sidebar = document.getElementById('filterSidebar');
-	if (toggle && sidebar) {
-	toggle.addEventListener('click', function (e) {
-	e.preventDefault();
-	sidebar.classList.toggle('hidden');
-	});
-	}
-	});
-</script>
+    <script>
+        document.querySelectorAll('.delete-form').forEach(f => { f.addEventListener('submit', e => { e.preventDefault(); Swal.fire({ title: 'Are you sure?', text: 'Do you want to delete this product?!', icon: 'warning', showCancelButton: true, confirmButtonText: 'Yes, delete it', cancelButtonText: 'Cancel' }).then(res => { if (res.isConfirmed) f.submit(); }); }); });
+
+        // Filter sidebar toggle (for mobile)
+        document.addEventListener('DOMContentLoaded', function () {
+        var toggle = document.getElementById('filterToggle');
+        var sidebar = document.getElementById('filterSidebar');
+        if (toggle && sidebar) {
+        toggle.addEventListener('click', function (e) {
+        e.preventDefault();
+        sidebar.classList.toggle('hidden');
+        });
+        }
+        });
+    </script>
+}

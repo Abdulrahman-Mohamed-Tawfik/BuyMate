@@ -39,14 +39,18 @@ public class CartController : Controller
         var profile = await _userProfileService.GetProfileAsync(User);
         if (profile.Status is false)
         {
-            return RedirectToAction("Login", "User");
+            return Unauthorized(profile.Message);
         }
         var result = await _cartService.AddToCartAsync(profile.Data!.Id, productId, quantity);
         if (result.Status is false)
         {
-            return BadRequest(result.Message);
+            return BadRequest(new { success = false ,message = result.Message});
         }
-        return RedirectToAction("Index", "Product");
+        var cartResult = await _cartService.GetCartAsync(profile.Data!.Id);
+        var newCount = cartResult.Data?.Items.Sum(i => i.Quantity) ?? 0;
+        var totalPrice = cartResult.Data?.Total ?? 0;
+        //return RedirectToAction("Index", "Product");
+        return Ok( new { success = true, message = result.Message, newCount, totalPrice });
     }
 
     [HttpPost]

@@ -10,10 +10,12 @@ public class CartService : ICartService
 {
     private readonly ICartRepository _cartRepository;
     private readonly ICartItemRepository _cartItemRepository;
-    public CartService(ICartRepository cartRepository, ICartItemRepository cartItemRepository)
+    private readonly IProductRepository _productRepository;
+    public CartService(ICartRepository cartRepository, ICartItemRepository cartItemRepository, IProductRepository productRepository)
     {
         _cartRepository = cartRepository;
         _cartItemRepository = cartItemRepository;
+        _productRepository = productRepository;
     }
     public async Task<Response<CartViewModel>> GetCartAsync(string userId)
     {
@@ -58,6 +60,17 @@ public class CartService : ICartService
     }
     public async Task<Response<bool>> AddToCartAsync(string userId, Guid productId, int quantity)
     {
+        var product = await _productRepository.GetByIdAsync(productId);
+        if (product is null)
+        {
+            return new Response<bool>
+            {
+                Data = false,
+                Message = "Product not found.",
+                Status = false
+            };
+        }
+
         var cart = await _cartRepository.GetCartWithItemsAsync(userId);
         if (cart is null)
         {
@@ -68,26 +81,37 @@ public class CartService : ICartService
             await _cartRepository.CreateAsync(cart);
         }
         var existingItem = cart.Items.FirstOrDefault(i => i.ProductId == productId);
-        if (existingItem != null)
+        if (existingItem is not null)
         {
-            existingItem.Quantity += quantity;
+            var newQuantity = existingItem.Quantity + quantity;
+            if (product.StockQuantity < newQuantity)
+            {
+                return new Response<bool>
+                {
+                    Data = false,
+                    Message = $"Only {product.StockQuantity} units of {product.Name} are currently in stock.",
+                    Status = false
+                };
+            }
+
+            existingItem.Quantity = newQuantity;
             await _cartRepository.SaveChangesAsync();
         }
         else
         {
-            var newItem = new Model.Entities.CartItem
+            var newItem = new CartItem
             {
                 CartId = cart.Id,
                 ProductId = productId,
                 Quantity = quantity,
-                PriceAtAddition = 0 // TODO: Fetch current price from Product service
+                PriceAtAddition = product.Price
             };
             await _cartItemRepository.CreateAsync(newItem);
         }
         return new Response<bool>
         {
             Data = true,
-            Message = "Item added to cart successfully.",
+            Message = "Product added to cart successfully.",
             Status = true
         };
     }

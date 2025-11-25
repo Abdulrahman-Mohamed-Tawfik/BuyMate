@@ -7,10 +7,7 @@
             <path d="M3 6h18"></path>
             <path d="M16 10a4 4 0 0 1-8 0"></path>
         </svg>
-        @if (Model.TotalItems > 0)
-        {
-            <span class="cart-badge badge badge-destructive badge-sm absolute -top-2 -right-2">@Model.TotalItems</span>
-        }
+        <span class="cart-badge badge badge-destructive badge-sm absolute -top-2 -right-2" id="cartBadge" style="display:@(Model.TotalItems > 0 ? "inline-flex" : "none")">@Model.TotalItems</span>
     </a>
 
     <!-- Mini cart hover popup -->
@@ -18,7 +15,7 @@
         <div class="p-4 border-b">
             <div class="flex items-center justify-between">
                 <h3 class="font-medium">Shopping Cart</h3>
-                <span class="cart-count badge badge-secondary">@(Model.TotalItems) items</span>
+                <span class="cart-count badge badge-secondary" id="num-count">@(Model.TotalItems) items</span>
             </div>
         </div>
 

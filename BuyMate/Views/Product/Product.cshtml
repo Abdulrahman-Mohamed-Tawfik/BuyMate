@@ -160,31 +160,32 @@
 		img.src = src;
 		}
 
-		async function addToCart(productId) {
-		try {
-		var quantity = document.getElementById('quantity')?.value || '1';
-		var response = await fetch('/Cart/AddToCart', {
-		method: 'POST',
-		headers: {
-		'Content-Type': 'application/json'
-		},
-		body: JSON.stringify({ productId: productId, quantity: parseInt(quantity,10) })
-		});
+		// async function addToCart(productId) {
+		// try {
+		// var quantity = document.getElementById('quantity')?.value || '1';
+		// var response = await fetch('/Cart/Add', {
+		// method: 'POST',
+		// headers: {
+		// 'Content-Type': 'application/json'
+		// },
+		// body: JSON.stringify({ productId: productId, quantity: parseInt(quantity,10) })
+		// });
 
-		if (response.ok) {
-		// Minimal UX feedback; replace with toasts in real app
-		alert('Product added to cart!');
-		}
-		else {
-		var text = await response.text();
-		console.error('Add to cart failed', text);
-		alert('Could not add product to cart.');
-		}
-		}
-		catch (err) {
-		console.error(err);
-		alert('An error occurred while adding to cart.');
-		}
-		}
+		// if (response.ok) {
+		// // Minimal UX feedback; replace with toasts in real app
+		// alert('Product added to cart!');
+		// }
+		// else {
+		// var text = await response.text();
+		// console.error('Add to cart failed', text);
+		// alert('Could not add product to cart.');
+		// }
+		// }
+		// catch (err) {
+		// console.error(err);
+		// alert('An error occurred while adding to cart.');
+		// }
+		// }
 	</script>
+    <script src="~/js/cart.js"></script>
 }

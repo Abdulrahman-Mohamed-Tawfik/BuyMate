@@ -1,4 +1,4 @@
-﻿@model IEnumerable<BuyMate.DTO.Category.CategoryViewModel>
+﻿@model IEnumerable<BuyMate.DTO.ViewModels.CategoryViewModel>
 @{
     ViewData["Title"] = "All Categories";
     var search = Context.Request.Query["q"].ToString();
@@ -32,7 +32,7 @@
             @foreach (var category in Model)
             {
                 <div class="card hover:shadow-lg transition cursor-pointer"
-                     onclick="location.href='@Url.Action("Category", "Shop", new { id = category.Id })'">
+                     onclick="location.href='@Url.Action("Index", "Shop", new { categoryId = category.Id })'">
                     <div class="aspect-square overflow-hidden rounded-t-lg bg-muted">
                         @if (!string.IsNullOrWhiteSpace(category.ImageUrl))
                         {
@@ -49,6 +49,8 @@
                     </div>
                     <div class="p-4">
                         <h2 class="font-medium truncate">@category.Name</h2>
+						<p class="text-sm text-muted-foreground mt-1">@category.ProductCount products</p>
+
                     </div>
                 </div>
             }

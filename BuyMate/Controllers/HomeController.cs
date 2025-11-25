@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using BuyMate.BLL.Contracts;
+using BuyMate.DTO.Category;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model;
@@ -25,40 +26,19 @@ namespace BuyMate.Controllers
         public async Task<IActionResult> Index()
         {
             var categoriesDto = await _categoryService.GetAllAsync();
-            var categories = categoriesDto?.Data?.Select(c => new CategoryViewModel
-            {
-                Id = c.Id,
-                Name = c.Name,
-                ProductCount = 0
-            }).ToList();
+            var categories = categoriesDto?.Data?.OrderByDescending(c => c.ProductCount).Take(4).ToList();
 
 
             var filter = new ProductFilter
             {
                 IsFeatured = true,
                 PageNumber = 1,
-                PageSize = 10
+                PageSize = 3
             };
             var featured = _productService.GetAllPaginatedAsync(filter).Result.Data;
 
-            var bestSellers = new List<ProductViewModel>
-        {
-            new ProductViewModel {
-                Id = Guid.NewGuid(),
-                Name = "Wireless Mouse",
-                Price = 25,
-                ImageUrl = "Products/mouse.jpg",
-                IsBestSeller = true
-            },
-            new ProductViewModel {
-                Id = Guid.NewGuid(),
-                Name = "Bluetooth Speaker",
-                Price = 80,
-                ImageUrl = "Products/speaker.jpg",
-                IsBestSeller = true
-            }
-        };
-
+            var bestSellers = new List<ProductViewModel>();
+        
             var home = new HomeViewModel
             {
                 Categories = categories,

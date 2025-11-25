@@ -26,7 +26,9 @@ namespace BuyMate.DTO.ViewModels
         public string Brand { get; set; } = string.Empty;
 
         public List<string> ImageUrls { get; set; } = new();
-        public List<Guid> CategoryIds { get; set; } = new();
+
+        [Required]
+        public List<Guid> CategoryIds { get; set; }
 
         public List<ProductSpecficationInput> Specifications { get; set; } = new();
 

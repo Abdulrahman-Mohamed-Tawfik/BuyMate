@@ -1,22 +1,28 @@
 ﻿using BuyMate.BLL.Contracts;
 using BuyMate.BLL.Contracts.Repositories;
-using BuyMate.BLL.GlobalHelpers;
 using BuyMate.DTO.Category;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.Enum;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 using System.IO;
+using BuyMate.Infrastructure.Contracts;
+using BuyMate.DTO.ViewModels;
 
 namespace BuyMate.BLL.Features.CategoryFeatures
 {
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository _categoryRepository;
+        private readonly IFileService _fileService;
 
-        public CategoryService(ICategoryRepository categoryRepository)
+        private const string CategoriesFolderName = "Categories";
+        private static readonly string[] AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+        private const long MaxFileSizeBytes = 4 * 1024 * 1024; //4 MB
+        public CategoryService(ICategoryRepository categoryRepository, IFileService fileService)
         {
             _categoryRepository = categoryRepository;
+            _fileService = fileService;
         }
 
         public async Task<Response<List<CategoryViewModel>>> GetAllAsync()
@@ -28,7 +34,8 @@ namespace BuyMate.BLL.Features.CategoryFeatures
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    ImageUrl = x.ImageUrl
+                    ImageUrl = x.ImageUrl,
+                    ProductCount = x.ProductCategories.Count(pc => !pc.Product.IsDeleted)
                 }).ToListAsync();
 
             return Response<List<CategoryViewModel>>.Success(list);
@@ -64,16 +71,10 @@ namespace BuyMate.BLL.Features.CategoryFeatures
 
             if (imageFile != null && imageFile.Length > 0)
             {
-                var originalFileName = Path.GetFileName(imageFile.FileName);
-                var combinedFileName = $"{category.Id}_{originalFileName}"; // categoryId + imageName
-                var physicalPath = AppHelper.GetImagePhysicalPath(ImageTypes.Categories, combinedFileName);
+              
+                var result  = await _fileService.SaveImageAsync(imageFile,MaxFileSizeBytes, AllowedExtensions,CategoriesFolderName, category.Id.ToString());
 
-                using (var stream = new FileStream(physicalPath, FileMode.Create))
-                {
-                    await imageFile.CopyToAsync(stream);
-                }
-
-                category.ImageUrl = AppHelper.GetImageRelativePath(ImageTypes.Categories, combinedFileName);
+                category.ImageUrl = "images/"+result.Data;
             }
             else
             {
@@ -100,16 +101,11 @@ namespace BuyMate.BLL.Features.CategoryFeatures
 
             if (imageFile != null && imageFile.Length > 0)
             {
-                var originalFileName = Path.GetFileName(imageFile.FileName);
-                var combinedFileName = $"{category.Id}_{originalFileName}"; // categoryId + imageName
-                var physicalPath = AppHelper.GetImagePhysicalPath(ImageTypes.Categories, combinedFileName);
+                 _fileService.DeleteImage(category.ImageUrl.Replace("images/","")); // Delete old image if exists
 
-                using (var stream = new FileStream(physicalPath, FileMode.Create))
-                {
-                    await imageFile.CopyToAsync(stream);
-                }
+                var result = await _fileService.SaveImageAsync(imageFile, MaxFileSizeBytes, AllowedExtensions, CategoriesFolderName, category.Id.ToString());
 
-                category.ImageUrl = AppHelper.GetImageRelativePath(ImageTypes.Categories, combinedFileName);
+                category.ImageUrl = "images/" + result.Data;
             }
 
             await _categoryRepository.SaveChangesAsync();

@@ -151,3 +151,4 @@ yarn-error.log*
 /.idea/.idea.*
 /BuyMate/wwwroot/images/Products
 /BuyMate/wwwroot/images/Categories
+/BuyMate/wwwroot/images/UserProfileImages

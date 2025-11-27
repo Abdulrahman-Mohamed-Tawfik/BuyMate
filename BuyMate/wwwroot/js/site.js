@@ -54,3 +54,46 @@ document.addEventListener('DOMContentLoaded', function ()
         dropdowns.forEach(dropdown => dropdown.classList.remove('open'));
     });
 });
+
+// Accessible mobile menu toggle
+window.addEventListener('DOMContentLoaded', function ()
+{
+    var toggleBtn = document.querySelector('.mobile-menu-toggle');
+    var mobileMenu = document.getElementById('mobileMenu');
+    if (!toggleBtn || !mobileMenu) return;
+
+    function hide()
+    {
+        if (!mobileMenu.classList.contains('hidden'))
+        {
+            mobileMenu.classList.add('hidden');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+        }
+    }
+
+    function toggle()
+    {
+        var isHidden = mobileMenu.classList.contains('hidden');
+        mobileMenu.classList.toggle('hidden');
+        toggleBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+    }
+
+    toggleBtn.addEventListener('click', function (e)
+    {
+        e.stopPropagation();
+        toggle();
+    });
+
+    document.addEventListener('click', function (e)
+    {
+        if (!mobileMenu.contains(e.target) && !toggleBtn.contains(e.target))
+        {
+            hide();
+        }
+    });
+
+    document.addEventListener('keydown', function (e)
+    {
+        if (e.key === 'Escape') hide();
+    });
+});

@@ -128,7 +128,7 @@ namespace BuyMate.BLL.Features.User
             }
 
             // Add current profile image url (may be empty)
-            var avatarUrl = user.ProfileImageUrl ?? "UserProfileImages/Default.jpg";
+            var avatarUrl = user.ProfileImageUrl ?? "UserProfileImages/Default.webp";
             await _userManager.AddClaimAsync(user, new Claim("avatar", avatarUrl));
         }
 

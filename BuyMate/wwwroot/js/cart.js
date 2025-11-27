@@ -101,27 +101,40 @@ function updateQuantity(itemId, quantity)
 
 function removeFromCart(itemId)
 {
-    if (confirm('Are you sure you want to remove this item from your cart?'))
+    const token = document.getElementById('__RequestVerificationToken')?.value;
+
+    Swal.fire({
+        title: 'Remove this item?',
+        text: 'This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Remove',
+        cancelButtonText: 'Cancel'
+    }).then((result) =>
     {
-        const token = document.getElementById('__RequestVerificationToken').value;
+        if (!result.isConfirmed) return;
+
         fetch('/Cart/Remove', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
-                'RequestVerificationToken': token
+                ...(token ? { 'RequestVerificationToken': token } : {})
             },
-            body: `itemId=${itemId}`
+            body: `itemId=${encodeURIComponent(itemId)}`
         })
             .then(response =>
             {
                 if (response.ok)
                 {
                     location.reload();
+                } else
+                {
+                    console.error('Remove failed', response.status);
                 }
             })
             .catch(error =>
             {
                 console.error('Error:', error);
             });
-    }
+    });
 }

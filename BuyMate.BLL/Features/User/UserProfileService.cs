@@ -22,7 +22,7 @@ namespace BuyMate.BLL.Features.User
 
         // Configuration constants
         private const string ProfilesFolderName = "UserProfileImages";
-        private const string DefaultImageFileName = "Default.jpg";
+        private const string DefaultImageFileName = "Default.webp";
         private static readonly string[] AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
         private const long MaxFileSizeBytes = 2 * 1024 * 1024; //2 MB
 
@@ -224,7 +224,7 @@ namespace BuyMate.BLL.Features.User
         {
             if (string.IsNullOrWhiteSpace(profileImageUrl)) return true;
             var normalized = profileImageUrl.Replace("\\", "/");
-            // Support both "UserProfileImages/Default.jpg" and "/UserProfileImages/Default.jpg"
+            // Support both "UserProfileImages/Default.webp" and "/UserProfileImages/Default.webp"
             return normalized.EndsWith($"/{DefaultImageFileName}", StringComparison.OrdinalIgnoreCase)
                    || normalized.Equals(DefaultImageFileName, StringComparison.OrdinalIgnoreCase)
                    || normalized.EndsWith($"{DefaultImageFileName}", StringComparison.OrdinalIgnoreCase) && normalized.Contains(ProfilesFolderName, StringComparison.OrdinalIgnoreCase);

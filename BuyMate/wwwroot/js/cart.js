@@ -85,17 +85,14 @@ function updateQuantity(itemId, quantity)
         .then(response =>
         {
             if (response.ok)
-            {
                 location.reload();
-            }
             else
-            {
                 console.error("Update failed", response.status);
-            }
         })
         .catch(error =>
         {
             console.error('Error:', error);
+
         });
 }
 

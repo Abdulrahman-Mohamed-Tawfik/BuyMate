@@ -149,5 +149,5 @@ yarn-error.log*
 
 # Rider solution-wide caches
 /.idea/.idea.*
-/BuyMate/wwwroot/images/UserProfileImages
-/BuyMate/wwwroot/images
+/BuyMate/wwwroot/images/Products
+/BuyMate/wwwroot/images/Categories

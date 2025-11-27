@@ -9,7 +9,7 @@ namespace BuyMate.Model.Entities
         public DateOnly? BirthDate { get; set; }
         public int Gender { get; set; }
         public string? Address { get; set; }
-        public string? ProfileImageUrl { get;  set; } = "UserProfileImages/Default.jpg";
+        public string? ProfileImageUrl { get;  set; } = "UserProfileImages/Default.webp";
         public string? Token { get; private set; }
         public string? PhoneOTP { get; private set; }
         public DateTimeOffset? PhoneOTPExpiryDate { get; private set; }

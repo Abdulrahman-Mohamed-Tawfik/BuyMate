@@ -1,5 +1,6 @@
 using BuyMate.BLL.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
 namespace BuyMate.DAL.Repositories
@@ -19,6 +20,22 @@ namespace BuyMate.DAL.Repositories
         public virtual async Task<IQueryable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? filter = null)
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();
+
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            return await Task.FromResult(query);
+        }
+        public virtual async Task<IQueryable<TEntity>> GetAsync<TProperty>(Expression<Func<TEntity, bool>>? filter = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, TProperty>>? include = null)
+        {
+            IQueryable<TEntity> query = _context.Set<TEntity>();
+            
+            if(include is not null)
+            {
+                query = include(query);
+            }
+
             if (filter != null)
             {
                 query = query.Where(filter);

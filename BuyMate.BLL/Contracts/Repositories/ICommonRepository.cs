@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore.Query;
 using System.Linq.Expressions;
 
 namespace BuyMate.BLL.Contracts.Repositories
@@ -5,6 +6,7 @@ namespace BuyMate.BLL.Contracts.Repositories
     public interface ICommonRepository<TEntity>
     {
         Task<IQueryable<TEntity>> GetAsync(Expression<Func<TEntity, bool>>? filter = null);
+        Task<IQueryable<TEntity>> GetAsync<TProperty>(Expression<Func<TEntity, bool>>? filter = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, TProperty>>? include = null);
         Task<IQueryable<TEntity>> GetAllAsync();
         Task CreateRangeAsync(IEnumerable<TEntity> tutorialSteps);
         Task<TEntity> CreateAsync(TEntity entity);

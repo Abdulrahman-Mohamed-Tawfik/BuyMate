@@ -37,7 +37,7 @@ namespace BuyMate.DTO.ViewModels
             public int ReviewCount { get; set; } =0;
 
             // Stock quantity available
-            public int Stock { get; set; } =0;
+            public int StockQuantity { get; set; } =0;
 
             // Product specifications
             public Dictionary<string, string> Specifications { get; set; } = new();

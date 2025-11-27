@@ -1,9 +1,13 @@
 ﻿@model BuyMate.DTO.ViewModels.HomeViewModel
 @{
     ViewData["Title"] = "Home";
+    var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
 <div class="space-y-8">
+
+    <input type="hidden" id="__RequestVerificationToken" value="@requestToken" />
+
     <!-- Hero Section -->
     <section class="relative bg-gradient-to-r from-blue-900 to-blue-800 text-white rounded-lg p-8 mb-8">
         <div class="max-w-4xl mx-auto text-center">
@@ -97,7 +101,7 @@
                                     @{ var roundedRating = (int)Math.Round(product.Rating); }
                                     @for (int i =1; i <=5; i++)
                                     {
-                                        <svg class="w-4 h-4 @(i <= roundedRating ? "text-yellow-400" : "text-gray-300")" fill="currentColor" viewBox="002020"><path d="M9.0492.927c.3-.9211.603-.9211.9020l1.073.292a11000.95.69h3.462c.96901.3711.24.5881.81l-2.82.034a11000-.3641.118l1.073.292c.3.921-.7551.688-1.541.118l-2.8-2.034a11000-1.1750l-2.82.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a11000-.364-1.118L2.988.72c-.783-.57-.38-1.81.588-1.81h3.461a11000.951-.69l1.07-3.292z" /></svg>
+                                        <svg class="w-4 h-4 @(i <= roundedRating ? "text-yellow-400" : "text-gray-300")" fill="currentColor" viewBox="00 20 20"><path d="M9.0492.927c.3-.9211.603-.9211.9020l1.073.292a11000.95.69h3.462c.96901.3711.24.5881.81l-2.82.034a11000-.3641.118l1.073.292c.3.921-.7551.688-1.541.118l-2.8-2.034a11000-1.1750l-2.82.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a11000-.364-1.118L2.988.72c-.783-.57-.38-1.81.588-1.81h3.461a11000.951-.69l1.07-3.292z" /></svg>
                                     }
                                 </div>
                                 <span class="text-sm text-muted-foreground ml-2">@product.Rating.ToString("F1") (@product.ReviewCount)</span>
@@ -184,7 +188,6 @@
                                     }
                                 </div>
                             </div>
-
                             <button class="btn btn-primary w-full" onclick="event.stopPropagation(); addToCart('@product.Id')">Add to Cart</button>
                         </div>
                     </div>
@@ -206,24 +209,4 @@
     </section>
 </div>
 
-<script>
-    function addToCart(productId) {
-        // In a real application, this would make an AJAX call to add the item to cart
-        fetch('/Cart/AddToCart', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `productId=${productId}&quantity=1`
-        })
-        .then(response => {
-            if (response.ok) {
-                // Show success message or update cart count
-                alert('Product added to cart!');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-</script>
+<script src="~/js/cart.js"></script>

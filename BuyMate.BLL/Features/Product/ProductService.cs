@@ -385,7 +385,7 @@ namespace BuyMate.BLL.Features.Product
 
                 Rating = Math.Round(rating, 2),
                 ReviewCount = p.Reviews?.Count ?? 0,
-                Stock = p.StockQuantity
+                StockQuantity = p.StockQuantity
             };
         }
 

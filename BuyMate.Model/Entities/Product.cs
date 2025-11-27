@@ -31,9 +31,7 @@ namespace BuyMate.Model.Entities
         public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public ICollection<WishlistItem> WishlistItems { get; set; } = new List<WishlistItem>();
         public ICollection<ProductReview> Reviews { get; set; } = new List<ProductReview>();
-
         public ICollection<ProductImage> Images { get; set; } = new List<ProductImage>();
         public ICollection<ProductSpecification> ProductSpecifications { get; set; } = new List<ProductSpecification>();
-
     }
 }

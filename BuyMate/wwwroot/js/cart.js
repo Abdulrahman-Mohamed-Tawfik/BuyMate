@@ -1,4 +1,5 @@
-﻿window.addToCart = function (productId) {
+﻿window.addToCart = function (productId)
+{
     //TODO: automatic refresh of items number and total price not working
     if (event) event.stopPropagation();
 
@@ -10,34 +11,41 @@
         'Content-Type': 'application/x-www-form-urlencoded'
     };
 
-    if (token) {
+    if (token)
+    {
         headers['RequestVerificationToken'] = token;
     }
 
-    fetch('/Cart/Add', {
+    fetch('/Cart/AddToCart', {
         method: 'POST',
         headers: headers,
         body: 'productId=' + productId + '&quantity=' + quantity
     })
-        .then(function (response) {
-            if (response.redirected) {
+        .then(function (response)
+        {
+            if (response.redirected)
+            {
                 window.location.href = response.url;
                 return;
             }
-            if (response.status === 401) {
+            if (response.status === 401)
+            {
                 window.location.href = '/User/Login';
                 return;
             }
             return response.json();
         })
-        .then(function (data) {
-            if (!data) return; 
+        .then(function (data)
+        {
+            if (!data) return;
 
-            if (data.success) {
+            if (data.success)
+            {
                 var badge = document.getElementById('cartBadge');
                 var total = document.getElementById('miniCartTotal');
                 var numCount = document.getElementById('num-count');
-                if (badge) {
+                if (badge)
+                {
                     badge.innerText = data.newCount;
                     numCount.innerText = data.newCount + " items";
 
@@ -45,16 +53,75 @@
                         badge.style.display = 'inline-flex';
                 }
 
-                if (total) {
+                if (total)
+                {
                     total.innerText = '$' + data.totalPrice;
                 }
-                // TODO: Use a nicer toast notification here instead of alert
-                alert(data.message);
-            } else {
-                alert("Error: " + data.message);
+
+                Swal.fire({ title: data.message, icon: 'success' })
+            } else
+            {
+                Swal.fire({ title: data.message, icon: 'failure' })
             }
         })
-        .catch(function (error) {
+        .catch(function (error)
+        {
             console.error('Error:', error);
         });
 };
+
+function updateQuantity(itemId, quantity)
+{
+    const token = document.getElementById('__RequestVerificationToken').value;
+
+    fetch('/Cart/UpdateQuantity', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'RequestVerificationToken': token
+        },
+        body: `itemId=${itemId}&quantity=${quantity}`
+    })
+        .then(response =>
+        {
+            if (response.ok)
+            {
+                location.reload();
+            }
+            else
+            {
+                console.error("Update failed", response.status);
+            }
+        })
+        .catch(error =>
+        {
+            console.error('Error:', error);
+        });
+}
+
+function removeFromCart(itemId)
+{
+    if (confirm('Are you sure you want to remove this item from your cart?'))
+    {
+        const token = document.getElementById('__RequestVerificationToken').value;
+        fetch('/Cart/Remove', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'RequestVerificationToken': token
+            },
+            body: `itemId=${itemId}`
+        })
+            .then(response =>
+            {
+                if (response.ok)
+                {
+                    location.reload();
+                }
+            })
+            .catch(error =>
+            {
+                console.error('Error:', error);
+            });
+    }
+}

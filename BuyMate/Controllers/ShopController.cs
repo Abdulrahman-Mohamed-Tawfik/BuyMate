@@ -96,5 +96,20 @@ namespace BuyMate.Controllers
             return View(result.Data); // resolves Views/Product/Product.cshtml
         }
 
+        // shop/deals
+        [HttpGet]
+        public async Task<IActionResult> Deals()
+        {
+            var paged = await _productService.GetAllPaginatedAsync(new ProductFilter
+            {
+                HasDiscount = true,
+                IsFeatured = null,
+                PageNumber = 1,
+                PageSize = 20
+            });
+
+            var products = paged.Data ?? new List<ProductViewModel>();
+            return View(products); // resolves Views/Shop/Deals.cshtml expecting List<ProductViewModel>
+        }
     }
 }

@@ -6,20 +6,24 @@
 
 
 const errorAlert = document.getElementById('errorAlert');
-if (errorAlert) {
+if (errorAlert)
+{
     setTimeout(() => errorAlert.remove(), 5000);
- }
+}
 
 
 alertBox = document.getElementById('successAlert');
 progress = document.getElementById('progressBar');
 
-if (alertBox) {
+if (alertBox)
+{
     let width = 0;
-    const interval = setInterval(() => {
+    const interval = setInterval(() =>
+    {
         width += 1; // 1% per tick
         progress.style.width = width + "%";
-        if (width >= 100) {
+        if (width >= 100)
+        {
             clearInterval(interval);
             alertBox.style.transition = "opacity 0.5s";
             alertBox.style.opacity = 0;
@@ -29,20 +33,24 @@ if (alertBox) {
 }
 
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function ()
+{
     const dropdowns = document.querySelectorAll('.dropdown');
 
-    dropdowns.forEach(dropdown => {
+    dropdowns.forEach(dropdown =>
+    {
         const label = dropdown.querySelector('label');
 
-        label.addEventListener('click', function (e) {
+        label.addEventListener('click', function (e)
+        {
             e.stopPropagation(); // prevent closing immediately
             dropdown.classList.toggle('open');
         });
     });
 
     // Close dropdown when clicking outside
-    document.addEventListener('click', function () {
+    document.addEventListener('click', function ()
+    {
         dropdowns.forEach(dropdown => dropdown.classList.remove('open'));
     });
 });

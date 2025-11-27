@@ -91,7 +91,7 @@ namespace BuyMate.Controllers
                 Description = resp.Data.Description ?? string.Empty,
                 Price = resp.Data.OriginalPrice ?? resp.Data.Price,
                 DiscountPercentage = resp.Data.Discount,
-                StockQuantity = resp.Data.Stock,
+                StockQuantity = resp.Data.StockQuantity,
                 Brand = resp.Data.Brand ?? string.Empty,
                 ImageUrls = resp.Data.ImageUrls ?? new List<string>(),
                 CategoryIds = resp.Data.Categories?.Select(c => c.Id).ToList() ?? new List<Guid>(),

@@ -1,8 +1,6 @@
 ﻿using BuyMate.BLL.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
 
 namespace BuyMate.Controllers;
 
@@ -12,7 +10,7 @@ public class CartController : Controller
     private readonly ICartService _cartService;
     private readonly ICheckoutService _checkoutService;
     private readonly IUserProfileService _userProfileService;
-    public CartController(ICartService cartService,ICheckoutService checkoutService, IUserProfileService userProfileService)
+    public CartController(ICartService cartService, ICheckoutService checkoutService, IUserProfileService userProfileService)
     {
         _cartService = cartService;
         _checkoutService = checkoutService;
@@ -23,18 +21,16 @@ public class CartController : Controller
     public async Task<IActionResult> Index()
     {
         var profile = await _userProfileService.GetProfileAsync(User);
-        if (profile.Status is false)
-        {
+        if (profile.Status is false || profile.Data is null)
             return RedirectToAction("Login", "User");
-        }
 
-        var cartVm = await _cartService.GetCartAsync(profile.Data!.Id);
+        var cartVm = await _cartService.GetCartAsync(profile.Data.Id);
         return View(cartVm.Data);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Add(Guid productId, int quantity = 1)
+    public async Task<IActionResult> AddToCart(Guid productId, int quantity = 1)
     {
         var profile = await _userProfileService.GetProfileAsync(User);
         if (profile.Status is false)
@@ -44,13 +40,13 @@ public class CartController : Controller
         var result = await _cartService.AddToCartAsync(profile.Data!.Id, productId, quantity);
         if (result.Status is false)
         {
-            return BadRequest(new { success = false ,message = result.Message});
+            return BadRequest(new { success = false, message = result.Message });
         }
         var cartResult = await _cartService.GetCartAsync(profile.Data!.Id);
         var newCount = cartResult.Data?.Items.Sum(i => i.Quantity) ?? 0;
         var totalPrice = cartResult.Data?.Total ?? 0;
-        //return RedirectToAction("Index", "Product");
-        return Ok( new { success = true, message = result.Message, newCount, totalPrice });
+
+        return Ok(new { success = true, message = result.Message, newCount, totalPrice });
     }
 
     [HttpPost]

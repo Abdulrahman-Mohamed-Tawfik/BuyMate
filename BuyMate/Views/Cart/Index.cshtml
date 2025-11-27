@@ -8,7 +8,7 @@
 <div class="max-w-4xl mx-auto">
 
     <input type="hidden" id="__RequestVerificationToken" value="@requestToken" />
-    
+
     <h1 class="text-3xl font-bold mb-8">Shopping Cart</h1>
 
     @if (Model.Items.Any())
@@ -91,50 +91,4 @@
     }
 </div>
 
-<script>
-    function updateQuantity(itemId, quantity) {
-        const token = document.getElementById('__RequestVerificationToken').value;
-
-        fetch('/Cart/UpdateQuantity', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'RequestVerificationToken': token
-            },
-            body: `itemId=${itemId}&quantity=${quantity}`
-        })
-        .then(response => {
-            if (response.ok) {
-                location.reload();
-            }
-            else{
-                console.error("Update failed", response.status);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    }
-
-    function removeFromCart(itemId) {
-    if (confirm('Are you sure you want to remove this item from your cart?')) {
-        const token = document.getElementById('__RequestVerificationToken').value;
-        fetch('/Cart/Remove', {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'RequestVerificationToken': token
-    },
-    body: `itemId=${itemId}`
-    })
-    .then(response => {
-    if (response.ok) {
-    location.reload();
-    }
-    })
-    .catch(error => {
-    console.error('Error:', error);
-    });
-    }
-    }
-</script>
+<script src="~/js/cart.js"></script>

@@ -11,43 +11,46 @@
         <p class="text-muted-foreground">Limited time offers - Don't miss out!</p>
     </div>
 
-    @if (Model.Any())
+    @if (Model != null && Model.Any())
     {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             @foreach (var product in Model)
             {
-                <div class="card product-card" onclick="location.href='@Url.Action("Product", "Product", new { id = product.Id })'">
+                <div class="card product-card" onclick="location.href='@Url.Action("Product", "Product", new { id = product?.Id })'">
                     <div class="relative">
-                        <img src="@(product.ImageUrl ?? "/images/placeholder.png")" alt="@product.Name" class="w-full h-48 object-cover rounded-t-lg" />
+                        <img src="@($"/images/{product?.ImageUrl}" ?? "/images/placeholder.png")" alt="@(product?.Name ?? "Product")" class="w-full h-48 object-cover rounded-t-lg" />
                         <span class="absolute top-2 left-2 badge badge-destructive">Flash Deal</span>
-                        @if (product.Discount.HasValue)
+                        @if (product?.Discount.HasValue == true)
                         {
-                            <span class="absolute top-2 right-2 badge badge-secondary">-@product.Discount%</span>
+                            <span class="absolute top-2 right-2 badge badge-secondary">-@product!.Discount%</span>
                         }
                     </div>
                     <div class="card-content p-4">
-                        <h3 class="font-medium mb-2 line-clamp-2">@product.Name</h3>
-                        <p class="text-sm text-muted-foreground mb-2">@product.Brand</p>
+                        <h3 class="font-medium mb-2 line-clamp-2">@(product?.Name ?? "")</h3>
+                        <p class="text-sm text-muted-foreground mb-2">@(product?.Brand ?? "")</p>
                         <div class="flex items-center mb-2">
                             <div class="flex items-center">
+                                @{
+                                    var rating = product?.Rating ?? 0;
+                                }
                                 @for (int i = 1; i <= 5; i++)
                                 {
-                                    <svg class="w-4 h-4 @(i <= product.Rating ? "text-yellow-400" : "text-gray-300")" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 @(i <= rating ? "text-yellow-400" : "text-gray-300")" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.073 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.073 3.292c.3.921-.755 1.688-1.541 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.988 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                                     </svg>
                                 }
                             </div>
-                            <span class="text-sm text-muted-foreground ml-2">(@product.ReviewCount)</span>
+                            <span class="text-sm text-muted-foreground ml-2">(@(product?.ReviewCount ?? 0))</span>
                         </div>
                         <div class="flex items-center justify-between">
                             <div>
-                                <span class="text-lg font-bold">$@product.Price</span>
-                                @if (product.OriginalPrice.HasValue)
+                                <span class="text-lg font-bold">$@(product?.Price ?? 0)</span>
+                                @if (product?.OriginalPrice.HasValue == true)
                                 {
-                                    <span class="text-sm text-muted-foreground line-through ml-2">$@product.OriginalPrice</span>
+                                    <span class="text-sm text-muted-foreground line-through ml-2">$@product!.OriginalPrice</span>
                                 }
                             </div>
-                            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); addToCart('@product.Id')">
+                            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); addToCart('@(product?.Id ?? Guid.Empty)')">
                                 Add to Cart
                             </button>
                         </div>
@@ -67,12 +70,13 @@
 
 <script>
     function addToCart(productId) {
+        if (!productId) return;
         fetch('/Cart/AddToCart', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
-            body: `productId=${productId}&quantity=1`
+            body: `productId=${encodeURIComponent(productId)}&quantity=1`
         })
         .then(response => {
             if (response.ok) {

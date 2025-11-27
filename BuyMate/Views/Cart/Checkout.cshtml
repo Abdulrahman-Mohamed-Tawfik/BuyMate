@@ -13,7 +13,7 @@
             <div class="space-y-6">
                 <div class="card p-6">
                     <h2 class="text-xl font-bold mb-4">Shipping Information</h2>
-                    
+
                     <div class="space-y-4">
                         <div>
                             <label asp-for="ShippingAddress.Name" class="block text-sm font-medium mb-2">Full Name</label>
@@ -57,7 +57,7 @@
                 <!-- Payment Method -->
                 <div class="card p-6">
                     <h2 class="text-xl font-bold mb-4">Payment Method</h2>
-                    
+
                     <div class="space-y-3">
                         <div class="flex items-center">
                             <input asp-for="PaymentMethod" type="radio" value="Card" id="pm-card" class="mr-3" />
@@ -77,7 +77,7 @@
                 <!-- Delivery Options -->
                 <div class="card p-6">
                     <h2 class="text-xl font-bold mb-4">Delivery Options</h2>
-                    
+
                     <div class="space-y-3">
                         <div class="flex items-center">
                             <input asp-for="DeliveryType" type="radio" value="Standard" id="dt-standard" class="mr-3" />
@@ -99,7 +99,7 @@
             <div class="space-y-6">
                 <div class="card p-6">
                     <h2 class="text-xl font-bold mb-4">Order Summary</h2>
-                    
+
                     <div class="space-y-4">
                         @foreach (var item in Model.CartVm.Items)
                         {

@@ -140,12 +140,40 @@
             const price = Number(document.querySelector("input[name='Price']").value);
             const stock = Number(document.querySelector("input[name='StockQuantity']").value);
             const categories = Array.from(document.getElementById('categorySelect').selectedOptions).map(o=>o.value);
+            const specifications = document.getElementById('specificationContainer').children;
+
+
             if (name===''){ Swal.fire('Error','Name is required','error'); return false; }
             if (brand===''){ Swal.fire('Error','Brand is required','error'); return false; }
             if (desc===''){ Swal.fire('Error','Description is required','error'); return false; }
             if (!price || price <=0){ Swal.fire('Error','Price must be greater than0','error'); return false; }
             if (isNaN(stock) || stock <0){ Swal.fire('Error','Stock must be0 or more','error'); return false; }
             if (categories.length ==0){ Swal.fire('Error','Select at least one category','error'); return false; }
+
+            if( specifications.length !==0) {
+
+                    for (let i =0; i < specifications.length; i++) {
+                        const keyInput = specifications[i].querySelector(`input[name='Specifications[${i}].Key']`);
+                        const valueInput = specifications[i].querySelector(`input[name='Specifications[${i}].Value']`);
+                        const key = keyInput.value.trim();
+                        const value = valueInput.value.trim();
+                        if (!key || !value) {
+                            Swal.fire('Error',`Specification #${i +1} requires both Key and Value`,`error`);
+                            return false;
+                        }
+                    }
+
+                    const keyInputss = Array.from(specifications).map((spec, index) => spec.querySelector(`input[name='Specifications[${index}].Key']`).value.trim().toLowerCase());
+
+                    const keysSet = new Set(keyInputss);
+                    if (keysSet.size !== keyInputss.length) {
+                        Swal.fire('Error', 'Duplicate keys found in specifications', 'error');
+                        return false;
+                    }
+
+                }
+
+
             return true;
         }
 

@@ -122,23 +122,9 @@ namespace BuyMate.Controllers
                 return View(model);
             }
 
-            // If there are uploaded files, save them and append returned URLs to model.ImageUrls
-            if (files != null && files.Any())
-            {
-                var saveResult = await _fileService.SaveImagesAsync(files.ToList(), 4 * 1024 * 1024, new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" }, "Products");
-                if (!saveResult.Status)
-                {
-                    ViewBag.Error = saveResult.Message ?? "Failed to save one or more images.";
-                    return View(model);
-                }
-
-                // Append saved URLs to any existing ImageUrls that were preserved on the client
-                model.ImageUrls ??= new List<string>();
-                model.ImageUrls.AddRange(saveResult.Data);
-            }
-
+          
             // Call update
-            var result = await _productService.UpdateAsync(id, model);
+            var result = await _productService.UpdateAsync(id, model, files);
             if (!result.Status)
             {
                 ViewBag.Error = result.Message;

@@ -4,8 +4,6 @@ using BuyMate.DTO.Category;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model;
-
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers

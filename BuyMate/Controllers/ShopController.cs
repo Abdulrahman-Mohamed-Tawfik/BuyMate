@@ -1,5 +1,4 @@
 ﻿using BuyMate.BLL.Contracts;
-using BuyMate.DTO.Category;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -45,16 +44,13 @@ namespace BuyMate.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(ProductFilter? filter = null)
         {
-
             // Paginated query with filters
             var paged = await _productService.GetAllPaginatedAsync(filter);
             var products = paged.Data ?? new List<ProductViewModel>();
 
-
-
             //get all categories
             var categoriesResponse = await _categoryService.GetAllAsync();
-            var categories = categoriesResponse.Data;
+            var categories = categoriesResponse.Data ?? [];
             var brands = await _productService.GetAllBrandsAsync();
 
             var vm = new ShopViewModel
@@ -62,25 +58,20 @@ namespace BuyMate.Controllers
                 Search = filter?.Search,
                 Products = products,
                 Categories = categories,
-                SelectedCategoryId = filter.CategoryId,
-                SelectedCategory = categories.FirstOrDefault(c => c.Id == filter.CategoryId)?.Name,
-
+                SelectedCategoryId = filter?.CategoryId,
+                SelectedCategory = categories.FirstOrDefault(c => c.Id == filter?.CategoryId)?.Name,
                 Brands = brands,
-                SelectedBrand = filter.Brand,
-
-                MinPrice = filter.MinPrice ?? 0,
-                MaxPrice = filter.MaxPrice ?? 0,
-                SelectedMinPrice = filter.MinPrice,
-                SelectedMaxPrice = filter.MaxPrice,
-
-                HasDiscount = filter.HasDiscount,
-                IsFeatured = filter.IsFeatured,
-
-                OrderBy = filter.OrderBy,
-                Asc = filter.Asc,
-
-                PageNumber = filter.PageNumber,
-                PageSize = filter.PageSize,
+                SelectedBrand = filter?.Brand,
+                MinPrice = filter?.MinPrice ?? 0,
+                MaxPrice = filter?.MaxPrice ?? 0,
+                SelectedMinPrice = filter?.MinPrice,
+                SelectedMaxPrice = filter?.MaxPrice,
+                HasDiscount = filter?.HasDiscount,
+                IsFeatured = filter?.IsFeatured,
+                OrderBy = filter?.OrderBy,
+                Asc = filter!.Asc,
+                PageNumber = filter!.PageNumber,
+                PageSize = filter!.PageSize,
                 TotalCount = paged.TotalCount
             };
 

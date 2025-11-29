@@ -30,7 +30,7 @@ public class CartController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddToCart(Guid productId, int quantity = 1)
+    public async Task<IActionResult> AddToCart(Guid productId, int quantity =1)
     {
         var profile = await _userProfileService.GetProfileAsync(User);
         if (profile.Status is false)
@@ -43,8 +43,8 @@ public class CartController : Controller
             return BadRequest(new { success = false, message = result.Message });
         }
         var cartResult = await _cartService.GetCartAsync(profile.Data!.Id);
-        var newCount = cartResult.Data?.Items.Sum(i => i.Quantity) ?? 0;
-        var totalPrice = cartResult.Data?.Total ?? 0;
+        var newCount = cartResult.Data?.Items.Sum(i => i.Quantity) ??0;
+        var totalPrice = cartResult.Data?.Total ??0;
 
         return Ok(new { success = true, message = result.Message, newCount, totalPrice });
     }
@@ -54,19 +54,31 @@ public class CartController : Controller
     public async Task<IActionResult> UpdateQuantity(Guid itemId, int quantity)
     {
         var profile = await _userProfileService.GetProfileAsync(User);
+        // If user not authenticated
         if (profile.Status is false)
         {
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json"))
+                return Unauthorized(new { success = false, message = "Unauthorized" });
+
             return RedirectToAction("Login", "User");
         }
 
         var response = await _cartService.UpdateItemQuantityAsync(profile.Data!.Id, itemId, quantity);
 
+        var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json");
+
         if (!response.Status)
         {
+            if (isAjax)
+                return BadRequest(new { success = false, message = response.Message });
+
             TempData["Error"] = response.Message;
         }
         else
         {
+            if (isAjax)
+                return Ok(new { success = true, message = "Cart updated." });
+
             TempData["Success"] = "Cart updated.";
         }
 

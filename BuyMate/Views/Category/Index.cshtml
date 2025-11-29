@@ -41,7 +41,7 @@
                             <td class="px-4 py-3 text-sm">
                                 <div class="flex items-center gap-2">
                                     <a asp-action="Edit" asp-route-id="@item.Id"  class="btn btn-outline btn-sm">Edit</a>
-                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" onsubmit="return confirm('Delete this category?');">
+                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="swal-delete" data-confirm="Delete this category?">
                                         @Html.AntiForgeryToken()
                                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                                     </form>
@@ -60,3 +60,8 @@
         </table>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/category.js"></script>
+}

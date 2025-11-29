@@ -27,7 +27,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				@if (Model != null && Model.Count != 0)
+				@if (Model != null && Model.Count !=0)
 				{
 					foreach (var product in Model)
 					{
@@ -54,7 +54,7 @@
 							<td class="px-4 py-3 text-sm">
 								<div class="flex items-center gap-2">
 									<a asp-controller="Product" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-outline btn-sm">Edit</a>
-									<form action="@Url.Action("Delete", "Product", new { id = product.Id })" method="post" onsubmit="return confirm('Delete this product?');">
+									<form action="@Url.Action("Delete", "Product", new { id = product.Id })" method="post" class="swal-delete" data-confirm="Delete this product?">
 										@Html.AntiForgeryToken()
 										<button type="submit" class="btn btn-danger btn-sm">Delete</button>
 									</form>
@@ -73,3 +73,8 @@
 		</table>
 	</div>
 </div>
+
+@section Scripts {
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="~/js/product-index.js"></script>
+}

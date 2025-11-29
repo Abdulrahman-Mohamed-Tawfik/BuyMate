@@ -1,4 +1,5 @@
 using BuyMate.DTO.Common;
+using BuyMate.DTO.Validations;
 using System.ComponentModel.DataAnnotations;
 
 namespace BuyMate.DTO.ViewModels
@@ -32,6 +33,7 @@ namespace BuyMate.DTO.ViewModels
         public List<string> ImageUrls { get; set; } = new();
         public List<Guid> CategoryIds { get; set; } = new();
 
+        [UniqueSpecifications(ErrorMessage = "Each specification key must be unique.")]
         public List<ProductSpecficationInput> Specifications { get; set; } = new();
 
     }

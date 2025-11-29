@@ -3,11 +3,12 @@ using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.DTO.Category;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.Enum;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using System.IO;
-using BuyMate.Infrastructure.Contracts;
 using BuyMate.DTO.ViewModels;
+using BuyMate.Infrastructure.Contracts;
+using BuyMate.Model.Entities;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using System.IO;
 
 namespace BuyMate.BLL.Features.CategoryFeatures
 {
@@ -115,7 +116,12 @@ namespace BuyMate.BLL.Features.CategoryFeatures
 
         public async Task<Response<bool>> DeleteAsync(Guid id)
         {
+            var category = (await _categoryRepository.GetAsync(x => x.Id == id)).FirstOrDefault();
+
+            _fileService.DeleteImage(category.ImageUrl.Replace("images/", ""));
+
             var deleted = await _categoryRepository.DeletePhysicallyAsync(id);
+
             if (!deleted)
                 return Response<bool>.Fail("Category not found or could not be deleted.");
 

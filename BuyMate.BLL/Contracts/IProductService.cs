@@ -10,7 +10,7 @@ namespace BuyMate.BLL.Contracts
      
         Task<Response<ProductViewModel?>> GetByIdAsync(Guid id);
         Task<Response<Guid>> CreateAsync(ProductCreateViewModel model, List<IFormFile> files);
-        Task<Response<bool>> UpdateAsync(Guid id, ProductUpdateViewModel model);
+        Task<Response<bool>> UpdateAsync(Guid id, ProductUpdateViewModel model, List<IFormFile>? files);
         Task<Response<bool>> DeleteAsync(Guid id);
 
         // NEW: Pagination with filters

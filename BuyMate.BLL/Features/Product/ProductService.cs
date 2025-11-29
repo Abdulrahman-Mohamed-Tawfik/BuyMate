@@ -239,12 +239,32 @@ namespace BuyMate.BLL.Features.Product
             };
         }
 
-        public async Task<Response<bool>> UpdateAsync(Guid id, ProductUpdateViewModel model)
+        public async Task<Response<bool>> UpdateAsync(Guid id, ProductUpdateViewModel model, List<IFormFile>? files)
         {
 
             var entity = await _repo.GetByIdAsync(id);
             if (entity == null)
                 return new Response<bool> { Status = false, Data = false, Message = "Not Found" };
+
+            // If there are uploaded files, save them and append returned URLs to model.ImageUrls
+            if (files != null && files.Any())
+            {
+                var saveResult = await _fileService.SaveImagesAsync(
+                    files,
+                    MaxFileSizeBytes,
+                    AllowedExtensions,
+                    ProductsFolderName
+                );
+
+                if (!saveResult.Status)
+                {
+                    return Response<bool>.Fail(saveResult.Message);
+                }
+
+                // Append saved URLs to any existing ImageUrls that were preserved on the client
+                model.ImageUrls ??= new List<string>();
+                model.ImageUrls.AddRange(saveResult.Data);
+            }
 
             entity.Name = model.Name;
             entity.Brand = model.Brand;
@@ -252,6 +272,8 @@ namespace BuyMate.BLL.Features.Product
             entity.Price = model.Price;
             entity.StockQuantity = model.StockQuantity;
             entity.UpdatedAt = DateTime.UtcNow;
+
+
 
             // update discount if provided
             if (model.DiscountPercentage.HasValue && model.DiscountPercentage > 0)

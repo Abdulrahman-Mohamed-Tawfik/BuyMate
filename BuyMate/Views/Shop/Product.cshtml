@@ -114,8 +114,8 @@
 				</div>
 
 				<div class="flex flex-col sm:flex-row sm:items-center sm:space-x-4">
-					<button id="addToCartBtn" class="btn btn-primary btn-lg flex-1" type="button" onclick="addToCart('@Model.Id')" @(Model.StockQuantity <= 0 ? "disabled" : "")>
-						@(Model.StockQuantity > 0 ? "Add to Cart" : "Notify Me")
+					<button id="addToCartBtn" class="btn btn-primary btn-lg flex-1" type="button" onclick="addToCart('@Model.Id', event)" @(Model.StockQuantity <=0 ? "disabled" : "")>
+						@(Model.StockQuantity >0 ? "Add to Cart" : "Notify Me")
 					</button>
 				</div>
 			</div>
@@ -152,12 +152,8 @@
 </main>
 
 @section Scripts {
-	<script>
-		function setMainImage(src) {
-		var img = document.getElementById('mainImage');
-		if (!img) return;
-		img.src = src;
-		}
+	<script src="~/js/shop-product.js">
+		
 	</script>
 	<script src="~/js/cart.js"></script>
 }

@@ -74,11 +74,16 @@ public class CartService : ICartService
         }
         else
         {
+            var newQuantity = quantity;
+            if (product.StockQuantity < newQuantity)
+                //return Response<bool>.Fail($"Only {product.StockQuantity} units of {product.Name} are currently in stock.");
+                return Response<bool>.Fail($"Cannot add {quantity} more units of {product.Name} to cart. Only {product.StockQuantity} additional units are available in stock.");
+
             var newItem = new CartItem
             {
                 CartId = cart.Id,
                 ProductId = productId,
-                Quantity = quantity,
+                Quantity = newQuantity,
                 PriceAtAddition = product.Price
             };
             await _cartItemRepository.CreateAsync(newItem);

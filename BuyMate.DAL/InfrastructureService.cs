@@ -74,7 +74,7 @@ namespace BuyMate.DAL
             {
                 options.AddPolicy("AdminOnly", policy =>
                 {
-                    policy.RequireRole("Admin");
+                    policy.RequireRole("admin");
                 });
             });
 

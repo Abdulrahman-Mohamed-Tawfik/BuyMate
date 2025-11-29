@@ -4,11 +4,12 @@ using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Infrastructure.Contracts;
 using BuyMate.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers
 {
-    // UI-focused Product controller (conventional view discovery like UserController)
+    [Authorize(Roles = "admin")]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;

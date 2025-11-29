@@ -67,6 +67,12 @@
                                 <span>@User.Identity.Name</span>
                             </label>
                             <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                                @if (User.IsInRole("admin"))
+                                {
+                                    <li>
+                                        <a asp-controller="Admin" asp-action="Index" class="text-purple-600 hover:text-purple-500 font-medium">Admin Dashboard</a>
+                                    </li>
+                                }
                                 <li>
                                     <a asp-controller="User" asp-action="Profile">Profile</a>
                                 </li>
@@ -128,6 +134,13 @@
                     <a asp-controller="Shop" asp-action="Deals" class="text-sm text-destructive hover:text-destructive/80 transition-colors">
                         Flash Deals
                     </a>
+
+                    @if (User.IsInRole("admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Index" class="text-sm transition-colors flex items-center space-x-1 text-purple-600 hover:text-purple-500 font-medium">
+                            <span>Admin Dashboard</span>
+                        </a>
+                    }
                 </nav>
 
                 <!-- Mobile navigation - only visible when menu is open -->
@@ -141,6 +154,13 @@
                     <a asp-controller="Shop" asp-action="Deals" class="block w-full text-left py-2 text-sm text-destructive hover:text-destructive/80 transition-colors">
                         Flash Deals
                     </a>
+
+                    @if (User.IsInRole("admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Index" class="block w-full text-left py-2 text-sm transition-colors font-medium text-purple-600 hover:text-purple-500">
+                            Admin Dashboard
+                        </a>
+                    }
                 </nav>
             </div>
         </div>

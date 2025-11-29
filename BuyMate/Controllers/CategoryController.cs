@@ -1,11 +1,13 @@
 ﻿using BuyMate.BLL.Contracts;
 using BuyMate.DTO.Category;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 using BuyMate.DTO.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers
 {
+    [Authorize(Roles = "admin")]
     public class CategoryController : Controller
     {
         private readonly ICategoryService _categoryService;

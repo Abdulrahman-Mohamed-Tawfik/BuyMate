@@ -51,15 +51,8 @@
     </div>
 </div>
 
-<script>
-    (function(){
-        var toggle = document.getElementById('showPasswordLogin');
-        if (!toggle) return;
-        toggle.addEventListener('change', function(){
-            var el = document.getElementById('LoginPassword');
-            if (el) el.type = this.checked ? 'text' : 'password';
-        });
-    })();
+<script src="~/js/user-login.js">
+   
 </script>
 
 

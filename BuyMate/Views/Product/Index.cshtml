@@ -76,23 +76,5 @@
 
 @section Scripts {
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-	<script>
-		document.addEventListener('DOMContentLoaded', function () {
-			document.querySelectorAll('form.swal-delete').forEach(function (form) {
-				form.addEventListener('submit', function (e) {
-					e.preventDefault();
-					Swal.fire({
-						title: form.dataset.confirm || 'Are you sure?',
-						icon: 'warning',
-						showCancelButton: true,
-						confirmButtonText: 'Delete'
-					}).then(function (result) {
-						if (result.isConfirmed) {
-							form.submit();
-						}
-					});
-				});
-			});
-		});
-	</script>
+	<script src="~/js/product-index.js"></script>
 }

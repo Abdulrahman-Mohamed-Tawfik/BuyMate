@@ -119,7 +119,7 @@ namespace BuyMate.BLL.Features.OrderFeature
                 Fees = cartResponse.Data.Tax,
                 Subtotal = subtotal,
                 DiscountAmount = discountAmount,
-                TrackingNumber = $"{_orderRepository.GetAll().Count +1}"
+                TrackingNumber =  Guid.NewGuid().ToString("N").Substring(0, 9).ToUpper()
             };
 
             var orderItems = new List<OrderItem>();
@@ -147,6 +147,91 @@ namespace BuyMate.BLL.Features.OrderFeature
             await _cartService.ClearCart(userId);
 
             return Response<bool>.Success(true);
+        }
+
+        public async Task<Response<OrderViewModel>> GetUserOrderByIDForAdminAsync(Guid orderId)
+        {
+            var order = await _orderRepository.GetOrderWithItemsAsync(orderId);
+            if(order is null)
+            {
+                return Response<OrderViewModel>.Fail("Order not found.");
+            }
+
+            var orderViewModel = new OrderViewModel
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                CouponId = order.CouponId,
+                ShippingAddress = order.ShippingAddress,
+                OrderDate = order.OrderDate,
+                OrderStatus = order.OrderStatus,
+                PaymentStatus = order.PaymentStatus,
+                TrackingNumber = order.TrackingNumber,
+                Subtotal = order.Subtotal,
+                Fees = order.Fees,
+                Total = order.Total,
+                Items = order.Items.Select(item => new OrderItemViewModel
+                {
+                    Id = item.Id,
+                    ProductId = item.ProductId,
+                    ProductName = item.Product.Name,
+                    Brand = item.Product.Brand,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    TotalPrice = item.TotalPrice,
+                    ImageUrl = item.Product.Images.Where(p => p.IsMain == true).Select(p => p.ImageUrl).FirstOrDefault()
+                }).ToList()
+            };
+
+            return Response<OrderViewModel>.Success(orderViewModel);
+
+        }
+
+        public async Task<Response<OrderViewModel>> GetUserOrderByIDForUserAsync(Guid orderId, string userId)
+        {
+            var result = await GetUserOrderByIDForAdminAsync(orderId);
+
+            if(result.Status is false || result.Data.UserId.ToString() != userId)
+            {
+                return Response<OrderViewModel>.Fail("Order not found.");
+
+            }
+
+            return result;
+        }
+
+        public async Task<Response<List<OrderViewModel>>> GetUserOrdersAsync(string userId)
+        {
+            var result = await _orderRepository.GetOrdersByUserIdAsync(userId);
+
+            if(result is null)
+            {
+                return Response<List<OrderViewModel>>.Fail("No orders found for the user.");
+            }
+
+            var ordersList = result.Select(order => new OrderViewModel
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                CouponId = order.CouponId,
+                ShippingAddress = order.ShippingAddress,
+                OrderDate = order.OrderDate,
+                OrderStatus = order.OrderStatus,
+                PaymentStatus = order.PaymentStatus,
+                TrackingNumber = order.TrackingNumber,
+                Subtotal = order.Subtotal,
+                Fees = order.Fees,
+                Total = order.Total,
+            }).ToList();
+
+            return Response<List<OrderViewModel>>.Success(ordersList);
+
+
+        }
+
+        public Task<Response<bool>> DeleteOrderAsync(Guid orderId, string userId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

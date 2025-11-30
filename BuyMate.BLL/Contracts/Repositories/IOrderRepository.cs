@@ -7,13 +7,13 @@ namespace BuyMate.BLL.Contracts.Repositories
 {
     public interface IOrderRepository : ICommonRepository<Order>
     {
-        Task<Order?> GetOrderAsync(string orderId);
-        Task<Order?> GetOrderWithItemsAsync(string orderId);
+        Task<Order?> GetOrderAsync(Guid orderId);
+        Task<Order?> GetOrderWithItemsAsync(Guid orderId);
 
 
-        Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId);
+        Task<List<Order>> GetOrdersByUserIdAsync(string userId);
 
-        Task<IEnumerable<Order>> GetAllOrdersWithItemsAsync();
+        Task<List<Order>> GetAllOrdersWithItemsAsync();
 
     }
 }

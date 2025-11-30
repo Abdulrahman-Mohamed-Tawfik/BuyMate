@@ -12,6 +12,13 @@ namespace BuyMate.BLL.Contracts
     {
 
         public Task<Response<bool>> CreateOrderAsync(CheckoutViewModel model, string userId);
+        public Task<Response<OrderViewModel>> GetUserOrderByIDForAdminAsync(Guid orderId);
+
+        public Task<Response<OrderViewModel>> GetUserOrderByIDForUserAsync (Guid orderId, string userId);
+
+        public Task<Response<List<OrderViewModel>>> GetUserOrdersAsync(string userId);
+
+        public Task<Response<bool>> DeleteOrderAsync(Guid orderId, string userId);
 
     }
 }

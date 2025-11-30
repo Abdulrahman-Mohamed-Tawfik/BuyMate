@@ -1,5 +1,6 @@
 ﻿using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.Model.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,24 +15,50 @@ namespace BuyMate.DAL.Repositories
         public OrderRepository(BuyMateDbContext context) : base(context)
         {
         }
-        public Task<IEnumerable<Order>> GetAllOrdersWithItemsAsync()
+        public async Task<List<Order>> GetAllOrdersWithItemsAsync()
         {
-            throw new NotImplementedException();
+            var query = await GetAsync(null, q => q
+                .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+                .ThenInclude(p => p.Images)
+                );
+            return query.ToList();
         }
 
-        public Task<Order?> GetOrderAsync(string orderId)
+        public async Task<Order?> GetOrderAsync(Guid orderId)
         {
-            throw new NotImplementedException();
+            var query = await GetAsync(o => o.Id == orderId);
+            var order = query.SingleOrDefault();
+            return order;
         }
 
-        public Task<IEnumerable<Order>> GetOrdersByUserIdAsync(string userId)
+        public async Task<List<Order>> GetOrdersByUserIdAsync(string userId)
         {
-            throw new NotImplementedException();
+            if (!Guid.TryParse(userId, out var userGuid))
+                return new List<Order>(); // Change from Enumerable.Empty<Order>() to new List<Order>()
+
+            var query = await GetAsync(o => o.UserId == userGuid, q => q
+                .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+                .ThenInclude(p => p.Images)
+                );
+
+            return query.ToList();
         }
 
-        public Task<Order?> GetOrderWithItemsAsync(string orderId)
+        public async Task<Order?> GetOrderWithItemsAsync(Guid orderId)
         {
-            throw new NotImplementedException();
+            var query = await GetAsync(
+                o => o.Id == orderId, q => q
+                .Include(o => o.Items)
+                .ThenInclude(i => i.Product)
+                .ThenInclude(p => p.Images)
+
+                );
+              
+
+            var order = query.SingleOrDefault();
+            return order;
         }
 
         public override IQueryable<Order> OrderBy(IQueryable<Order> entities, string? orderBy, bool isAccending = true)

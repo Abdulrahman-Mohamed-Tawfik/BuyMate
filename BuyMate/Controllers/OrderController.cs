@@ -2,6 +2,7 @@
 using BuyMate.BLL.Features.Cart;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers
@@ -18,21 +19,44 @@ namespace BuyMate.Controllers
             _checkoutService = checkoutService;
             _orderservice = orderService;
         }
-        // for admin return all orders
-        public IActionResult Index()
+        // for User return all orders
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var profile = await _userProfileService.GetProfileAsync(User);
+            if (profile.Status is false || profile.Data is null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
+            var model = await _orderservice.GetUserOrdersAsync(profile.Data.Id);
+            var orderData = model.Data ?? new List<OrderViewModel>();
+            return View(orderData);
         }
 
 
         //return order For Specific user make sure it validate user
-        public IActionResult Get(Guid id)
+        //Admin Action
+        public async Task<IActionResult> Get(Guid orderid)
         {
-            return View();
+            var profile = await _userProfileService.GetProfileAsync(User);
+            if (profile.Status is false || profile.Data is null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var result = await _orderservice.GetUserOrderByIDForAdminAsync(orderid);
+
+            if(result.Status is false)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction("Index");
+            }
+
+            return View("OrderDetail",result.Data);
         }
 
 
-        //For user return all orders
+        //For Admin return all orders
         public IActionResult GetAll()
         {
             return View();

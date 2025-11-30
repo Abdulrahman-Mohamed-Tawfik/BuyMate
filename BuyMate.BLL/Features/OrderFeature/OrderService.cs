@@ -1,0 +1,152 @@
+﻿using BuyMate.BLL.Contracts;
+using BuyMate.BLL.Contracts.Repositories;
+using BuyMate.DTO.Common;
+using BuyMate.DTO.ViewModels;
+using BuyMate.Model.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BuyMate.BLL.Features.OrderFeature
+{
+    public class OrderService : IOrderService
+    {
+        public ICartService _cartService { get; }
+        public IProductService _productService { get; }
+        public IOrderRepository _orderRepository { get; }
+        public IOrderItemRepository _orderItemRepository { get; }
+
+        public OrderService(ICartService cartService,IProductService productService, IOrderRepository orderRepository, IOrderItemRepository orderItemRepository) 
+        {
+            _cartService = cartService;
+            _productService = productService;
+            _orderRepository = orderRepository;
+            _orderItemRepository = orderItemRepository;
+        }
+
+
+        public async Task<Response<bool>> CreateOrderAsync(CheckoutViewModel model, string userId)
+        {
+
+            var cartResponse = await _cartService.GetCartAsync(userId);
+
+            //Check if cart is available and has items
+            if (cartResponse is null || cartResponse.Status is false || cartResponse.Data.Items.Count == 0)
+            {
+                return Response<bool>.Fail("Cannot create order. Cart is empty or unavailable.");
+            }
+
+
+           //Validate Address and Checkout Data
+
+            var addr = model.ShippingAddress;
+            if (addr is null)
+                return Response<bool>.Fail("Shipping address is required.");
+
+            if (string.IsNullOrWhiteSpace(addr.Street) ||
+                string.IsNullOrWhiteSpace(addr.City) ||
+                string.IsNullOrWhiteSpace(addr.State) ||
+                string.IsNullOrWhiteSpace(addr.ZipCode))
+            {
+                return Response<bool>.Fail("Shipping address is incomplete.");
+            }
+
+            // Validate payment and delivery selections
+            if (string.IsNullOrWhiteSpace(model.PaymentMethod))
+                return Response<bool>.Fail("Payment method is required.");
+
+            if (string.IsNullOrWhiteSpace(model.DeliveryType))
+                return Response<bool>.Fail("Delivery type is required.");
+
+            // Validate cart totals (basic sanity)
+            if (cartResponse.Data.Subtotal <= 0m)
+                return Response<bool>.Fail("Cart subtotal is invalid.");
+
+            string address = $"{addr.Street}, {addr.City}, {addr.State}, {addr.ZipCode}";
+
+
+
+            //Validate Products
+            var products = await _productService.GetProductsByIdsAsync(cartResponse.Data.Items.Select(i => i.ProductId).ToList());
+
+            if (products is null || products.Status is false)
+            {
+                return Response<bool>.Fail("Cannot retrieve products information.");
+            }
+
+            if (products.Data.Count != cartResponse.Data.Items.Count)
+            {
+                return Response<bool>.Fail("Some products in the cart are unavailable.");
+            }
+            //validate stock quantity
+            foreach (var item in cartResponse.Data.Items)
+            {
+                var p = products.Data.FirstOrDefault(p => item.ProductId == p.Id);
+                if (item.Quantity > p.StockQuantity)
+                    return Response<bool>.Fail($"Not enough stock for product: {item.ProductName}");
+
+                p.StockQuantity -= item.Quantity;
+            }
+
+            //Update Stock Quantity
+            await _productService.UpdateProductsStockAsync(products.Data);
+
+            //Apply coupon if available
+            //To Be implemented
+
+
+            //calculate order totals
+            var subtotal = cartResponse.Data.Items.Select(i => i.PriceAtAddition * i.Quantity).Sum();
+
+            var discountAmount = 0m;  //To Be implemented
+
+            var fees = cartResponse.Data.Tax; //To Be implemented (shipping fees etc.)
+            var total = subtotal - discountAmount + fees;
+
+
+            //
+
+            var entity = new Order
+            {
+                UserId = Guid.Parse(userId),
+                OrderDate = DateTime.UtcNow,
+                ShippingAddress = address,
+                OrderStatus = 0,
+                PaymentStatus = 0,
+                Total = cartResponse.Data.Total,
+                Fees = cartResponse.Data.Tax,
+                Subtotal = subtotal,
+                DiscountAmount = discountAmount,
+                TrackingNumber = $"{_orderRepository.GetAll().Count +1}"
+            };
+
+            var orderItems = new List<OrderItem>();
+            var order = await _orderRepository.CreateAsync(entity);
+
+            foreach (var item in cartResponse.Data.Items)
+            {
+                var orderItem = new OrderItem
+                {
+                    OrderId = order.Id,
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.PriceAtAddition,
+                    TotalPrice = item.Quantity * item.PriceAtAddition
+                };
+                orderItems.Add(orderItem);
+            }
+
+
+            //SAve Entities and Order Items
+            await _orderItemRepository.CreateRangeAsync(orderItems);
+
+
+            //Clear Cart
+            await _cartService.ClearCart(userId);
+
+            return Response<bool>.Success(true);
+        }
+    }
+}

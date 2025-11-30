@@ -357,6 +357,26 @@ namespace BuyMate.BLL.Features.Product
             };
         }
 
+
+        public async Task<Response<bool>> UpdateProductsStockAsync (List<ProductViewModel> products)
+        {
+            if(products is null || products.Count == 0)
+            {
+                return  Response<bool>.Fail("Products Not Found ");
+            }
+
+            foreach (var product in products)
+            {
+                var entity =  await _repo.GetByIdAsync(product.Id);
+
+                entity.StockQuantity = product.StockQuantity;
+
+                await _repo.UpdateAsync(entity);
+
+            }
+
+            return Response<bool>.Success(true);
+        }
         public async Task<Response<bool>> DeleteAsync(Guid id)
         {
 
@@ -371,6 +391,39 @@ namespace BuyMate.BLL.Features.Product
             };
         }
 
+        public async Task<Response<List<ProductViewModel>>> GetProductsByIdsAsync (List<Guid> ids)
+        {
+            if (ids == null || ids.Count == 0)
+            {
+                return Response<List<ProductViewModel>>.Fail("No product IDs provided.");
+            }
+
+            // Remove duplicates just in case
+            ids = ids.Distinct().ToList();
+
+            // 1. Get the products
+            var products = await _repo.GetAllQueryable(p => ids.Contains(p.Id))
+                .ToListAsync();
+
+            if (!products.Any())
+            {
+                return Response<List<ProductViewModel>>.Fail("No products found.");
+            }
+
+           
+
+            // 3. Map to view models
+            var result = products.Select(p =>
+            {
+                var imgs =  new List<ProductImage>();
+
+                var cats = new List<Category>();
+
+                return ToViewModel(p, imgs, cats);
+            }).ToList();
+
+            return Response<List<ProductViewModel>>.Success(result, "Products loaded successfully.");
+        }
         private static ProductViewModel ToViewModel(ProductEntity p, List<ProductImage> images, List<Category> categories)
         {
             var rating = p.Reviews != null && p.Reviews.Any()

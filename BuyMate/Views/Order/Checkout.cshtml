@@ -7,7 +7,7 @@
 <div class="max-w-4xl mx-auto">
     <h1 class="text-3xl font-bold mb-8">Checkout</h1>
 
-    <form asp-action="ProcessOrder" method="post" class="space-y-8">
+    <form asp-action="Create" asp-controller="Order" method="post" class="space-y-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Shipping Information -->
             <div class="space-y-6">
@@ -15,17 +15,6 @@
                     <h2 class="text-xl font-bold mb-4">Shipping Information</h2>
 
                     <div class="space-y-4">
-                        <div>
-                            <label asp-for="ShippingAddress.Name" class="block text-sm font-medium mb-2">Full Name</label>
-                            <input asp-for="ShippingAddress.Name" class="input w-full" placeholder="Enter your full name" />
-                            <span asp-validation-for="ShippingAddress.Name" class="text-sm text-destructive"></span>
-                        </div>
-
-                        <div>
-                            <label asp-for="ShippingAddress.Phone" class="block text-sm font-medium mb-2">Phone Number</label>
-                            <input asp-for="ShippingAddress.Phone" class="input w-full" placeholder="Enter your phone number" />
-                            <span asp-validation-for="ShippingAddress.Phone" class="text-sm text-destructive"></span>
-                        </div>
 
                         <div>
                             <label asp-for="ShippingAddress.Street" class="block text-sm font-medium mb-2">Street Address</label>
@@ -53,8 +42,8 @@
                         </div>
                     </div>
                 </div>
-
-                <!-- Payment Method -->
+			
+             
                 <div class="card p-6">
                     <h2 class="text-xl font-bold mb-4">Payment Method</h2>
 
@@ -93,9 +82,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> 
 
-            <!-- Order Summary -->
+          
             <div class="space-y-6">
                 <div class="card p-6">
                     <h2 class="text-xl font-bold mb-4">Order Summary</h2>

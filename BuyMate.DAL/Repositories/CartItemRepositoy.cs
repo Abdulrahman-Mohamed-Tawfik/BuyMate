@@ -17,9 +17,19 @@ public class CartItemRepositoy : CommonRepository<CartItem>, ICartItemRepository
         return cartItem;
     }
 
+    public async Task<bool> DeleteCartItemsByCartIdAsync(Guid cartId)
+    {
+        var items = (await GetAsync(ci => ci.CartId == cartId)).ToList();
+        if (!items.Any()) return true;
+
+        _context.Set<CartItem>().RemoveRange(items);
+        await _context.SaveChangesAsync();
+        return true;
+    }
+
     public override IQueryable<CartItem> OrderBy(IQueryable<CartItem> entities, string? orderBy, bool isAccending = true)
     {
-        throw new NotImplementedException();
+        return entities;
     }
 }
 

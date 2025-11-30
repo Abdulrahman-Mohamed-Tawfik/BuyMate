@@ -77,6 +77,9 @@
                                     <a asp-controller="User" asp-action="Profile">Profile</a>
                                 </li>
                                 <li>
+                                    <a asp-controller="Order" asp-action="Index">Orders</a>
+                                </li>
+                                <li>
                                     <form asp-controller="User" asp-action="Logout" method="post">
                                         <button type="submit">Logout</button>
                                     </form>
@@ -176,7 +179,7 @@
             </div>
         }
 
-        @if (ViewData.ModelState.ErrorCount > 0)
+        @if (TempData["Error"] != null || ViewData.ModelState.ErrorCount > 0)
         {
             <div id="errorAlert" class="relative bg-red-100 border border-red-400 text-red-700 px-8 py-4 rounded mb-8 w-full max-w-md mx-auto" role="alert">
                 <ul class=" text-center list-disc pl-5">
@@ -185,6 +188,12 @@
                         <li>@error.ErrorMessage</li>
                     }
                 </ul>
+
+                @if(TempData["Error"] != null)
+                {
+                    <ul>@TempData["Error"]</ul>
+                }
+                
                 <!-- Optional progress bar -->
                 <div id="errorProgressBar" class="absolute bottom-0 left-0 h-2 bg-red-500 rounded-b" style="width:0%"></div>
             </div>

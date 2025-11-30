@@ -9,4 +9,6 @@ public interface ICartService
     Task<Response<bool>> AddToCartAsync(string userId, Guid productId, int quantity);
     Task<Response<bool>> UpdateItemQuantityAsync(string userId, Guid itemId, int quantity);
     Task<Response<bool>> RemoveFromCartAsync(Guid itemId);
+
+    Task<Response<bool>> ClearCart(string userId);
 }

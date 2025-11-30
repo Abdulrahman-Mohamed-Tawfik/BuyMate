@@ -7,7 +7,7 @@ namespace BuyMate.DAL.Repositories
 {
     public abstract class CommonRepository<TEntity> : ICommonRepository<TEntity> where TEntity : class
     {
-        private readonly BuyMateDbContext _context;
+        protected readonly BuyMateDbContext _context;
         public CommonRepository(BuyMateDbContext context)
         {
             _context = context;

@@ -43,7 +43,7 @@ namespace BuyMate.Controllers
                 return RedirectToAction("Login");
             }
 
-            var result = await _orderservice.GetUserOrderByIDForAdminAsync(orderid);
+            var result = await _orderservice.GetUserOrderByIDForUserAsync(orderid,profile.Data.Id);
 
             if(result.Status is false)
             {
@@ -55,11 +55,7 @@ namespace BuyMate.Controllers
         }
 
 
-        //For Admin return all orders
-        public IActionResult GetAll()
-        {
-            return View();
-        }
+
 
 
         [HttpPost]
@@ -102,11 +98,6 @@ namespace BuyMate.Controllers
             return RedirectToAction("Index","Home");
         }
 
-        //For Admin to update order status
-        public IActionResult Update(Guid id)
-        {
-            return View();
-        }
 
         //Cancel order if it is not processing
         public async Task<IActionResult> Cancel(Guid id)
@@ -131,10 +122,6 @@ namespace BuyMate.Controllers
 
         }
 
-        public IActionResult Delete(Guid id)
-        {
-            return View(null);
-        }
 
         [HttpGet]
         public async Task<IActionResult> Checkout()
@@ -152,6 +139,76 @@ namespace BuyMate.Controllers
             }
             return View(checkoutVmResult.Data);
         }
+
+        //For Admin return all orders
+        public async Task<IActionResult> GetAll()
+        {
+            var orders = await _orderservice.GetAllOrdersAsync();
+
+            var orderData = orders.Data ?? new List<OrderViewModel>();
+
+            return View("AllOrders", orderData);
+        }
+
+
+        //For Admin to get order details
+        public async Task<IActionResult> GetById(Guid orderid)
+        {
+            var result = await _orderservice.GetUserOrderByIDForAdminAsync(orderid);
+            if (result.Status is false)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction("GetAll");
+            }
+            return View("AdminOrderDetail", result.Data);
+        }
+
+        //For Admin to edit order details
+        public async Task<IActionResult> Edit(Guid id)
+        {
+            var result = await _orderservice.GetUserOrderByIDForAdminAsync(id);
+            if (result.Status is false)
+            {
+                TempData["Error"] = result.Message;
+                return RedirectToAction("GetAll");
+            }
+            return View("EditOrder", result.Data);
+        }
+
+        //For Admin to update order status
+        public async Task<IActionResult> UpdateStatus(Guid id, int orderstatus)
+        {
+            var result = await _orderservice.UpdateOrderStatusByAdminAsync(id, orderstatus);
+            if (result.Status is false)
+            {
+                TempData["Error"] = result.Message;
+            }
+            else
+            {
+                TempData["Success"] = "Order status updated successfully.";
+            }
+            return RedirectToAction("GetAll");
+        }
+
+        
+
+
+        //Admin Delete Action
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _orderservice.DeleteOrderByAdminAsync(id);
+            if (result.Status is false)
+            {
+                TempData["Error"] = result.Message;
+            }
+            else
+            {
+                TempData["Success"] = "Order deleted successfully.";
+            }
+            return RedirectToAction("GetAll");
+        }
+
+       
 
     }
 }

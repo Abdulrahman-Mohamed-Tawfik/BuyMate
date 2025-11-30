@@ -1,0 +1,33 @@
+@model BuyMate.DTO.ViewModels.OrderViewModel
+@{
+ ViewData["Title"] = "Edit Order";
+}
+
+<div class="max-w-3xl mx-auto">
+ <h1 class="text-2xl font-bold mb-6">Edit Order</h1>
+
+	<form asp-action="UpdateStatus" method="post">
+ <input type="hidden" asp-for="Id" />
+ <div class="card p-6 space-y-4">
+ <div>
+ <label class="block text-sm font-medium">Order Status</label>
+ <select asp-for="OrderStatus" class="select w-full">
+ <option value="0">Pending</option>
+ <option value="1">Confirmed</option>
+ <option value="2">Shipped</option>
+ <option value="3">Delivered</option>
+ <option value="4">Cancelled</option>
+ <option value="5">Returned</option>
+ </select>
+ </div>
+
+ <div>
+ 
+
+ <div class="flex justify-end space-x-2">
+ <a asp-controller="Order" asp-action="GetAll" class="btn btn-ghost">Cancel</a>
+ <button type="submit" class="btn btn-primary">Save</button>
+ </div>
+ </div>
+ </form>
+</div>

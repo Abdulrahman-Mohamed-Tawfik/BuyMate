@@ -249,5 +249,83 @@ namespace BuyMate.BLL.Features.OrderFeature
             await _orderRepository.DeletePhysicallyAsync(orderId);
             return Response<bool>.Success(true);
         }
+
+
+        public async Task<Response<bool>> DeleteOrderByAdminAsync(Guid orderId)
+        {
+
+            var order = await _orderRepository.GetOrderAsync(orderId);
+            if (order is null)
+            {
+                return Response<bool>.Fail("Order not found or you do not have permission to delete this order.");
+            }
+
+            if (order.OrderStatus != 0)
+            {
+                return Response<bool>.Fail("Only pending orders can be deleted.");
+            }
+
+            var itemIds = await _orderItemRepository.DeleteOrderItemsByOrderIdAsync(orderId);
+
+
+            await _orderRepository.DeletePhysicallyAsync(orderId);
+            return Response<bool>.Success(true);
+        }
+
+        public async Task<Response<List<OrderViewModel>>> GetAllOrdersAsync()
+        {
+            var result = await _orderRepository.GetAllAsync();
+
+            if (result is null)
+            {
+                return Response<List<OrderViewModel>>.Fail("No Orders Exist");
+            }
+
+            var ordersList = result.Select(order => new OrderViewModel
+            {
+                Id = order.Id,
+                UserId = order.UserId,
+                CouponId = order.CouponId,
+                ShippingAddress = order.ShippingAddress,
+                OrderDate = order.OrderDate,
+                OrderStatus = order.OrderStatus,
+                PaymentStatus = order.PaymentStatus,
+                TrackingNumber = order.TrackingNumber,
+                Subtotal = order.Subtotal,
+                Fees = order.Fees,
+                Total = order.Total,
+            }).ToList();
+
+            return Response<List<OrderViewModel>>.Success(ordersList);
+        }
+
+        public async Task<Response<bool>> UpdateOrderStatusByAdminAsync(Guid orderId, int status)
+        {
+            var _statusMapping = new Dictionary<int, string>()
+            {
+                { 0, "Pending" },
+                { 1, "Processing"},
+                { 2, "Shipped"},
+                { 3, "Delivered" },
+                { 4, "Cancelled" },
+                {5, "Returned" }
+            };
+
+            if (!_statusMapping.ContainsKey(status))
+            {
+                return Response<bool>.Fail("Invalid status value.");
+            }
+
+            
+            var order = await _orderRepository.GetOrderAsync(orderId);
+            if (order is null)
+            {
+                return Response<bool>.Fail("Order not found.");
+            }
+
+            order.OrderStatus = status;
+            await _orderRepository.UpdateAsync(order);
+            return Response<bool>.Success(true);
+        }
     }
 }

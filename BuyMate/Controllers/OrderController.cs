@@ -35,7 +35,6 @@ namespace BuyMate.Controllers
 
 
         //return order For Specific user make sure it validate user
-        //Admin Action
         public async Task<IActionResult> Get(Guid orderid)
         {
             var profile = await _userProfileService.GetProfileAsync(User);
@@ -110,9 +109,26 @@ namespace BuyMate.Controllers
         }
 
         //Cancel order if it is not processing
-        public IActionResult Cancel(Guid id)
+        public async Task<IActionResult> Cancel(Guid id)
         {
-            return View(null);
+            var profile = await _userProfileService.GetProfileAsync(User);
+            if (profile.Status is false || profile.Data is null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var result = await _orderservice.CancelOrderAsync(id, profile.Data.Id.ToString());
+
+            if (result.Status is false)
+            {
+                TempData["Error"] = result.Message;
+            }
+            else
+            {
+                TempData["Success"] = "Order cancelled successfully.";
+            }
+            return RedirectToAction("Index");
+
         }
 
         public IActionResult Delete(Guid id)

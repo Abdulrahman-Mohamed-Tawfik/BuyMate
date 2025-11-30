@@ -229,9 +229,25 @@ namespace BuyMate.BLL.Features.OrderFeature
 
         }
 
-        public Task<Response<bool>> DeleteOrderAsync(Guid orderId, string userId)
+        public async Task<Response<bool>> CancelOrderAsync(Guid orderId, string userId)
         {
-            throw new NotImplementedException();
+            
+            var order = await _orderRepository.GetOrderAsync(orderId);
+            if (order is null || order.UserId.ToString() != userId )
+            {
+                return Response<bool>.Fail("Order not found or you do not have permission to delete this order.");
+            }
+
+            if(order.OrderStatus != 0) 
+            {
+                return Response<bool>.Fail("Only pending orders can be deleted.");
+            }
+
+            var itemIds = await _orderItemRepository.DeleteOrderItemsByOrderIdAsync(orderId);
+
+
+            await _orderRepository.DeletePhysicallyAsync(orderId);
+            return Response<bool>.Success(true);
         }
     }
 }

@@ -13,7 +13,20 @@ namespace BuyMate.DAL.Repositories
         public OrderItemRepository(BuyMateDbContext context) : base(context)
         {
         }
-        public Task<OrderItem?> GetCartItemWithProductAsync(Guid itemId)
+
+        public async Task<bool> DeleteOrderItemsByOrderIdAsync(Guid orderId)
+        {
+            var items = (await GetAsync(oi => oi.OrderId == orderId)).ToList();
+            if (!items.Any()) return true;
+
+            _context.Set<OrderItem>().RemoveRange(items);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+    
+
+        public Task<OrderItem?> GetOrderItemWithProductAsync(Guid itemId)
         {
             throw new NotImplementedException();
         }

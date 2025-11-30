@@ -39,10 +39,7 @@
 
 					<div class="flex items-center justify-between mt-4 pt-4 border-t">
 						<div class="text-sm text-muted-foreground">
-							@if (!string.IsNullOrEmpty(order.TrackingId))
-							{
-								<p>Tracking: @order.TrackingId</p>
-							}
+							
 							@if (order.EstimatedDelivery.HasValue)
 							{
 								<p>Estimated delivery: @order.EstimatedDelivery.Value.ToString("MMM dd, yyyy")</p>

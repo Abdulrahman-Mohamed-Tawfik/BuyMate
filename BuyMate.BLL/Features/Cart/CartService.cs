@@ -130,19 +130,9 @@ public class CartService : ICartService
         if (cart is null || cart.Items.Count == 0)
             return Response<bool>.Success(true);
 
-        var itemIds = cart.Items.Select(i => i.Id).ToList();
+       await _cartItemRepository.DeleteCartItemsByCartIdAsync(cart.Id);
 
-        bool is_Deleted = true;
-        foreach (var id in itemIds)
-        {
-  
-             is_Deleted = is_Deleted && await _cartItemRepository.DeletePhysicallyAsync(id);
-
-            
-        }
-
-        if (!is_Deleted)
-            return Response<bool>.Fail("Failed to remove some items from cart.");
+        
 
         return Response<bool>.Success(true, "Items removed from cart successfully.");
     }

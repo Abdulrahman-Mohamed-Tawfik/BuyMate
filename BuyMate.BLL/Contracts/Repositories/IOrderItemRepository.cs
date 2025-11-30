@@ -9,7 +9,8 @@ namespace BuyMate.BLL.Contracts.Repositories
 {
     public interface IOrderItemRepository : ICommonRepository<OrderItem>
     {
-        Task<OrderItem?> GetCartItemWithProductAsync(Guid itemId);
+        Task<OrderItem?> GetOrderItemWithProductAsync(Guid itemId);
+        Task<bool> DeleteOrderItemsByOrderIdAsync(Guid orderId);
 
     }
 }

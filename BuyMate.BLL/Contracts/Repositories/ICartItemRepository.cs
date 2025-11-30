@@ -5,4 +5,6 @@ namespace BuyMate.BLL.Contracts.Repositories;
 public interface ICartItemRepository : ICommonRepository<CartItem>
 {
     Task<CartItem?> GetCartItemWithProductAsync(Guid itemId);
+    Task<bool> DeleteCartItemsByCartIdAsync(Guid cartId);
+
 }

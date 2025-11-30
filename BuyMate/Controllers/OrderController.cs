@@ -7,19 +7,20 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers
 {
+    [Authorize]
     public class OrderController : Controller
     {
         public IUserProfileService _userProfileService { get; }
         public ICheckoutService _checkoutService { get; }
         public IOrderService _orderservice { get; }
 
-        public OrderController(IUserProfileService userProfileService, ICheckoutService checkoutService,IOrderService orderService)
+        public OrderController(IUserProfileService userProfileService, ICheckoutService checkoutService, IOrderService orderService)
         {
             _userProfileService = userProfileService;
             _checkoutService = checkoutService;
             _orderservice = orderService;
         }
-        // for User return all orders
+
         public async Task<IActionResult> Index()
         {
             var profile = await _userProfileService.GetProfileAsync(User);
@@ -33,8 +34,6 @@ namespace BuyMate.Controllers
             return View(orderData);
         }
 
-
-        //return order For Specific user make sure it validate user
         public async Task<IActionResult> Get(Guid orderid)
         {
             var profile = await _userProfileService.GetProfileAsync(User);
@@ -43,24 +42,19 @@ namespace BuyMate.Controllers
                 return RedirectToAction("Login");
             }
 
-            var result = await _orderservice.GetUserOrderByIDForUserAsync(orderid,profile.Data.Id);
+            var result = await _orderservice.GetUserOrderByIDForUserAsync(orderid, profile.Data.Id);
 
-            if(result.Status is false)
+            if (result.Status is false)
             {
                 TempData["Error"] = result.Message;
                 return RedirectToAction("Index");
             }
 
-            return View("OrderDetail",result.Data);
+            return View("OrderDetail", result.Data);
         }
-
-
-
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        //create order for a specific user
         public async Task<IActionResult> Create(CheckoutViewModel model)
         {
 
@@ -83,23 +77,22 @@ namespace BuyMate.Controllers
                 return View("Checkout", model);
             }
 
-            
+
 
             var result = await _orderservice.CreateOrderAsync(model, profile.Data.Id);
 
             if (result.Status is false)
             {
-                ModelState.AddModelError(string.Empty, result.Message);
-                return RedirectToAction("Checkout", "Cart");
+                TempData["Error"] = result.Message;
+                return RedirectToAction("Index", "Cart");
             }
 
             TempData["Success"] = "Order placed successfully!";
 
-            return RedirectToAction("Index","Home");
+            return RedirectToAction("Index", "Home");
         }
 
-
-        //Cancel order if it is not processing
+        [HttpPost]
         public async Task<IActionResult> Cancel(Guid id)
         {
             var profile = await _userProfileService.GetProfileAsync(User);
@@ -122,7 +115,6 @@ namespace BuyMate.Controllers
 
         }
 
-
         [HttpGet]
         public async Task<IActionResult> Checkout()
         {
@@ -140,7 +132,10 @@ namespace BuyMate.Controllers
             return View(checkoutVmResult.Data);
         }
 
-        //For Admin return all orders
+
+        #region Admin Actions
+        [Authorize(Roles = "admin")]
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             var orders = await _orderservice.GetAllOrdersAsync();
@@ -150,8 +145,7 @@ namespace BuyMate.Controllers
             return View("AllOrders", orderData);
         }
 
-
-        //For Admin to get order details
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> GetById(Guid orderid)
         {
             var result = await _orderservice.GetUserOrderByIDForAdminAsync(orderid);
@@ -163,7 +157,7 @@ namespace BuyMate.Controllers
             return View("AdminOrderDetail", result.Data);
         }
 
-        //For Admin to edit order details
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var result = await _orderservice.GetUserOrderByIDForAdminAsync(id);
@@ -175,7 +169,7 @@ namespace BuyMate.Controllers
             return View("EditOrder", result.Data);
         }
 
-        //For Admin to update order status
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> UpdateStatus(Guid id, int orderstatus)
         {
             var result = await _orderservice.UpdateOrderStatusByAdminAsync(id, orderstatus);
@@ -190,10 +184,7 @@ namespace BuyMate.Controllers
             return RedirectToAction("GetAll");
         }
 
-        
-
-
-        //Admin Delete Action
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var result = await _orderservice.DeleteOrderByAdminAsync(id);
@@ -208,7 +199,6 @@ namespace BuyMate.Controllers
             return RedirectToAction("GetAll");
         }
 
-       
-
+        #endregion
     }
 }

@@ -3,11 +3,6 @@ using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BuyMate.BLL.Features.OrderFeature
 {
@@ -18,7 +13,7 @@ namespace BuyMate.BLL.Features.OrderFeature
         public IOrderRepository _orderRepository { get; }
         public IOrderItemRepository _orderItemRepository { get; }
 
-        public OrderService(ICartService cartService,IProductService productService, IOrderRepository orderRepository, IOrderItemRepository orderItemRepository) 
+        public OrderService(ICartService cartService, IProductService productService, IOrderRepository orderRepository, IOrderItemRepository orderItemRepository)
         {
             _cartService = cartService;
             _productService = productService;
@@ -39,7 +34,7 @@ namespace BuyMate.BLL.Features.OrderFeature
             }
 
 
-           //Validate Address and Checkout Data
+            //Validate Address and Checkout Data
 
             var addr = model.ShippingAddress;
             if (addr is null)
@@ -85,7 +80,7 @@ namespace BuyMate.BLL.Features.OrderFeature
             {
                 var p = products.Data.FirstOrDefault(p => item.ProductId == p.Id);
                 if (item.Quantity > p.StockQuantity)
-                    return Response<bool>.Fail($"Not enough stock for product: {item.ProductName}");
+                    return Response<bool>.Fail($"Not enough stock for product: {item.ProductName} (Available: {p.StockQuantity})");
 
                 p.StockQuantity -= item.Quantity;
             }
@@ -119,7 +114,7 @@ namespace BuyMate.BLL.Features.OrderFeature
                 Fees = cartResponse.Data.Tax,
                 Subtotal = subtotal,
                 DiscountAmount = discountAmount,
-                TrackingNumber =  Guid.NewGuid().ToString("N").Substring(0, 9).ToUpper()
+                TrackingNumber = Guid.NewGuid().ToString("N").Substring(0, 9).ToUpper()
             };
 
             var orderItems = new List<OrderItem>();
@@ -152,7 +147,7 @@ namespace BuyMate.BLL.Features.OrderFeature
         public async Task<Response<OrderViewModel>> GetUserOrderByIDForAdminAsync(Guid orderId)
         {
             var order = await _orderRepository.GetOrderWithItemsAsync(orderId);
-            if(order is null)
+            if (order is null)
             {
                 return Response<OrderViewModel>.Fail("Order not found.");
             }
@@ -191,7 +186,7 @@ namespace BuyMate.BLL.Features.OrderFeature
         {
             var result = await GetUserOrderByIDForAdminAsync(orderId);
 
-            if(result.Status is false || result.Data.UserId.ToString() != userId)
+            if (result.Status is false || result.Data.UserId.ToString() != userId)
             {
                 return Response<OrderViewModel>.Fail("Order not found.");
 
@@ -204,7 +199,7 @@ namespace BuyMate.BLL.Features.OrderFeature
         {
             var result = await _orderRepository.GetOrdersByUserIdAsync(userId);
 
-            if(result is null)
+            if (result is null)
             {
                 return Response<List<OrderViewModel>>.Fail("No orders found for the user.");
             }
@@ -231,19 +226,45 @@ namespace BuyMate.BLL.Features.OrderFeature
 
         public async Task<Response<bool>> CancelOrderAsync(Guid orderId, string userId)
         {
-            
-            var order = await _orderRepository.GetOrderAsync(orderId);
-            if (order is null || order.UserId.ToString() != userId )
+
+            var order = await _orderRepository.GetOrderWithItemsAsync(orderId);
+            if (order is null || order.UserId.ToString() != userId)
             {
                 return Response<bool>.Fail("Order not found or you do not have permission to delete this order.");
             }
 
-            if(order.OrderStatus != 0) 
+            if (order.OrderStatus != 0)
             {
                 return Response<bool>.Fail("Only pending orders can be deleted.");
             }
 
-            var itemIds = await _orderItemRepository.DeleteOrderItemsByOrderIdAsync(orderId);
+
+
+            var products = await _productService.GetProductsByIdsAsync(order.Items.Select(i => i.ProductId).ToList());
+
+            if (products is null || products.Status is false)
+            {
+                return Response<bool>.Fail("Cannot retrieve products information.");
+            }
+
+
+            foreach (var item in order.Items)
+            {
+                var p = products.Data.FirstOrDefault(p => item.ProductId == p.Id);
+
+                if (p == null)
+                {
+                    return Response<bool>.Fail($"Product not found: {item.ProductId}");
+                }
+
+                p.StockQuantity += item.Quantity;
+            }
+
+            //Update Stock Quantity
+            await _productService.UpdateProductsStockAsync(products.Data);
+
+
+            var deleted = await _orderItemRepository.DeleteOrderItemsByOrderIdAsync(orderId);
 
 
             await _orderRepository.DeletePhysicallyAsync(orderId);
@@ -254,7 +275,7 @@ namespace BuyMate.BLL.Features.OrderFeature
         public async Task<Response<bool>> DeleteOrderByAdminAsync(Guid orderId)
         {
 
-            var order = await _orderRepository.GetOrderAsync(orderId);
+            var order = await _orderRepository.GetOrderWithItemsAsync(orderId);
             if (order is null)
             {
                 return Response<bool>.Fail("Order not found or you do not have permission to delete this order.");
@@ -265,7 +286,33 @@ namespace BuyMate.BLL.Features.OrderFeature
                 return Response<bool>.Fail("Only pending orders can be deleted.");
             }
 
-            var itemIds = await _orderItemRepository.DeleteOrderItemsByOrderIdAsync(orderId);
+
+
+            var products = await _productService.GetProductsByIdsAsync(order.Items.Select(i => i.ProductId).ToList());
+
+            if (products is null || products.Status is false)
+            {
+                return Response<bool>.Fail("Cannot retrieve products information.");
+            }
+
+
+            foreach (var item in order.Items)
+            {
+                var p = products.Data.FirstOrDefault(p => item.ProductId == p.Id);
+
+                if (p == null)
+                {
+                    return Response<bool>.Fail($"Product not found: {item.ProductId}");
+                }
+
+                p.StockQuantity += item.Quantity;
+            }
+
+            //Update Stock Quantity
+            await _productService.UpdateProductsStockAsync(products.Data);
+
+
+            var deleted = await _orderItemRepository.DeleteOrderItemsByOrderIdAsync(orderId);
 
 
             await _orderRepository.DeletePhysicallyAsync(orderId);
@@ -308,7 +355,7 @@ namespace BuyMate.BLL.Features.OrderFeature
                 { 2, "Shipped"},
                 { 3, "Delivered" },
                 { 4, "Cancelled" },
-                {5, "Returned" }
+                { 5, "Returned" }
             };
 
             if (!_statusMapping.ContainsKey(status))
@@ -316,7 +363,7 @@ namespace BuyMate.BLL.Features.OrderFeature
                 return Response<bool>.Fail("Invalid status value.");
             }
 
-            
+
             var order = await _orderRepository.GetOrderAsync(orderId);
             if (order is null)
             {

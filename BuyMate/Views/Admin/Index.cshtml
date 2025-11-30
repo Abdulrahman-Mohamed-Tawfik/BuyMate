@@ -3,7 +3,7 @@
 }
 
 <div class="space-y-10">
-    <!-- Gradient header with purple accent (improved gradient, removed View Store button) -->
+    <!-- Gradient header with purple accent -->
     <div class="rounded-xl text-white p-8 shadow-lg flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12" style="background:linear-gradient(135deg,var(--color-purple-800) 0%,var(--color-purple-600) 45%,var(--color-purple-100) 140%);">
         <div>
             <h1 class="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
@@ -38,8 +38,7 @@
                 </div>
                 <div class="mt-auto space-y-3">
                     <div class="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>Manage your product catalog</span>
-                        <a asp-controller="Product" asp-action="Index" class="btn btn-primary btn-xs" onclick="event.stopPropagation();">Open</a>
+                        @* <span>Manage your product catalog</span> *@
                     </div>
                     <a asp-controller="Product" asp-action="Create" class="btn btn-ghost w-full btn-sm" onclick="event.stopPropagation();">
                         <i class="fas fa-plus mr-1"></i> Create New
@@ -63,12 +62,32 @@
                 </div>
                 <div class="mt-auto space-y-3">
                     <div class="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>Keep navigation structured</span>
-                        <a asp-controller="Category" asp-action="Index" class="btn btn-primary btn-xs" onclick="event.stopPropagation();">Open</a>
+                        @* <span> Organize your product categories</span> *@
                     </div>
                     <a asp-controller="Category" asp-action="Create" class="btn btn-ghost w-full btn-sm" onclick="event.stopPropagation();">
                         <i class="fas fa-plus mr-1"></i> Create New
                     </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Orders -->
+        <div class="group relative rounded-xl border border-purple-200/40 bg-white/60 backdrop-blur shadow hover:shadow-xl transition-all overflow-hidden cursor-pointer" onclick="location.href='@Url.Action("GetAll", "Order")'">
+            <div class="absolute inset-0" style="background:linear-gradient(135deg,var(--color-purple-100),transparent);opacity:0;transition:opacity .25s;" class="group-hover:opacity-100"></div>
+            <div class="p-6 flex flex-col h-full relative z-10">
+                <div class="flex items-start justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold text-purple-700">Orders</h3>
+                        <p class="text-xs text-muted-foreground">Manage customer orders.</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 group-hover:scale-105 transition-transform">
+                        <i class="fas fa-shopping-cart text-xl"></i>
+                    </div>
+                </div>
+                <div class="mt-auto space-y-3">
+                    <div class="flex items-center justify-between text-xs text-muted-foreground">
+                        @* <span> View and process orders</span> *@
+                    </div>
                 </div>
             </div>
         </div>
@@ -91,5 +110,6 @@
                 </div>
             </div>
         </div>
+
     </div>
 </div>

@@ -17,7 +17,6 @@
         <table class="table w-full">
             <thead class="bg-muted">
                 <tr>
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Id</th>
                     <th class="px-4 py-3 text-left text-sm font-semibold">Name</th>
                     <th class="px-4 py-3 text-left text-sm font-semibold">Image</th>
                     <th class="px-4 py-3 text-left text-sm font-semibold">Action</th>
@@ -29,7 +28,6 @@
                     foreach (var item in Model)
                     {
                         <tr class="border-t">
-                            <td class="px-4 py-3 text-sm">@item.Id</td>
                             <td class="px-4 py-3 text-sm font-medium">@item.Name</td>
                             <td class="px-4 py-3">
                                 @if (!string.IsNullOrWhiteSpace(item.ImageUrl))

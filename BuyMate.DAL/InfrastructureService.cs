@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using BuyMate.BLL.Features.CategoryFeatures;
+using BuyMate.BLL.Features.OrderFeature;
 
 namespace BuyMate.DAL
 {
@@ -66,7 +67,10 @@ namespace BuyMate.DAL
             services.AddScoped<ICartItemRepository, CartItemRepositoy>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ICheckoutService, CheckoutService>();
-
+            services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
+            services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+            
 
 
             //Roles
@@ -74,7 +78,7 @@ namespace BuyMate.DAL
             {
                 options.AddPolicy("AdminOnly", policy =>
                 {
-                    policy.RequireRole("Admin");
+                    policy.RequireRole("admin");
                 });
             });
 

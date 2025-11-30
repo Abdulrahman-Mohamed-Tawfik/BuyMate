@@ -58,6 +58,16 @@ namespace BuyMate.BLL.Features.User
                     return Response<bool>.Fail("Registration failed: " + errors);
                 }
 
+                // Add default 'user' role
+                var roleResult = await _userManager.AddToRoleAsync(user, "user");
+                if (!roleResult.Succeeded)
+                {
+                    var errors = string.Join("; ", roleResult.Errors.Select(e => e.Description));
+                    _logger.LogWarning("Adding role 'user' failed for {Email}: {Errors}", model.Email, errors);
+                    // Continue but inform caller
+                    return Response<bool>.Fail("Account created but failed to assign default role: " + errors);
+                }
+
                 return Response<bool>.Success(true, "Account created successfully. Please log in.");
             }
             catch (Exception ex)

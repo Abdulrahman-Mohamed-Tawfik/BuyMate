@@ -67,8 +67,17 @@
                                 <span>@User.Identity.Name</span>
                             </label>
                             <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                                @if (User.IsInRole("admin"))
+                                {
+                                    <li>
+                                        <a asp-controller="Admin" asp-action="Index" class="text-purple-600 hover:text-purple-500 font-medium">Admin Dashboard</a>
+                                    </li>
+                                }
                                 <li>
                                     <a asp-controller="User" asp-action="Profile">Profile</a>
+                                </li>
+                                <li>
+                                    <a asp-controller="Order" asp-action="Index">Orders</a>
                                 </li>
                                 <li>
                                     <form asp-controller="User" asp-action="Logout" method="post">
@@ -128,6 +137,13 @@
                     <a asp-controller="Shop" asp-action="Deals" class="text-sm text-destructive hover:text-destructive/80 transition-colors">
                         Flash Deals
                     </a>
+
+                    @if (User.IsInRole("admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Index" class="text-sm transition-colors flex items-center space-x-1 text-purple-600 hover:text-purple-500 font-medium">
+                            <span>Admin Dashboard</span>
+                        </a>
+                    }
                 </nav>
 
                 <!-- Mobile navigation - only visible when menu is open -->
@@ -141,6 +157,13 @@
                     <a asp-controller="Shop" asp-action="Deals" class="block w-full text-left py-2 text-sm text-destructive hover:text-destructive/80 transition-colors">
                         Flash Deals
                     </a>
+
+                    @if (User.IsInRole("admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Index" class="block w-full text-left py-2 text-sm transition-colors font-medium text-purple-600 hover:text-purple-500">
+                            Admin Dashboard
+                        </a>
+                    }
                 </nav>
             </div>
         </div>
@@ -156,7 +179,7 @@
             </div>
         }
 
-        @if (ViewData.ModelState.ErrorCount > 0)
+        @if (TempData["Error"] != null || ViewData.ModelState.ErrorCount > 0)
         {
             <div id="errorAlert" class="relative bg-red-100 border border-red-400 text-red-700 px-8 py-4 rounded mb-8 w-full max-w-md mx-auto" role="alert">
                 <ul class=" text-center list-disc pl-5">
@@ -165,6 +188,12 @@
                         <li>@error.ErrorMessage</li>
                     }
                 </ul>
+
+                @if(TempData["Error"] != null)
+                {
+                    <ul>@TempData["Error"]</ul>
+                }
+                
                 <!-- Optional progress bar -->
                 <div id="errorProgressBar" class="absolute bottom-0 left-0 h-2 bg-red-500 rounded-b" style="width:0%"></div>
             </div>

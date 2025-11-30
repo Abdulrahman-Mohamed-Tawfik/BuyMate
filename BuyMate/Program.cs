@@ -1,6 +1,7 @@
 using BuyMate.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using BuyMate.Seed; // added
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,14 +62,18 @@ else
 try
 {
     using var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
-    var context = serviceScope.ServiceProvider.GetService<BuyMateDbContext>();
-    context?.Database.Migrate();
+    var services = serviceScope.ServiceProvider;
+    var context = services.GetService<BuyMateDbContext>();
+    // Apply migrations
+    await context!.Database.MigrateAsync();
+    // Seed initial data
+    await DataSeeder.SeedAsync(services);
 }
 catch (Exception ex)
 {
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-    logger.LogCritical(ex, "Database migration failed.");
-    // Decide: do not crash app; continue running.
+    logger.LogCritical(ex, "Database migration or seeding failed - application startup aborted.");
+    throw; // re throw to prevent app from starting
 }
 
 // Global exception logging middleware (request pipeline)

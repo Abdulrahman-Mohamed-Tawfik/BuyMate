@@ -122,5 +122,19 @@ public class CartService : ICartService
 
         return Response<bool>.Success(true, "Item removed from cart successfully.");
     }
+
+    public async Task<Response<bool>> ClearCart(string userId)
+    {
+        var cart = await _cartRepository.GetCartWithItemsAsync(userId);
+
+        if (cart is null || cart.Items.Count == 0)
+            return Response<bool>.Success(true);
+
+       await _cartItemRepository.DeleteCartItemsByCartIdAsync(cart.Id);
+
+        
+
+        return Response<bool>.Success(true, "Items removed from cart successfully.");
+    }
 }
 

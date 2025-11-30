@@ -4,6 +4,9 @@
 }
 
 <div class="max-w-6xl mx-auto mt-10">
+	<a asp-controller="Admin" asp-action="Index" class="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
+		<i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+	</a>
 	<div class="flex items-center justify-between mb-6">
 		<h1 class="text-2xl font-bold">Products</h1>
 		<a asp-controller="Product" asp-action="Create" class="btn btn-primary">Add New Product</a>
@@ -13,7 +16,6 @@
 		<table class="table w-full">
 			<thead class="bg-muted">
 				<tr>
-					<th class="px-4 py-3 text-left text-sm font-semibold">Id</th>
 					<th class="px-4 py-3 text-left text-sm font-semibold">Image</th>
 					<th class="px-4 py-3 text-left text-sm font-semibold">Name</th>
 					<th class="px-4 py-3 text-left text-sm font-semibold">Brand</th>
@@ -32,7 +34,6 @@
 					foreach (var product in Model)
 					{
 						<tr class="border-t">
-							<td class="px-4 py-3 text-sm">@product.Id</td>
 							<td class="px-4 py-3">
 								@if (!string.IsNullOrWhiteSpace(product.ImageUrl))
 								{

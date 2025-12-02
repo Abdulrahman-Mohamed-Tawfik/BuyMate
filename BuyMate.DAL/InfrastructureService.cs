@@ -6,13 +6,10 @@ using BuyMate.DAL.Repositories;
 using BuyMate.Infrastructure.Contracts;
 using BuyMate.Infrastructure.Services;
 using BuyMate.Model.Entities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using BuyMate.BLL.Features.CategoryFeatures;
 using BuyMate.BLL.Features.OrderFeature;
 

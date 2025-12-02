@@ -64,8 +64,12 @@ try
     using var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope();
     var services = serviceScope.ServiceProvider;
     var context = services.GetService<BuyMateDbContext>();
+
+    // Increase migration timeout just for startup migration
+    context!.Database.SetCommandTimeout(TimeSpan.FromMinutes(5));
+
     // Apply migrations
-    await context!.Database.MigrateAsync();
+    await context.Database.MigrateAsync();
     // Seed initial data
     await DataSeeder.SeedAsync(services);
 }

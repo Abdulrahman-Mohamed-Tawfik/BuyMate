@@ -22,10 +22,16 @@ namespace BuyMate.DAL
     {
         public static IServiceCollection AddInfrastructureService(this IServiceCollection services, IConfiguration configuration)
         {
-            // EF Core + SQL Server
+            // EF Core + MySQL with tuned settings to avoid timeouts on large migrations
             services.AddDbContext<BuyMateDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                var connectionString = configuration.GetConnectionString("DefaultConnection");
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mySqlOptions =>
+                {
+                    mySqlOptions.EnableRetryOnFailure(5);
+                })
+                .EnableDetailedErrors()
+                .EnableSensitiveDataLogging();
             });
 
             services.AddIdentity<User, IdentityRole<Guid>>(options =>
@@ -41,10 +47,9 @@ namespace BuyMate.DAL
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.AllowedForNewUsers = true;
 
-            }).AddEntityFrameworkStores<BuyMateDbContext>().AddDefaultTokenProviders(); ;
+            }).AddEntityFrameworkStores<BuyMateDbContext>().AddDefaultTokenProviders();;
 
 
-           
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/User/Login"; // redirect to login if not authorized
@@ -70,7 +75,7 @@ namespace BuyMate.DAL
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
-            
+
 
 
             //Roles

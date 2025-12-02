@@ -1,9 +1,7 @@
 using BuyMate.BLL.Contracts;
-using BuyMate.BLL.Features.Product;
+using BuyMate.BLL.Contracts.Helpers;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
-using BuyMate.Infrastructure.Contracts;
-using BuyMate.Infrastructure.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

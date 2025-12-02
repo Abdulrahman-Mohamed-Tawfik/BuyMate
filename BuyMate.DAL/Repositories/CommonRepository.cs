@@ -30,8 +30,8 @@ namespace BuyMate.DAL.Repositories
         public virtual async Task<IQueryable<TEntity>> GetAsync<TProperty>(Expression<Func<TEntity, bool>>? filter = null, Func<IQueryable<TEntity>, IIncludableQueryable<TEntity, TProperty>>? include = null)
         {
             IQueryable<TEntity> query = _context.Set<TEntity>();
-            
-            if(include is not null)
+
+            if (include is not null)
             {
                 query = include(query);
             }
@@ -85,20 +85,6 @@ namespace BuyMate.DAL.Repositories
             }
 
         }
-        public virtual async Task<bool> DeletePhysicallyAsync(long id)
-        {
-            var entity = await _context.Set<TEntity>().FindAsync(id);
-            if (entity is null)
-            {
-                return false;
-            }
-            else
-            {
-                _context.Set<TEntity>().Remove(entity);
-                return await _context.SaveChangesAsync() > 0;
-            }
-
-        }
         public bool DeletePhysically(Guid id)
         {
             var entity = _context.Set<TEntity>().Find(id);
@@ -113,6 +99,20 @@ namespace BuyMate.DAL.Repositories
             }
 
         }
+        // soft delete implementation >> set isDeleted = true
+        public virtual async Task<bool> DeleteSoftAsync(TEntity entity)
+        {
+            if (entity == null)
+                return false;
+
+            var propertyInfo = entity.GetType().GetProperty("IsDeleted");
+            if (propertyInfo == null)
+                return false;
+
+            propertyInfo.SetValue(entity, true);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public abstract IQueryable<TEntity> OrderBy(IQueryable<TEntity> entities, string? orderBy, bool isAccending = true);
         public virtual async Task<int> SaveChangesAsync()
         {

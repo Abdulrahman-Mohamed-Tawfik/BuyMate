@@ -1,13 +1,8 @@
-﻿using BuyMate.DTO.Common;
-using BuyMate.Infrastructure.Contracts;
+﻿using BuyMate.BLL.Contracts.Helpers;
+using BuyMate.DTO.Common;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace BuyMate.Infrastructure.Services
+namespace BuyMate.BLL.Features.Helpers
 {
     public class FileService : IFileService
     {
@@ -33,15 +28,15 @@ namespace BuyMate.Infrastructure.Services
             return (true, null);
         }
 
-        public async Task<Response<string>> SaveImageAsync(IFormFile file, long maxSize, string[] allowedExtensions, string folder,string prefix="")
+        public async Task<Response<string>> SaveImageAsync(IFormFile file, long maxSize, string[] allowedExtensions, string folder, string prefix = "")
         {
-            
+
             if (file == null || file.Length == 0)
-                return new Response<string> { Status = false, Message = "No file provided." };
+                return Response<string>.Fail("No file provided.");
 
             var (isValid, errorMessage) = ValidateImage(file, maxSize, allowedExtensions);
             if (!isValid)
-                return new Response<string> { Status = false, Message = errorMessage! };
+                return Response<string>.Fail(errorMessage!);
 
             string uploadsRoot = Path.Combine(_fileRoot, folder);
             if (!Directory.Exists(uploadsRoot))
@@ -54,11 +49,10 @@ namespace BuyMate.Infrastructure.Services
             using (var stream = new FileStream(filePath, FileMode.Create))
                 await file.CopyToAsync(stream);
 
-            string path =  $"{folder}/{fileName}".Replace("\\", "/");
+            string path = $"{folder}/{fileName}".Replace("\\", "/");
 
-            return new Response<string> { Status = true, Message = "File uploaded successfully.", Data = path };
+            return Response<string>.Success(path, "File uploaded successfully.");
         }
-
 
         public async Task<Response<List<string>>> SaveImagesAsync(List<IFormFile> files, long maxSize, string[] allowedExtensions, string folder, string prefix = "")
         {
@@ -78,23 +72,15 @@ namespace BuyMate.Infrastructure.Services
                             File.Delete(fullPath);
                     }
 
-                    return new Response<List<string>>
-                    {
-                        Status = false,
-                        Message = $"Failed to upload one or more files. Reason: {result.Message}"
-                    };
+                    return Response<List<string>>.Fail($"Failed to upload one or more files. Reason: {result.Message}");
                 }
 
                 savedFiles.Add(result.Data!);
             }
 
-            return new Response<List<string>>
-            {
-                Status = true,
-                Message = "All files uploaded successfully.",
-                Data = savedFiles
-            };
+            return Response<List<string>>.Success(savedFiles, "All files uploaded successfully.");
         }
+
         public async void DeleteImage(string? relativePath)
         {
             if (string.IsNullOrWhiteSpace(relativePath)) return;
@@ -103,9 +89,6 @@ namespace BuyMate.Infrastructure.Services
             if (File.Exists(fullPath))
                 File.Delete(fullPath);
         }
-
-        
-        
 
     }
 }

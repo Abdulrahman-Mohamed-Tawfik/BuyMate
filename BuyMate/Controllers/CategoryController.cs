@@ -93,7 +93,7 @@ namespace BuyMate.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var result = await _categoryService.DeleteAsync(id);
+            var result = await _categoryService.DeletePhysicalAsync(id);
             if (result.Status)
             {
                 TempData["Success"] = result.Message;

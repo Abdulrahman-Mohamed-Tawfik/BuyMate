@@ -1,6 +1,5 @@
 ﻿using BuyMate.DTO.Common;
 using BuyMate.DTO.ViewModels;
-using Microsoft.AspNetCore.Identity;
 
 namespace BuyMate.BLL.Contracts
 {
@@ -8,9 +7,6 @@ namespace BuyMate.BLL.Contracts
     {
         Task<Response<bool>> RegisterAsync(RegisterViewModel model);
         Task<Response<bool>> LoginAsync(LoginViewModel model);
-
         Task<Response<bool>> LogoutAsync();
-
-
     }
 }

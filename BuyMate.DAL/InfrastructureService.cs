@@ -3,8 +3,6 @@ using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.BLL.Features.Cart;
 using BuyMate.BLL.Features.User;
 using BuyMate.DAL.Repositories;
-using BuyMate.Infrastructure.Contracts;
-using BuyMate.Infrastructure.Services;
 using BuyMate.Model.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using BuyMate.BLL.Features.CategoryFeatures;
 using BuyMate.BLL.Features.OrderFeature;
+using BuyMate.BLL.Contracts.Helpers;
+using BuyMate.BLL.Features.Helpers;
 
 namespace BuyMate.DAL
 {

@@ -1,6 +1,7 @@
 ﻿using BuyMate.BLL.Contracts;
 using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.DTO.Common;
+using BuyMate.DTO.Enum;
 using BuyMate.DTO.ViewModels;
 using BuyMate.Model.Entities;
 
@@ -100,9 +101,7 @@ namespace BuyMate.BLL.Features.OrderFeature
             var fees = cartResponse.Data.Tax; //To Be implemented (shipping fees etc.)
             var total = subtotal - discountAmount + fees;
 
-
-            //
-
+            // Create Order Entity
             var entity = new Order
             {
                 UserId = Guid.Parse(userId),
@@ -133,15 +132,13 @@ namespace BuyMate.BLL.Features.OrderFeature
                 orderItems.Add(orderItem);
             }
 
-
-            //SAve Entities and Order Items
+            //Save Entities and Order Items
             await _orderItemRepository.CreateRangeAsync(orderItems);
-
 
             //Clear Cart
             await _cartService.ClearCart(userId);
 
-            return Response<bool>.Success(true);
+            return Response<bool>.Success(true, "Order created successfully.");
         }
 
         public async Task<Response<OrderViewModel>> GetUserOrderByIDForAdminAsync(Guid orderId)
@@ -178,8 +175,7 @@ namespace BuyMate.BLL.Features.OrderFeature
                 }).ToList()
             };
 
-            return Response<OrderViewModel>.Success(orderViewModel);
-
+            return Response<OrderViewModel>.Success(orderViewModel, "Order retrieved successfully.");
         }
 
         public async Task<Response<OrderViewModel>> GetUserOrderByIDForUserAsync(Guid orderId, string userId)
@@ -219,9 +215,7 @@ namespace BuyMate.BLL.Features.OrderFeature
                 Total = order.Total,
             }).ToList();
 
-            return Response<List<OrderViewModel>>.Success(ordersList);
-
-
+            return Response<List<OrderViewModel>>.Success(ordersList, "User orders retrieved successfully.");
         }
 
         public async Task<Response<bool>> CancelOrderAsync(Guid orderId, string userId)
@@ -268,9 +262,8 @@ namespace BuyMate.BLL.Features.OrderFeature
 
 
             await _orderRepository.DeletePhysicallyAsync(orderId);
-            return Response<bool>.Success(true);
+            return Response<bool>.Success(true, "Order cancelled successfully.");
         }
-
 
         public async Task<Response<bool>> DeleteOrderByAdminAsync(Guid orderId)
         {
@@ -316,7 +309,7 @@ namespace BuyMate.BLL.Features.OrderFeature
 
 
             await _orderRepository.DeletePhysicallyAsync(orderId);
-            return Response<bool>.Success(true);
+            return Response<bool>.Success(true, "Order deleted successfully.");
         }
 
         public async Task<Response<List<OrderViewModel>>> GetAllOrdersAsync()
@@ -343,36 +336,24 @@ namespace BuyMate.BLL.Features.OrderFeature
                 Total = order.Total,
             }).ToList();
 
-            return Response<List<OrderViewModel>>.Success(ordersList);
+            return Response<List<OrderViewModel>>.Success(ordersList, "All orders retrieved successfully.");
         }
 
         public async Task<Response<bool>> UpdateOrderStatusByAdminAsync(Guid orderId, int status)
         {
-            var _statusMapping = new Dictionary<int, string>()
-            {
-                { 0, "Pending" },
-                { 1, "Processing"},
-                { 2, "Shipped"},
-                { 3, "Delivered" },
-                { 4, "Cancelled" },
-                { 5, "Returned" }
-            };
-
-            if (!_statusMapping.ContainsKey(status))
-            {
+            // check if status is valid in OrderStatuses enum
+            if (!OrderStatuses.IsDefined(typeof(OrderStatuses), status))
                 return Response<bool>.Fail("Invalid status value.");
-            }
 
-
+            // get order
             var order = await _orderRepository.GetOrderAsync(orderId);
             if (order is null)
-            {
                 return Response<bool>.Fail("Order not found.");
-            }
 
+            // update status
             order.OrderStatus = status;
             await _orderRepository.UpdateAsync(order);
-            return Response<bool>.Success(true);
+            return Response<bool>.Success(true, $"Order status updated to {((OrderStatuses)status).ToString()} successfully.");
         }
     }
 }

@@ -8,17 +8,16 @@
 
   <ItemGroup>
     <Compile Remove="Features\User\Login\**" />
+    <Compile Remove="GlobalHelpers\**" />
     <EmbeddedResource Remove="Features\User\Login\**" />
+    <EmbeddedResource Remove="GlobalHelpers\**" />
     <None Remove="Features\User\Login\**" />
+    <None Remove="GlobalHelpers\**" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\BuyMate.DTO\BuyMate.DTO.csproj" />
     <ProjectReference Include="..\BuyMate.Model\BuyMate.Model.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="GlobalHelpers\" />
   </ItemGroup>
 
 </Project>

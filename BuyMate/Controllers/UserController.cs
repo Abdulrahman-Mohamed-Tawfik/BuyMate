@@ -16,13 +16,15 @@ namespace BuyMate.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IUserProfileService _userProfileService;
+        private readonly UserManager<BuyMate.Model.Entities.User> _userManager;
 
-        public UserController(IAuthService authService, IUserProfileService userProfileService)
+        public UserController(IAuthService authService, IUserProfileService userProfileService, UserManager<BuyMate.Model.Entities.User> userManager)
         {
             _authService = authService;
             _userProfileService = userProfileService;
+            _userManager = userManager;
         }
-       
+      
 
         [Authorize]
         public async Task<IActionResult> Profile()
@@ -30,13 +32,10 @@ namespace BuyMate.Controllers
             var result = await _userProfileService.GetProfileAsync(User);
             if (result.Status == false)
             {
-                //TempData["Error"] = "User not found. Please login again.";
                 return RedirectToAction("Login");
             }
 
             return View(result.Data);
-
-
         }
 
         [HttpGet]
@@ -85,12 +84,10 @@ namespace BuyMate.Controllers
             {
                 return View(model);
             }
-            var result = await _authService.LoginAsync(model);
+            var result = await _authService.LoginMvcAsync(model);
 
             if (result.Status == true)
             {
-                //TempData["Success"] = "Login Successful.";
-
                 return RedirectToAction("Index", "Home");
             }
 
@@ -115,7 +112,6 @@ namespace BuyMate.Controllers
 
             if (result.Status == true)
             {
-                //TempData["Success"] = result.Message;
                 return RedirectToAction("Index", "Home");
             }
 
@@ -156,6 +152,29 @@ namespace BuyMate.Controllers
             return RedirectToAction("Profile");
         }
 
+        // API endpoint for login (for Flutter/Angular/MAUI/etc.)
+        [AllowAnonymous]
+        [HttpPost("api/login")]
+        public async Task<IActionResult> ApiLogin([FromBody] LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Invalid login payload.",
+                    errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
+                });
+            }
+
+            var result = await _authService.LoginApiAsync(model);
+            if (!result.Status)
+            {
+                return Unauthorized(new { success = false, message = result.Message });
+            }
+
+            return Ok(new { success = true, token = result.Data });
+        }
 
     }
 }

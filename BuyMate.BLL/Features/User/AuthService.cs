@@ -4,6 +4,10 @@ using BuyMate.DTO.ViewModels.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace BuyMate.BLL.Features.User
 {
@@ -12,12 +16,14 @@ namespace BuyMate.BLL.Features.User
         private readonly UserManager<Model.Entities.User> _userManager;
         private readonly SignInManager<Model.Entities.User> _signInManager;
         private readonly ILogger<AuthService> _logger;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(UserManager<Model.Entities.User> userManager, SignInManager<Model.Entities.User> signInManager, ILogger<AuthService> logger)
+        public AuthService(UserManager<Model.Entities.User> userManager, SignInManager<Model.Entities.User> signInManager, ILogger<AuthService> logger, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _logger = logger;
+            _configuration = configuration;
         }
 
         public async Task<Response<bool>> RegisterAsync(RegisterViewModel model)
@@ -77,33 +83,27 @@ namespace BuyMate.BLL.Features.User
             }
         }
 
-        public async Task<Response<bool>> LoginAsync(LoginViewModel model)
+        // MVC login: cookie sign-in + claims refresh
+        public async Task<Response<bool>> LoginMvcAsync(LoginViewModel model)
         {
             try
             {
                 var user = await _userManager.FindByEmailAsync(model.Email);
-                
                 var valid = user != null && await _userManager.CheckPasswordAsync(user, model.Password);
-
                 if (user is null || !valid)
                 {
                     return Response<bool>.Fail("Invalid email or password.");
                 }
 
                 var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
-
                 if (!signInResult.Succeeded)
                 {
                     _logger.LogInformation("Sign-in failed for user {UserId}. Result: {Result}", user.Id, signInResult);
                     return Response<bool>.Fail("Login failed. Please try again.");
                 }
 
-                // Ensure avatar claim exists and is up-to-date
                 await UpdateAvatarClaimAsync(user);
-
-                // Refresh sign-in to apply claims (if needed)
                 await _signInManager.RefreshSignInAsync(user);
-
                 return Response<bool>.Success(true, "Login successful.");
             }
             catch (Exception ex)
@@ -111,7 +111,31 @@ namespace BuyMate.BLL.Features.User
                 _logger.LogError(ex, "Unexpected error during login for {Email}", model.Email);
                 return Response<bool>.Fail("An unexpected error occurred during login.");
             }
+        }
 
+        // API login: validate, issue JWT, persist token
+        public async Task<Response<string>> LoginApiAsync(LoginViewModel model)
+        {
+            try
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                var valid = user != null && await _userManager.CheckPasswordAsync(user, model.Password);
+                if (user is null || !valid)
+                {
+                    return Response<string>.Fail("Invalid email or password.");
+                }
+
+                // generate JWT token
+                var token = await GenerateJwtTokenAsync(user);
+                user.SetToken(token);
+                await _userManager.UpdateAsync(user);
+                return Response<string>.Success(token, "Login successful.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error during API login for {Email}", model.Email);
+                return Response<string>.Fail("An unexpected error occurred during login.");
+            }
         }
 
         public async Task<Response<bool>> LogoutAsync()
@@ -126,6 +150,37 @@ namespace BuyMate.BLL.Features.User
                 _logger.LogError(ex, "Error during logout");
                 return Response<bool>.Fail("An unexpected error occurred during logout.");
             }
+        }
+
+        public async Task<string> GenerateJwtTokenAsync(Model.Entities.User user)
+        {
+            var secretKey = _configuration["SecretKey"] ?? string.Empty;
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+                new Claim(ClaimTypes.Name, user.UserName ?? user.Email ?? string.Empty),
+                new Claim("avatar", user.ProfileImageUrl ?? "UserProfileImages/Default.webp")
+            };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var token = new JwtSecurityToken(
+                claims: claims,
+                notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.AddDays(7),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         private async Task UpdateAvatarClaimAsync(Model.Entities.User user)

@@ -2,6 +2,10 @@ using BuyMate.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using BuyMate.Seed; // added
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +26,29 @@ builder.Services.AddHttpClient("api", client =>
     client.BaseAddress = new Uri("https://localhost:7233/");
 });
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
+// Configure Authentication: Cookie for web, JWT Bearer for API
+var secretKey = builder.Configuration["SecretKey"] ?? "";
+var keyBytes = Encoding.UTF8.GetBytes(secretKey);
+
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    })
+    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.FromMinutes(2)
+        };
+    });
 
 var app = builder.Build();
 

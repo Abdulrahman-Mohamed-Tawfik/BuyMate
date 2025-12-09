@@ -1,7 +1,7 @@
-using System;
-using System.Collections.Generic;
+using BuyMate.DTO.ViewModels.Category;
+using BuyMate.DTO.ViewModels.Product;
 
-namespace BuyMate.DTO.ViewModels
+namespace BuyMate.DTO.ViewModels.Shop
 {
     public class ShopViewModel
     {

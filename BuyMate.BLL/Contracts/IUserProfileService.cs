@@ -1,7 +1,7 @@
 ﻿using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
+using BuyMate.DTO.ViewModels.User;
 
 namespace BuyMate.BLL.Contracts
 {

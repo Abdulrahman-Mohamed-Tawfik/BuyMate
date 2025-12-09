@@ -1,6 +1,6 @@
-﻿using BuyMate.DTO.Category;
-using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
+﻿using BuyMate.DTO.Common;
+using BuyMate.DTO.Entities.Category;
+using BuyMate.DTO.ViewModels.Category;
 using BuyMate.Model.Entities;
 using Microsoft.AspNetCore.Http;
 

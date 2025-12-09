@@ -2,9 +2,9 @@
 using BuyMate.BLL.Contracts;
 using BuyMate.BLL.Contracts.Helpers;
 using BuyMate.BLL.Contracts.Repositories;
-using BuyMate.DTO.Category;
 using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.Entities.Category;
+using BuyMate.DTO.ViewModels.Category;
 using BuyMate.Model.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;

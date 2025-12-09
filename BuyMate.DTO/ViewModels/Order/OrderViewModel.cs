@@ -1,9 +1,6 @@
-using BuyMate.Model.Entities;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
+using BuyMate.DTO.ViewModels.Shop;
 
-namespace BuyMate.DTO.ViewModels
+namespace BuyMate.DTO.ViewModels.Order
 {
     public enum OrderStatusViewModel
     {
@@ -82,6 +79,6 @@ namespace BuyMate.DTO.ViewModels
         public List<OrderItemViewModel> Items { get; set; } = new List<OrderItemViewModel>();
 
 
-        
+
     }
 }

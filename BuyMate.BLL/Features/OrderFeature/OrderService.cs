@@ -2,7 +2,7 @@
 using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.DTO.Common;
 using BuyMate.DTO.Enum;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.ViewModels.Order;
 using BuyMate.Model.Entities;
 
 namespace BuyMate.BLL.Features.OrderFeature

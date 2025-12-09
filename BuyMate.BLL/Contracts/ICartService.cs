@@ -1,5 +1,5 @@
 ﻿using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.ViewModels.Cart;
 
 namespace BuyMate.BLL.Contracts;
 

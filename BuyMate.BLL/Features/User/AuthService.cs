@@ -1,6 +1,6 @@
 ﻿using BuyMate.BLL.Contracts;
 using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.ViewModels.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using System.Security.Claims;

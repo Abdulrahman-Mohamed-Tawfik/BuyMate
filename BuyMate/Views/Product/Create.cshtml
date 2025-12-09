@@ -1,4 +1,6 @@
-@model BuyMate.DTO.ViewModels.ProductCreateViewModel
+@using BuyMate.DTO.ViewModels.Category
+@using BuyMate.DTO.ViewModels.Product
+@model ProductCreateViewModel
 
 @{
 	ViewData["Title"] = "Create Product";
@@ -47,7 +49,7 @@
 			<select id="categorySelect" class="input w-full" multiple>
 				@if (ViewBag.Categories != null)
 				{
-					foreach (var c in ViewBag.Categories as List<BuyMate.DTO.ViewModels.CategoryViewModel>)
+					foreach (var c in (ViewBag.Categories as List<CategoryViewModel>))
 					{
 						<option value="@c.Id">@c.Name (@c.ProductCount)</option>
 					}

@@ -1,4 +1,5 @@
-@model List<BuyMate.DTO.ViewModels.OrderViewModel>
+@using BuyMate.DTO.ViewModels.Order
+@model List<OrderViewModel>
 @{
 	ViewData["Title"] = "All Orders";
 }
@@ -23,7 +24,7 @@
 
 						<div class="text-right">
 							<p class="text-lg font-bold text-primary">$@order.Total</p>
-							<span class="px-3 py-1 rounded-full text-sm font-medium @(order.Status == BuyMate.DTO.ViewModels.OrderStatusViewModel.Delivered ? "bg-green-100 text-green-800" : order.Status == BuyMate.DTO.ViewModels.OrderStatusViewModel.Shipped ? "bg-blue-100 text-blue-800" : order.Status == BuyMate.DTO.ViewModels.OrderStatusViewModel.Cancelled ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800")">@order.Status</span>
+							<span class="px-3 py-1 rounded-full text-sm font-medium @(order.Status == OrderStatusViewModel.Delivered ? "bg-green-100 text-green-800" : order.Status == OrderStatusViewModel.Shipped ? "bg-blue-100 text-blue-800" : order.Status == OrderStatusViewModel.Cancelled ? "bg-red-100 text-red-800" : "bg-yellow-100 text-yellow-800")">@order.Status</span>
 						</div>
 					</div>
 

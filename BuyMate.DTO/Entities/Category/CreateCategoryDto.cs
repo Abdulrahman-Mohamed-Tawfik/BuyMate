@@ -1,4 +1,4 @@
-﻿namespace BuyMate.DTO.Category
+﻿namespace BuyMate.DTO.Entities.Category
 {
     public class CreateCategoryDto
     {

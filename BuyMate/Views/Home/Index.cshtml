@@ -1,4 +1,5 @@
-﻿@model BuyMate.DTO.ViewModels.HomeViewModel
+﻿@using BuyMate.DTO.ViewModels.Shop
+@model HomeViewModel
 @{
     ViewData["Title"] = "Home";
     var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;

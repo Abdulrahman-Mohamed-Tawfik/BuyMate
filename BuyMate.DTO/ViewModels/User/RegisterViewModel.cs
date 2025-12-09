@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BuyMate.DTO.ViewModels
+namespace BuyMate.DTO.ViewModels.User
 {
     public class RegisterViewModel
     {
-
-
         [Required]
         [StringLength(50)]
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "First name must contain letters only.")]
@@ -15,7 +13,6 @@ namespace BuyMate.DTO.ViewModels
         [StringLength(50)]
         [RegularExpression(@"^[a-zA-Z]+$", ErrorMessage = "Last name must contain letters only.")]
         public string LastName { get; set; } = string.Empty;
-
 
         [Required]
         [EmailAddress]

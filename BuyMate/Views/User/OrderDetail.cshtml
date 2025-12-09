@@ -1,4 +1,5 @@
-@model BuyMate.DTO.ViewModels.OrderViewModel
+@using BuyMate.DTO.ViewModels.Order
+@model OrderViewModel
 @{
     ViewData["Title"] = "Order Details";
 }
@@ -85,7 +86,7 @@
                         <span class="text-xs text-muted-foreground ml-auto">@Model.OrderDate.ToString("MMM dd")</span>
                     </div>
                     
-                    @if (Model.Status == BuyMate.DTO.ViewModels.OrderStatusViewModel.Confirmed || Model.Status == BuyMate.DTO.ViewModels.OrderStatusViewModel.Shipped || Model.Status == BuyMate.DTO.ViewModels.OrderStatusViewModel.Delivered)
+                    @if (Model.Status == OrderStatusViewModel.Confirmed || Model.Status == OrderStatusViewModel.Shipped || Model.Status == OrderStatusViewModel.Delivered)
                     {
                         <div class="flex items-center">
                             <div class="w-3 h-3 rounded-full bg-green-500 mr-3"></div>
@@ -93,7 +94,7 @@
                         </div>
                     }
                     
-                    @if (Model.Status == BuyMate.DTO.ViewModels.OrderStatusViewModel.Shipped || Model.Status == BuyMate.DTO.ViewModels.OrderStatusViewModel.Delivered)
+                    @if (Model.Status == OrderStatusViewModel.Shipped || Model.Status == OrderStatusViewModel.Delivered)
                     {
                         <div class="flex items-center">
                             <div class="w-3 h-3 rounded-full bg-green-500 mr-3"></div>
@@ -105,7 +106,7 @@
                         </div>
                     }
                     
-                    @if (Model.Status == BuyMate.DTO.ViewModels.OrderStatusViewModel.Delivered)
+                    @if (Model.Status == OrderStatusViewModel.Delivered)
                     {
                         <div class="flex items-center">
                             <div class="w-3 h-3 rounded-full bg-green-500 mr-3"></div>

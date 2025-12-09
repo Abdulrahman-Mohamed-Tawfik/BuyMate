@@ -1,5 +1,4 @@
 ﻿using BuyMate.BLL.Contracts;
-using BuyMate.DTO.ViewModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using System.Linq;
+using BuyMate.DTO.ViewModels.User;
 
 namespace BuyMate.Controllers
 {

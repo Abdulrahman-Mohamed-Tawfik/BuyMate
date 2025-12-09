@@ -2,7 +2,7 @@
 using BuyMate.BLL.Contracts;
 using BuyMate.BLL.Contracts.Helpers;
 using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.ViewModels.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;

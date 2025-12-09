@@ -1,6 +1,6 @@
 using BuyMate.BLL.Contracts;
 using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.ViewModels.Order;
 
 namespace BuyMate.BLL.Features.Cart;
 

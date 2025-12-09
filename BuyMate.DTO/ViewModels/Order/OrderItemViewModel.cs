@@ -1,6 +1,4 @@
-using System;
-
-namespace BuyMate.DTO.ViewModels
+namespace BuyMate.DTO.ViewModels.Order
 {
     public class OrderItemViewModel
     {

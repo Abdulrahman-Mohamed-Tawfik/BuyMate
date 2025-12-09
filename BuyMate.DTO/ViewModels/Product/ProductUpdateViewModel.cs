@@ -2,7 +2,7 @@ using BuyMate.DTO.Common;
 using BuyMate.DTO.Validations;
 using System.ComponentModel.DataAnnotations;
 
-namespace BuyMate.DTO.ViewModels
+namespace BuyMate.DTO.ViewModels.Product
 {
     public class ProductUpdateViewModel
     {

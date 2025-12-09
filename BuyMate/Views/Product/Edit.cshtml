@@ -1,4 +1,6 @@
-@model BuyMate.DTO.ViewModels.ProductUpdateViewModel
+@using BuyMate.DTO.ViewModels.Category
+@using BuyMate.DTO.ViewModels.Product
+@model ProductUpdateViewModel
 @{
     ViewData["Title"] = "Edit Product"; var productId = ViewBag.ProductId;
 }
@@ -24,7 +26,7 @@
             <select id="categorySelect" name="CategoryIds" class="input w-full" multiple>
                 @if (ViewBag.Categories != null)
                 {
-                    foreach (var c in ViewBag.Categories as List<BuyMate.DTO.ViewModels.CategoryViewModel>)
+                    foreach (var c in (ViewBag.Categories as List<CategoryViewModel>))
                     {
                         @if (Model.CategoryIds.Contains(c.Id))
                         {

@@ -19,7 +19,7 @@
             {
                 <div class="card product-card" onclick="location.href='@Url.Action("Product", "Product", new { id = product?.Id })'">
                     <div class="relative">
-                        <img src="@($"/images/{product?.ImageUrl}" ?? "/images/placeholder.png")" alt="@(product?.Name ?? "Product")" class="w-full h-48 object-cover rounded-t-lg" />
+                        <img src="@($"/images/{product?.ImageUrl}" ?? "/images/placeholder.png")" alt="@(product?.Name ?? "Product")" class="w-full h-48 object-contain rounded-t-lg" />
                         <span class="absolute top-2 left-2 badge badge-destructive">Flash Deal</span>
                         @if (product?.Discount.HasValue == true)
                         {

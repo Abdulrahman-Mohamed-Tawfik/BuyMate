@@ -6,10 +6,10 @@
     const token = document.getElementById('__RequestVerificationToken')?.value || document.querySelector('input[name="__RequestVerificationToken"]')?.value;
 
     var quantityEl = document.getElementById('quantity');
-    var quantity =1;
+    var quantity = 1;
     if (quantityEl)
     {
-        quantity = parseInt(quantityEl.value,10) ||1;
+        quantity = parseInt(quantityEl.value, 10) || 1;
     }
 
     // Build form body safely
@@ -31,56 +31,56 @@
         headers: headers,
         body: params.toString()
     })
-    .then(function (response)
-    {
-        if (response.redirected)
+        .then(function (response)
         {
-            window.location.href = response.url;
-            return null;
-        }
-        if (response.status ===401)
-        {
-            window.location.href = '/User/Login';
-            return null;
-        }
-        return response.json();
-    })
-    .then(function (data)
-    {
-        if (!data) return;
-
-        if (data.success)
-        {
-            var badge = document.getElementById('cartBadge');
-            var total = document.getElementById('miniCartTotal');
-            var numCount = document.getElementById('num-count');
-            if (badge)
+            if (response.redirected)
             {
-                badge.innerText = data.newCount;
-                if (numCount) numCount.innerText = data.newCount + (data.newCount ===1 ? " item" : " items");
-
-                if (data.newCount)
-                    badge.style.display = 'inline-flex';
-                else
-                    badge.style.display = 'none';
+                window.location.href = response.url;
+                return null;
             }
-
-            if (total)
+            if (response.status === 401)
             {
-                // Ensure two decimals
-                total.innerText = '$' + parseFloat(data.totalPrice).toFixed(2);
+                window.location.href = '/User/Login';
+                return null;
             }
-
-            Swal.fire({ title: data.message, icon: 'success' })
-        } else
+            return response.json();
+        })
+        .then(function (data)
         {
-            Swal.fire({ title: data.message, icon: 'error' })
-        }
-    })
-    .catch(function (error)
-    {
-        console.error('Error:', error);
-    });
+            if (!data) return;
+
+            if (data.success)
+            {
+                var badge = document.getElementById('cartBadge');
+                var total = document.getElementById('miniCartTotal');
+                var numCount = document.getElementById('num-count');
+                if (badge)
+                {
+                    badge.innerText = data.newCount;
+                    if (numCount) numCount.innerText = data.newCount + (data.newCount === 1 ? " item" : " items");
+
+                    if (data.newCount)
+                        badge.style.display = 'inline-flex';
+                    else
+                        badge.style.display = 'none';
+                }
+
+                if (total)
+                {
+                    // Ensure two decimals
+                    total.innerText = '$' + parseFloat(data.totalPrice).toFixed(2);
+                }
+
+                Swal.fire({ title: data.message, icon: 'success' })
+            } else
+            {
+                Swal.fire({ title: data.message, icon: 'error' })
+            }
+        })
+        .catch(function (error)
+        {
+            console.error('Error:', error);
+        });
 };
 
 // Change item quantity by delta (+1 or -1) from the cart page
@@ -88,10 +88,10 @@ function changeItemQuantity(itemId, delta)
 {
     var input = document.getElementById('qty-' + itemId);
     if (!input) return;
-    var current = parseInt(input.value,10) ||1;
+    var current = parseInt(input.value, 10) || 1;
     var next = current + delta;
-    if (next <1) next =1;
-    if (next >99) next =99; // arbitrary max guard
+    if (next < 1) next = 1;
+    if (next > 99) next = 99; // arbitrary max guard
     // Update UI immediately
     input.value = next;
 
@@ -123,44 +123,44 @@ function updateQuantity(itemId, quantity, previousValue)
         headers: headers,
         body: params.toString()
     })
-    .then(response =>
-    {
-        if (response.redirected)
+        .then(response =>
         {
-            // Non-AJAX request: navigate
-            window.location.href = response.url;
-            return null;
-        }
-        if (response.status ===401)
+            if (response.redirected)
+            {
+                // Non-AJAX request: navigate
+                window.location.href = response.url;
+                return null;
+            }
+            if (response.status === 401)
+            {
+                window.location.href = '/User/Login';
+                return null;
+            }
+            return response.json();
+        })
+        .then(data =>
         {
-            window.location.href = '/User/Login';
-            return null;
-        }
-        return response.json();
-    })
-    .then(data =>
-    {
-        if (!data) return;
-        if (data.success)
+            if (!data) return;
+            if (data.success)
+            {
+                // On success, reload to reflect totals and other changes
+                location.reload();
+            }
+            else
+            {
+                // Show Swal with provided message and revert UI to previous value
+                Swal.fire({ title: data.message ?? 'Could not update quantity', icon: 'warning' });
+                var input = document.getElementById('qty-' + itemId);
+                if (input && typeof previousValue !== 'undefined') input.value = previousValue;
+            }
+        })
+        .catch(error =>
         {
-            // On success, reload to reflect totals and other changes
-            location.reload();
-        }
-        else
-        {
-            // Show Swal with provided message and revert UI to previous value
-            Swal.fire({ title: data.message ?? 'Could not update quantity', icon: 'warning' });
+            console.error('Error:', error);
+            // revert on network error
             var input = document.getElementById('qty-' + itemId);
             if (input && typeof previousValue !== 'undefined') input.value = previousValue;
-        }
-    })
-    .catch(error =>
-    {
-        console.error('Error:', error);
-        // revert on network error
-        var input = document.getElementById('qty-' + itemId);
-        if (input && typeof previousValue !== 'undefined') input.value = previousValue;
-    });
+        });
 }
 
 function removeFromCart(itemId)
@@ -189,19 +189,19 @@ function removeFromCart(itemId)
             },
             body: params.toString()
         })
-        .then(response =>
-        {
-            if (response.ok)
+            .then(response =>
             {
-                location.reload();
-            } else
+                if (response.ok)
+                {
+                    location.reload();
+                } else
+                {
+                    console.error('Remove failed', response.status);
+                }
+            })
+            .catch(error =>
             {
-                console.error('Remove failed', response.status);
-            }
-        })
-        .catch(error =>
-        {
-            console.error('Error:', error);
-        });
+                console.error('Error:', error);
+            });
     });
 }

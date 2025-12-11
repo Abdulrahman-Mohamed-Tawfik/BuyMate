@@ -63,7 +63,7 @@
                             <label tabindex="0" class="btn btn-ghost btn-sm flex items-center space-x-2">
                                 <img src="/images/@(@User.FindFirst("avatar")?.Value ?? "UserProfileImages/Default.webp") "
                                      alt="User Avatar"
-                                     class="w-8 h-8 rounded-full object-cover"   />
+                                     class="w-8 h-8 rounded-full object-contain"   />
                                 <span>@User.Identity.Name</span>
                             </label>
                             <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">

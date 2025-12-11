@@ -14,7 +14,7 @@
  {
  <div class="card product-card" onclick="location.href='@Url.Action("Product", "Shop", new { id = item.ProductId })'">
  <div class="relative">
- <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-full h-48 object-cover rounded-t-lg" />
+ <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-full h-48 object-contain rounded-t-lg" />
  <button class="absolute top-2 right-2 btn btn-ghost btn-sm text-destructive" onclick="event.stopPropagation(); removeFromWishlist('@item.ProductId')">
  <svg class="w-5 h-5" fill="currentColor" viewBox="002020">
  <path d="M4.3186.318a4.54.500006.364L1220.364l7.682-7.682a4.54.5000-6.364-6.364L127.636l-1.318-1.318a4.54.5000-6.3640z"></path>

@@ -218,7 +218,7 @@
                     {
                         <div class="card product-card flex flex-col h-full" onclick="location.href='@Url.Action("Product", "Shop", new { id = product.Id })'">
                             <div class="relative">
-                                <img src="@(String.IsNullOrEmpty(product.ImageUrl) ? "/images/placeholder.png" : "/images/" + product.ImageUrl)" alt="@product.Name" class="w-full h-72 object-cover rounded-t-lg" />
+                                <img src="@(String.IsNullOrEmpty(product.ImageUrl) ? "/images/placeholder.png" : "/images/" + product.ImageUrl)" alt="@product.Name" class="w-full h-72 object-contain rounded-t-lg" />
                                 @if (product.IsFlashDeal)
                                 {
                                     <span class="absolute top-2 left-2 badge badge-destructive">Flash Deal</span>

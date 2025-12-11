@@ -27,7 +27,7 @@
 		<!-- Left: Image gallery -->
 		<section class="space-y-4" aria-labelledby="product-image-gallery">
 			<div class="aspect-square bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
-				<img id="mainImage" src="@ResolveImage(Model.ImageUrl ?? Model.ImageUrls.FirstOrDefault())" alt="@Model.Name" class="w-full h-full object-cover" />
+				<img id="mainImage" src="@ResolveImage(Model.ImageUrl ?? Model.ImageUrls.FirstOrDefault())" alt="@Model.Name" class="w-full h-full object-contain" />
 			</div>
 
 			@if (Model.ImageUrls != null && Model.ImageUrls.Count > 0)
@@ -37,7 +37,7 @@
 					{
 						var thumbSrc = ResolveImage(image);
 						<button type="button" class="aspect-square bg-gray-100 rounded-lg overflow-hidden focus:outline-none focus:ring-2" onclick="setMainImage('@thumbSrc')" aria-label="View image">
-							<img src="@thumbSrc" alt="@Model.Name thumbnail" class="w-full h-full object-cover" />
+							<img src="@thumbSrc" alt="@Model.Name thumbnail" class="w-full h-full object-contain" />
 						</button>
 					}
 				</div>

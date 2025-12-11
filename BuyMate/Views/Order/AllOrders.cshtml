@@ -32,7 +32,7 @@
 						@foreach (var item in order.Items.Take(3))
 						{
 							<div class="flex items-center space-x-4">
-								<img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-16 h-16 object-cover rounded-lg" />
+								<img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-16 h-16 object-contain rounded-lg" />
 								<div class="flex-1">
 									<h4 class="font-medium">@item.ProductName</h4>
 									<p class="text-sm text-muted-foreground">Qty: @item.Quantity</p>

@@ -38,7 +38,7 @@
 							<td class="px-4 py-3">
 								@if (!string.IsNullOrWhiteSpace(product.ImageUrl))
 								{
-									<img src="@(product.ImageUrl.StartsWith("/") ? product.ImageUrl : "/images/" + product.ImageUrl)" alt="@product.Name" class="h-12 w-12 object-cover rounded border" />
+									<img src="@(product.ImageUrl.StartsWith("/") ? product.ImageUrl : "/images/" + product.ImageUrl)" alt="@product.Name" class="h-12 w-12 object-contain rounded border" />
 								}
 								else
 								{

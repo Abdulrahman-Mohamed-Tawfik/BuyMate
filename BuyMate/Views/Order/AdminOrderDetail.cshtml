@@ -20,7 +20,7 @@
                     @foreach (var item in Model.Items)
                     {
                         <div class="flex items-center space-x-4">
-                            <img src="@("/images/" + item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-20 h-20 object-cover rounded-lg" />
+                            <img src="@("/images/" + item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-20 h-20 object-contain rounded-lg" />
                             <div class="flex-1">
                                 <h3 class="font-medium">@item.ProductName</h3>
                                 <p class="text-sm text-muted-foreground">@item.Brand</p>

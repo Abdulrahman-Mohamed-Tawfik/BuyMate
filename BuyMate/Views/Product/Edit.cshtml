@@ -4,80 +4,86 @@
 @{
     ViewData["Title"] = "Edit Product"; var productId = ViewBag.ProductId;
 }
-<div class="max-w-3xl mx-auto card p-8 mt-10">
-    <a asp-controller="Admin" asp-action="Index" class="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-        <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
-    </a>
-    <h1 class="text-2xl font-bold mb-6">Edit Product</h1>
-    @if (ViewBag.Error != null)
-    {
-        <div class="mb-4 text-red-500">@ViewBag.Error</div>
-    }
-    <form method="post" asp-controller="Product"
-          asp-action="Edit" asp-route-id="@productId" id="editForm" enctype="multipart/form-data">
-        @Html.AntiForgeryToken()
-        <div class="mb-4"><label class="font-medium">Name</label><input asp-for="Name" class="input w-full" /></div>
-        <div class="mb-4"><label class="font-medium">Brand</label><input asp-for="Brand" class="input w-full" /></div>
-        <div class="mb-4"><label class="font-medium">Description</label><textarea asp-for="Description" class="input w-full"></textarea></div>
-        <div class="grid grid-cols-3 gap-4 mb-4"><div><label class="font-medium">Price</label><input asp-for="Price" type="number" step="0.01" class="input w-full" /></div><div><label class="font-medium">Stock Quantity</label><input asp-for="StockQuantity" type="number" class="input w-full" /></div><div><label class="font-medium">Discount % <span class="text-sm text-muted-foreground">(optional)</span></label><input asp-for="DiscountPercentage" type="number" min="0" max="100" step="0.01" class="input w-full" /></div></div>
-
-        <div class="mb-4">
-            <label class="font-medium">Category <span class="text-sm text-muted-foreground">(optional)</span></label>
-            <select id="categorySelect" name="CategoryIds" class="input w-full" multiple>
-                @if (ViewBag.Categories != null)
-                {
-                    foreach (var c in (ViewBag.Categories as List<CategoryViewModel>))
-                    {
-                        @if (Model.CategoryIds.Contains(c.Id))
-                        {
-                            <option value="@c.Id" selected>@c.Name (@c.ProductCount)</option>
-                        }
-                        else
-                        {
-                            <option value="@c.Id">@c.Name (@c.ProductCount)</option>
-                        }
-                    }
-                }
-                else
-                {
-                    <option disabled>No categories available</option>
-                }
-            </select>
-            <small class="text-muted-foreground">Hold Ctrl/Cmd to select multiple.</small>
-        </div>
-
-        <div class="mb-6">
-            <label class="font-medium">Specifications</label>
-            <div id="specificationContainer" class="space-y-3">
-                @if (Model.Specifications != null && Model.Specifications.Any())
-                {
-                    for (int i = 0; i < Model.Specifications.Count; i++)
-                    {
-                        <div class="flex gap-3">
-                            <input name="Specifications[@i].Key" value="@Model.Specifications[i].Key" class="input w-1/2" />
-                            <input name="Specifications[@i].Value" value="@Model.Specifications[i].Value" class="input w-1/2" />
-                            <button type="button" onclick="removeImage(this)" class="btn btn-danger removeSpecBtn">X</button>
-                        </div>
-                    }
-                }
+<div class="container mb-5" style="max-width: 48rem;">
+    <div class="card p-4 mt-4">
+        <a asp-controller="Admin" asp-action="Index" class="small text-muted text-decoration-none d-inline-flex align-items-center mb-2">
+            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+        <h1 class="h5 fw-bold mb-3">Edit Product</h1>
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger py-2 mb-2">@ViewBag.Error</div>
+        }
+        <form method="post" asp-controller="Product"
+              asp-action="Edit" asp-route-id="@productId" id="editForm" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <div class="mb-2"><label class="form-label small">Name</label><input asp-for="Name" class="form-control" /></div>
+            <div class="mb-2"><label class="form-label small">Brand</label><input asp-for="Brand" class="form-control" /></div>
+            <div class="mb-2"><label class="form-label small">Description</label><textarea asp-for="Description" class="form-control"></textarea></div>
+            <div class="row g-2 mb-2">
+                <div class="col-12 col-md-4"><label class="form-label small">Price</label><input asp-for="Price" type="number" step="0.01" class="form-control" /></div>
+                <div class="col-12 col-md-4"><label class="form-label small">Stock Quantity</label><input asp-for="StockQuantity" type="number" class="form-control" /></div>
+                <div class="col-12 col-md-4"><label class="form-label small">Discount % <span class="text-muted">(optional)</span></label><input asp-for="DiscountPercentage" type="number" min="0" max="100" step="0.01" class="form-control" /></div>
             </div>
-            <button type="button" id="addSpecBtn" class="btn btn-outline mt-2">Add Specification</button>
-        </div>
 
-        <div class="mb-4">
-            <label class="font-medium">Upload New Image(s)</label>
-            <div class="flex items-center gap-3"><label for="files" class="btn btn-outline">Select images</label><span id="selectedFiles" class="text-sm text-muted-foreground">No files chosen</span></div>
-            <input type="file" name="files" id="files" class="hidden" accept="image/*" multiple />
-            <small class="text-muted-foreground block mt-1">You can select multiple images. Max each4MB. Allowed: jpg, jpeg, png, gif, webp.</small>
-        </div>
+            <div class="mb-2">
+                <label class="form-label small">Category <span class="text-muted">(optional)</span></label>
+                <select id="categorySelect" name="CategoryIds" class="form-select" multiple>
+                    @if (ViewBag.Categories != null)
+                    {
+                        foreach (var c in (ViewBag.Categories as List<CategoryViewModel>))
+                        {
+                            if (Model.CategoryIds.Contains(c.Id))
+                            {
+                                <option value="@c.Id" selected>@c.Name (@c.ProductCount)</option>
+                            }
+                            else
+                            {
+                                <option value="@c.Id">@c.Name (@c.ProductCount)</option>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <option disabled>No categories available</option>
+                    }
+                </select>
+                <small class="text-muted">Hold Ctrl/Cmd to select multiple.</small>
+            </div>
 
-        <div id="imagePreview" class="grid grid-cols-3 gap-4 mb-6"></div>
-        <input id="imgUrls" type="hidden" />
-        <button type="submit" class="btn btn-primary w-full text-lg">Save Changes</button>
-    </form>
+            <div class="mb-3">
+                <label class="form-label small">Specifications</label>
+                <div id="specificationContainer" class="d-flex flex-column gap-2">
+                    @if (Model.Specifications != null && Model.Specifications.Any())
+                    {
+                        for (int i = 0; i < Model.Specifications.Count; i++)
+                        {
+                            <div class="d-flex gap-2 align-items-center">
+                                <input name="Specifications[@i].Key" value="@Model.Specifications[i].Key" class="form-control" style="max-width:50%;" />
+                                <input name="Specifications[@i].Value" value="@Model.Specifications[i].Value" class="form-control" style="max-width:50%;" />
+                                <button type="button" onclick="removeImage(this)" class="btn btn-danger btn-sm removeSpecBtn">X</button>
+                            </div>
+                        }
+                    }
+                </div>
+                <button type="button" id="addSpecBtn" class="btn btn-outline-secondary btn-sm mt-1">Add Specification</button>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small">Upload New Image(s)</label>
+                <div class="d-flex align-items-center gap-2 mb-1"><label for="files" class="btn btn-outline-secondary btn-sm mb-0">Select images</label><span id="selectedFiles" class="small text-muted">No files chosen</span></div>
+                <input type="file" name="files" id="files" class="d-none" accept="image/*" multiple />
+                <small class="text-muted d-block">You can select multiple images. Max each 4MB. Allowed: jpg, jpeg, png, gif, webp.</small>
+            </div>
+
+            <div id="imagePreview" class="row g-2 mb-3"></div>
+            <input id="imgUrls" type="hidden" />
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+        </form>
+    </div>
 </div>
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src= "~/js/product-edit.js"></script>
+    <script src="~/js/product-edit.js"></script>
 }

@@ -2,66 +2,64 @@
     ViewData["Title"] = "Returns & Exchanges";
 }
 
-<div class="max-w-4xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8">Returns & Exchanges</h1>
+<div class="container mb-5" style="max-width: 64rem;">
+    <h1 class="h4 fw-bold mb-3">Returns &amp; Exchanges</h1>
 
-    <div class="space-y-8">
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Return Policy</h2>
-            <p class="text-muted-foreground leading-relaxed mb-4">
-                We want you to be completely satisfied with your purchase. If you're not happy with your order, 
+    <div class="d-flex flex-column gap-3 small">
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Return Policy</h2>
+            <p class="text-muted mb-2">
+                We want you to be completely satisfied with your purchase. If you're not happy with your order,
                 you can return it within 30 days of delivery for a full refund or exchange.
             </p>
-            <div class="bg-primary/10 p-4 rounded-lg">
-                <p class="text-primary font-medium">
-                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+            <div class="rounded-3 bg-primary bg-opacity-10 p-2">
+                <p class="text-primary fw-semibold mb-0">
+                    <i class="far fa-clock me-1"></i>
                     30-day return window for most items
                 </p>
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">How to Return an Item</h2>
-            <div class="space-y-4">
-                <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">1</div>
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">How to Return an Item</h2>
+            <div class="d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold" style="width:2rem;height:2rem;">1</div>
                     <div>
-                        <h3 class="font-bold">Start Your Return</h3>
-                        <p class="text-sm text-muted-foreground">Go to your account dashboard and select the order you want to return</p>
+                        <h3 class="fw-bold mb-1">Start Your Return</h3>
+                        <p class="text-muted mb-0">Go to your account dashboard and select the order you want to return</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">2</div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold" style="width:2rem;height:2rem;">2</div>
                     <div>
-                        <h3 class="font-bold">Choose Return Reason</h3>
-                        <p class="text-sm text-muted-foreground">Select why you're returning the item and choose refund or exchange</p>
+                        <h3 class="fw-bold mb-1">Choose Return Reason</h3>
+                        <p class="text-muted mb-0">Select why you're returning the item and choose refund or exchange</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">3</div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold" style="width:2rem;height:2rem;">3</div>
                     <div>
-                        <h3 class="font-bold">Print Return Label</h3>
-                        <p class="text-sm text-muted-foreground">We'll provide a prepaid return label for you to print</p>
+                        <h3 class="fw-bold mb-1">Print Return Label</h3>
+                        <p class="text-muted mb-0">We'll provide a prepaid return label for you to print</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">4</div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold" style="width:2rem;height:2rem;">4</div>
                     <div>
-                        <h3 class="font-bold">Ship Your Return</h3>
-                        <p class="text-sm text-muted-foreground">Package the item securely and drop it off at any authorized location</p>
+                        <h3 class="fw-bold mb-1">Ship Your Return</h3>
+                        <p class="text-muted mb-0">Package the item securely and drop it off at any authorized location</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Return Conditions</h2>
-            <div class="space-y-4">
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Return Conditions</h2>
+            <div class="d-flex flex-column gap-2">
                 <div>
-                    <h3 class="text-xl font-bold mb-3">Items Must Be:</h3>
-                    <ul class="list-disc list-inside space-y-2 text-muted-foreground">
+                    <h3 class="fw-bold mb-1">Items Must Be:</h3>
+                    <ul class="text-muted mb-0">
                         <li>In original condition with all tags attached</li>
                         <li>In original packaging with all accessories included</li>
                         <li>Returned within 30 days of delivery</li>
@@ -69,8 +67,8 @@
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold mb-3">Items That Cannot Be Returned:</h3>
-                    <ul class="list-disc list-inside space-y-2 text-muted-foreground">
+                    <h3 class="fw-bold mb-1">Items That Cannot Be Returned:</h3>
+                    <ul class="text-muted mb-0">
                         <li>Personalized or customized items</li>
                         <li>Items damaged by misuse or normal wear</li>
                         <li>Items that have been used or worn</li>
@@ -80,20 +78,20 @@
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Refund Processing</h2>
-            <div class="space-y-4">
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Refund Processing</h2>
+            <div class="d-flex flex-column gap-2">
                 <div>
-                    <h3 class="text-xl font-bold mb-3">Refund Timeline</h3>
-                    <ul class="list-disc list-inside space-y-2 text-muted-foreground">
+                    <h3 class="fw-bold mb-1">Refund Timeline</h3>
+                    <ul class="text-muted mb-0">
                         <li>Refunds are processed within 5-7 business days after we receive your return</li>
                         <li>Refunds will appear on your original payment method</li>
                         <li>Bank processing times may vary (typically 3-5 business days)</li>
                     </ul>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold mb-3">Refund Methods</h3>
-                    <ul class="list-disc list-inside space-y-2 text-muted-foreground">
+                    <h3 class="fw-bold mb-1">Refund Methods</h3>
+                    <ul class="text-muted mb-0">
                         <li>Credit card purchases: Refunded to original card</li>
                         <li>PayPal purchases: Refunded to PayPal account</li>
                         <li>Gift card purchases: Refunded as store credit</li>
@@ -102,35 +100,33 @@
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Exchanges</h2>
-            <p class="text-muted-foreground leading-relaxed mb-4">
-                Need a different size, color, or style? We make exchanges easy. Simply follow the return process 
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Exchanges</h2>
+            <p class="text-muted mb-2">
+                Need a different size, color, or style? We make exchanges easy. Simply follow the return process
                 and select "Exchange" instead of "Refund" when starting your return.
             </p>
-            <div class="bg-primary/10 p-4 rounded-lg">
-                <p class="text-primary font-medium">
-                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
-                    </svg>
+            <div class="rounded-3 bg-primary bg-opacity-10 p-2">
+                <p class="text-primary fw-semibold mb-0">
+                    <i class="fas fa-exchange-alt me-1"></i>
                     Free exchanges on all items
                 </p>
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Return Shipping</h2>
-            <div class="space-y-4">
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Return Shipping</h2>
+            <div class="d-flex flex-column gap-2">
                 <div>
-                    <h3 class="text-xl font-bold mb-3">Free Return Shipping</h3>
-                    <p class="text-muted-foreground">
-                        We provide prepaid return labels for most returns. Simply print the label and drop off your package 
+                    <h3 class="fw-bold mb-1">Free Return Shipping</h3>
+                    <p class="text-muted mb-0">
+                        We provide prepaid return labels for most returns. Simply print the label and drop off your package
                         at any authorized shipping location.
                     </p>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold mb-3">Return Shipping Costs</h3>
-                    <ul class="list-disc list-inside space-y-2 text-muted-foreground">
+                    <h3 class="fw-bold mb-1">Return Shipping Costs</h3>
+                    <ul class="text-muted mb-0">
                         <li>Free for items returned due to our error</li>
                         <li>Free for defective or damaged items</li>
                         <li>Free for most standard returns</li>
@@ -140,27 +136,27 @@
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">International Returns</h2>
-            <p class="text-muted-foreground leading-relaxed mb-4">
-                International returns are subject to different policies and may incur additional shipping costs. 
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">International Returns</h2>
+            <p class="text-muted mb-2">
+                International returns are subject to different policies and may incur additional shipping costs.
                 Please contact our customer service team before initiating an international return.
             </p>
-            <div class="flex space-x-4">
+            <div class="d-flex gap-2">
                 <a href="@Url.Action("Contact", "Home")" class="btn btn-primary">Contact Support</a>
-                <a href="mailto:returns@buymate.com" class="btn btn-secondary">Email Returns Team</a>
+                <a href="mailto:returns@buymate.com" class="btn btn-outline-secondary">Email Returns Team</a>
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Need Help?</h2>
-            <p class="text-muted-foreground leading-relaxed mb-4">
-                If you have any questions about returns or exchanges, our customer service team is here to help. 
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Need Help?</h2>
+            <p class="text-muted mb-2">
+                If you have any questions about returns or exchanges, our customer service team is here to help.
                 We're committed to making the return process as smooth as possible.
             </p>
-            <div class="flex space-x-4">
+            <div class="d-flex gap-2">
                 <a href="@Url.Action("Contact", "Home")" class="btn btn-primary">Contact Support</a>
-                <a href="@Url.Action("FAQ", "Home")" class="btn btn-secondary">View FAQ</a>
+                <a href="@Url.Action("FAQ", "Home")" class="btn btn-outline-secondary">View FAQ</a>
             </div>
         </div>
     </div>

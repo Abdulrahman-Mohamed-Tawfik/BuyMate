@@ -5,41 +5,41 @@
     ViewData["Title"] = "Create Category";
 }
 
-<div class="max-w-3xl mx-auto card p-8 mt-10">
-    <a asp-controller="Admin" asp-action="Index" class="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-        <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
-    </a>
-    <h1 class="text-2xl font-bold mb-6">Create New Category</h1>
-    <form method="post" asp-action="Create" id="createCategoryForm" enctype="multipart/form-data">
-        @Html.AntiForgeryToken()
+<div class="container mb-5" style="max-width: 48rem;">
+    <div class="card p-4 p-md-5 mt-4">
+        <a asp-controller="Admin" asp-action="Index" class="d-inline-flex align-items-center small text-muted text-decoration-none mb-3">
+            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
+        <h1 class="h4 fw-bold mb-3">Create New Category</h1>
 
-        <!-- Name -->
-        <div class="mb-5">
-            <label class="font-medium">Name</label>
-            <input asp-for="Name" class="input w-full" placeholder="Category name" />
-            <span asp-validation-for="Name" class="text-danger text-sm"></span>
-        </div>
+        <form method="post" asp-action="Create" id="createCategoryForm" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
 
-        <!-- Upload Image -->
-        <div class="mb-6">
-            <label class="font-medium">Image</label>
-            <div class="flex items-center gap-3 mb-2">
-                <label for="imageFile" class="btn btn-outline">Select image</label>
-                <span id="selectedFile" class="text-sm text-muted-foreground">No file chosen</span>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label small">Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Category name" />
+                <span asp-validation-for="Name" class="small text-danger"></span>
             </div>
-            <input type="file" name="imageFile" id="imageFile" class="hidden" accept="image/*" />
-            <small class="text-muted-foreground block">Max 2MB. Allowed: jpg, jpeg, png, gif, webp.</small>
-        </div>
 
-        <!-- Preview Image -->
-        <div id="imagePreview" class="grid grid-cols-3 gap-4 mb-6"></div>
+            <div class="mb-3">
+                <label class="form-label small">Image</label>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <label for="imageFile" class="btn btn-outline-secondary btn-sm">Select image</label>
+                    <span id="selectedFile" class="small text-muted">No file chosen</span>
+                </div>
+                <input type="file" name="imageFile" id="imageFile" class="d-none" accept="image/*" />
+                <small class="text-muted d-block">Max 2MB. Allowed: jpg, jpeg, png, gif, webp.</small>
+            </div>
 
-        <button type="submit" class="btn btn-primary w-full text-lg">Create Category</button>
-    </form>
+            <div id="imagePreview" class="row g-3 mb-3"></div>
+
+            <button type="submit" class="btn btn-primary w-100">Create Category</button>
+        </form>
+    </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-   <script src="~/js/category.js"></script>
+    <script src="~/js/category.js"></script>
 }

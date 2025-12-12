@@ -2,116 +2,116 @@
     ViewData["Title"] = "Search Results";
 }
 
-<div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8">Search Results</h1>
+<div class="container mb-5" style="max-width: 72rem;">
+    <h1 class="h4 fw-bold mb-3">Search Results</h1>
 
-    <div class="space-y-8">
-        <div class="card p-6">
-            <form class="flex space-x-4">
-                <input type="text" placeholder="Search for products..." class="input flex-1" />
+    <div class="d-flex flex-column gap-3 small">
+        <div class="card p-3">
+            <form class="d-flex gap-2">
+                <input type="text" placeholder="Search for products..." class="form-control" />
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            <div class="lg:col-span-1">
-                <div class="card p-6">
-                    <h2 class="text-xl font-bold mb-4">Filters</h2>
-                    
-                    <div class="space-y-6">
+        <div class="row g-3">
+            <div class="col-12 col-lg-3">
+                <div class="card p-3 h-100">
+                    <h2 class="h6 fw-bold mb-2">Filters</h2>
+
+                    <div class="d-flex flex-column gap-3">
                         <div>
-                            <h3 class="font-bold mb-3">Category</h3>
-                            <div class="space-y-2">
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">Electronics</span>
-                                </label>
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">Fashion</span>
-                                </label>
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">Home & Garden</span>
-                                </label>
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">Sports</span>
-                                </label>
+                            <h3 class="fw-bold mb-1">Category</h3>
+                            <div class="d-flex flex-column gap-1">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="cat-electronics" />
+                                    <label class="form-check-label" for="cat-electronics">Electronics</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="cat-fashion" />
+                                    <label class="form-check-label" for="cat-fashion">Fashion</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="cat-home" />
+                                    <label class="form-check-label" for="cat-home">Home &amp; Garden</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="cat-sports" />
+                                    <label class="form-check-label" for="cat-sports">Sports</label>
+                                </div>
                             </div>
                         </div>
 
                         <div>
-                            <h3 class="font-bold mb-3">Price Range</h3>
-                            <div class="space-y-2">
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">Under $50</span>
-                                </label>
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">$50 - $100</span>
-                                </label>
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">$100 - $500</span>
-                                </label>
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">Over $500</span>
-                                </label>
+                            <h3 class="fw-bold mb-1">Price Range</h3>
+                            <div class="d-flex flex-column gap-1">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="price-1" />
+                                    <label class="form-check-label" for="price-1">Under $50</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="price-2" />
+                                    <label class="form-check-label" for="price-2">$50 - $100</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="price-3" />
+                                    <label class="form-check-label" for="price-3">$100 - $500</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="price-4" />
+                                    <label class="form-check-label" for="price-4">Over $500</label>
+                                </div>
                             </div>
                         </div>
 
                         <div>
-                            <h3 class="font-bold mb-3">Brand</h3>
-                            <div class="space-y-2">
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">Apple</span>
-                                </label>
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">Samsung</span>
-                                </label>
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">Sony</span>
-                                </label>
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">Nike</span>
-                                </label>
+                            <h3 class="fw-bold mb-1">Brand</h3>
+                            <div class="d-flex flex-column gap-1">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="brand-apple" />
+                                    <label class="form-check-label" for="brand-apple">Apple</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="brand-samsung" />
+                                    <label class="form-check-label" for="brand-samsung">Samsung</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="brand-sony" />
+                                    <label class="form-check-label" for="brand-sony">Sony</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="brand-nike" />
+                                    <label class="form-check-label" for="brand-nike">Nike</label>
+                                </div>
                             </div>
                         </div>
 
                         <div>
-                            <h3 class="font-bold mb-3">Rating</h3>
-                            <div class="space-y-2">
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">4+ Stars</span>
-                                </label>
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">3+ Stars</span>
-                                </label>
-                                <label class="flex items-center space-x-2">
-                                    <input type="checkbox" class="checkbox" />
-                                    <span class="text-sm">2+ Stars</span>
-                                </label>
+                            <h3 class="fw-bold mb-1">Rating</h3>
+                            <div class="d-flex flex-column gap-1">
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="rating-4" />
+                                    <label class="form-check-label" for="rating-4">4+ Stars</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="rating-3" />
+                                    <label class="form-check-label" for="rating-3">3+ Stars</label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="checkbox" class="form-check-input" id="rating-2" />
+                                    <label class="form-check-label" for="rating-2">2+ Stars</label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="lg:col-span-3">
-                <div class="flex items-center justify-between mb-6">
-                    <p class="text-muted-foreground">Showing 1-12 of 245 results</p>
-                    <div class="flex items-center space-x-2">
-                        <span class="text-sm">Sort by:</span>
-                        <select class="select">
+            <div class="col-12 col-lg-9">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                    <p class="text-muted mb-0">Showing 1-12 of 245 results</p>
+                    <div class="d-flex align-items-center gap-2">
+                        <span>Sort by:</span>
+                        <select class="form-select form-select-sm" style="width:auto;">
                             <option>Relevance</option>
                             <option>Price: Low to High</option>
                             <option>Price: High to Low</option>
@@ -121,110 +121,86 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div class="card p-4 hover:shadow-lg transition-all cursor-pointer">
-                        <div class="relative mb-4">
-                            <img src="~/images/buymate-logo.png" alt="Product" class="w-full h-48 object-contain rounded-lg" />
-                            <div class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded text-sm font-bold">
-                                20% OFF
+                <div class="row g-3">
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card p-2 h-100">
+                            <div class="position-relative mb-2">
+                                <img src="~/images/buymate-logo.png" alt="Product" class="rounded" style="width:100%;height:12rem;object-fit:contain;" />
+                                <div class="position-absolute top-0 end-0 bg-danger text-white px-2 py-1 rounded-start small fw-bold mt-1 me-1">
+                                    20% OFF
+                                </div>
                             </div>
-                        </div>
-                        <h3 class="font-bold mb-2">iPhone 15 Pro Max</h3>
-                        <div class="flex items-center space-x-2 mb-2">
-                            <span class="text-xl font-bold text-primary">$959</span>
-                            <span class="text-lg text-muted-foreground line-through">$1,199</span>
-                        </div>
-                        <div class="flex items-center space-x-1 mb-3">
-                            <div class="flex text-yellow-400">
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
+                            <h3 class="fw-bold mb-1" style="font-size:0.95rem;">iPhone 15 Pro Max</h3>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="fw-bold text-primary">$959</span>
+                                <span class="text-muted text-decoration-line-through">$1,199</span>
                             </div>
-                            <span class="text-sm text-muted-foreground">(4.8)</span>
+                            <div class="d-flex align-items-center gap-1 mb-2">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-muted">(4.8)</span>
+                            </div>
+                            <button class="btn btn-primary btn-sm w-100">Add to Cart</button>
                         </div>
-                        <button class="btn btn-primary w-full">Add to Cart</button>
                     </div>
 
-                    <div class="card p-4 hover:shadow-lg transition-all cursor-pointer">
-                        <div class="relative mb-4">
-                            <img src="~/images/buymate-logo.png" alt="Product" class="w-full h-48 object-contain rounded-lg" />
-                        </div>
-                        <h3 class="font-bold mb-2">MacBook Pro 16"</h3>
-                        <div class="flex items-center space-x-2 mb-2">
-                            <span class="text-xl font-bold text-primary">$2,499</span>
-                        </div>
-                        <div class="flex items-center space-x-1 mb-3">
-                            <div class="flex text-yellow-400">
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card p-2 h-100">
+                            <div class="mb-2">
+                                <img src="~/images/buymate-logo.png" alt="Product" class="rounded" style="width:100%;height:12rem;object-fit:contain;" />
                             </div>
-                            <span class="text-sm text-muted-foreground">(4.9)</span>
+                            <h3 class="fw-bold mb-1" style="font-size:0.95rem;">MacBook Pro 16"</h3>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="fw-bold text-primary">$2,499</span>
+                            </div>
+                            <div class="d-flex align-items-center gap-1 mb-2">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-muted">(4.9)</span>
+                            </div>
+                            <button class="btn btn-primary btn-sm w-100">Add to Cart</button>
                         </div>
-                        <button class="btn btn-primary w-full">Add to Cart</button>
                     </div>
 
-                    <div class="card p-4 hover:shadow-lg transition-all cursor-pointer">
-                        <div class="relative mb-4">
-                            <img src="~/images/buymate-logo.png" alt="Product" class="w-full h-48 object-contain rounded-lg" />
-                            <div class="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded text-sm font-bold">
-                                NEW
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card p-2 h-100">
+                            <div class="position-relative mb-2">
+                                <img src="~/images/buymate-logo.png" alt="Product" class="rounded" style="width:100%;height:12rem;object-fit:contain;" />
+                                <div class="position-absolute top-0 end-0 bg-success text-white px-2 py-1 rounded-start small fw-bold mt-1 me-1">
+                                    NEW
+                                </div>
                             </div>
-                        </div>
-                        <h3 class="font-bold mb-2">Samsung Galaxy S24 Ultra</h3>
-                        <div class="flex items-center space-x-2 mb-2">
-                            <span class="text-xl font-bold text-primary">$1,199</span>
-                        </div>
-                        <div class="flex items-center space-x-1 mb-3">
-                            <div class="flex text-yellow-400">
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
-                                <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
-                                    <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-                                </svg>
+                            <h3 class="fw-bold mb-1" style="font-size:0.95rem;">Samsung Galaxy S24 Ultra</h3>
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="fw-bold text-primary">$1,199</span>
                             </div>
-                            <span class="text-sm text-muted-foreground">(4.7)</span>
+                            <div class="d-flex align-items-center gap-1 mb-2">
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <span class="text-muted">(4.7)</span>
+                            </div>
+                            <button class="btn btn-primary btn-sm w-100">Add to Cart</button>
                         </div>
-                        <button class="btn btn-primary w-full">Add to Cart</button>
                     </div>
                 </div>
 
-                <div class="flex justify-center mt-8">
-                    <button class="btn btn-secondary">Load More</button>
+                <div class="d-flex justify-content-center mt-3">
+                    <button class="btn btn-outline-secondary btn-sm">Load More</button>
                 </div>
             </div>
         </div>

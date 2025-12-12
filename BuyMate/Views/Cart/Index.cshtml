@@ -6,68 +6,66 @@
     var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
 
-<div class="max-w-4xl mx-auto">
-
+<div class="container mb-5" style="max-width: 48rem;">
     <input type="hidden" id="__RequestVerificationToken" value="@requestToken" />
 
-    <h1 class="text-3xl font-bold mb-8">Shopping Cart</h1>
+    <h1 class="h3 fw-bold mb-4">Shopping Cart</h1>
 
     @if (Model is not null && Model.Items.Count != 0)
     {
-        <div class="space-y-6">
+        <div class="d-flex flex-column gap-3">
             @foreach (var item in Model.Items)
             {
-                <div class="card p-6">
-                    <div class="flex items-center space-x-4">
-                        <img src="/images/@(item.ImageUrl ?? "placeholder.png")" alt="@item.ProductName" class="w-20 h-20 object-contain rounded-lg" />
-                        <div class="flex-1">
-                            <h3 class="font-medium">@item.ProductName</h3>
-                            <div class="flex items-center space-x-4 mt-2">
-                                <div class="flex items-center space-x-2">
-                                    <label class="text-sm">Quantity:</label>
-                                    <div class="inline-flex items-center border rounded">
-                                        <button type="button" class="px-2" onclick="changeItemQuantity('@item.ItemId', -1)">-</button>
-                                        <input id="qty-@item.ItemId" type="text" class="w-12 text-center" value="@item.Quantity" readonly />
-                                        <button type="button" class="px-2" onclick="changeItemQuantity('@item.ItemId',1)">+</button>
+                <div class="card p-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="/images/@(item.ImageUrl ?? "placeholder.png")" alt="@item.ProductName" class="rounded" style="width:80px;height:80px;object-fit:contain;" />
+                        <div class="flex-grow-1">
+                            <h3 class="h6 fw-semibold mb-1">@item.ProductName</h3>
+                            <div class="d-flex align-items-center flex-wrap gap-3 mt-1">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span class="small">Quantity:</span>
+                                    <div class="input-group input-group-sm" style="width:auto;">
+                                        <button type="button" class="btn btn-outline-secondary" onclick="changeItemQuantity('@item.ItemId', -1)">-</button>
+                                        <input id="qty-@item.ItemId" type="text" class="form-control text-center" style="max-width:3rem;" value="@item.Quantity" readonly />
+                                        <button type="button" class="btn btn-outline-secondary" onclick="changeItemQuantity('@item.ItemId',1)">+</button>
                                     </div>
                                 </div>
-                                <span class="font-bold">$@item.TotalPrice</span>
+                                <span class="fw-bold">$@item.TotalPrice</span>
                             </div>
                         </div>
-                        <button class="btn btn-ghost" onclick="removeFromCart('@item.ItemId')">
+                        <button class="btn btn-outline-danger btn-sm" onclick="removeFromCart('@item.ItemId')">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
                 </div>
             }
 
-            <!-- Cart Summary -->
-            <div class="card p-6">
-                <h2 class="text-xl font-bold mb-4">Order Summary</h2>
-                <div class="space-y-2">
-                    <div class="flex justify-between">
+            <div class="card p-3 mt-2">
+                <h2 class="h5 fw-bold mb-3">Order Summary</h2>
+                <div class="d-flex flex-column gap-1 mb-2">
+                    <div class="d-flex justify-content-between">
                         <span>Subtotal</span>
                         <span>$@Model.Subtotal</span>
                     </div>
-                    <div class="flex justify-between">
+                    <div class="d-flex justify-content-between">
                         <span>Shipping</span>
                         <span>Free</span>
                     </div>
-                    <div class="flex justify-between">
+                    <div class="d-flex justify-content-between">
                         <span>Tax</span>
                         <span>$0.00</span>
                     </div>
-                    <hr class="my-4" />
-                    <div class="flex justify-between text-lg font-bold">
+                    <hr class="my-3" />
+                    <div class="d-flex justify-content-between fw-bold">
                         <span>Total</span>
                         <span>$@Model.Total</span>
                     </div>
                 </div>
-                <div class="mt-6 space-y-4">
-                    <a asp-controller="Order" asp-action="Checkout" class="btn btn-primary btn-lg w-full">
+                <div class="mt-3 d-flex flex-column gap-2">
+                    <a asp-controller="Order" asp-action="Checkout" class="btn btn-primary w-100">
                         Proceed to Checkout
                     </a>
-                    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary w-full">
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary w-100">
                         Continue Shopping
                     </a>
                 </div>
@@ -76,14 +74,10 @@
     }
     else
     {
-        <div class="text-center py-12">
-            <svg class="w-24 h-24 mx-auto text-muted-foreground mb-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="002424">
-                <path d="M6236v14a2200022h14a220002-2V6l-3-4Z"></path>
-                <path d="M36h18"></path>
-                <path d="M1610a44001-80"></path>
-            </svg>
-            <h2 class="text-2xl font-bold mb-2">Your cart is empty</h2>
-            <p class="text-muted-foreground mb-6">Looks like you haven't added any items to your cart yet.</p>
+        <div class="text-center py-5">
+            <i class="fa-solid fa-cart-shopping fa-3x text-muted mb-3"></i>
+            <h2 class="h4 fw-bold mb-2">Your cart is empty</h2>
+            <p class="text-muted mb-3">Looks like you haven't added any items to your cart yet.</p>
             <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-lg">
                 Start Shopping
             </a>

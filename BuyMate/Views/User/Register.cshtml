@@ -3,73 +3,69 @@
 @{
     ViewData["Title"] = "Register";
     Layout = "_AuthLayout";
-
 }
 
-<div class="max-w-md mx-auto">
-    <div class="card p-8">
-        <div class="text-center mb-8">
-            <h1 class="text-2xl font-bold mb-2">Create Account</h1>
-            <p class="text-muted-foreground">Join BUYMATE and start shopping</p>
+<div class="container" style="max-width: 28rem;">
+    <div class="card p-4 p-md-5 mt-4">
+        <div class="text-center mb-4">
+            <h1 class="h4 fw-bold mb-2">Create Account</h1>
+            <p class="text-muted mb-0">Join BUYMATE and start shopping</p>
         </div>
 
-        <form asp-action="Register" method="post" class="space-y-6" asp-antiforgery="true">
-
-            <div>
-                <label asp-for="FirstName" class="block text-sm font-medium mb-2">First Name</label>
-                <input asp-for="FirstName" type="text" class="input w-full" placeholder="Enter your first name" />
-                <span asp-validation-for="FirstName" class="text-sm text-destructive"></span>
+        <form asp-action="Register" method="post" asp-antiforgery="true">
+            <div class="mb-3">
+                <label asp-for="FirstName" class="form-label small">First Name</label>
+                <input asp-for="FirstName" type="text" class="form-control" placeholder="Enter your first name" />
+                <span asp-validation-for="FirstName" class="small text-danger"></span>
             </div>
 
-            <div>
-                <label asp-for="LastName" class="block text-sm font-medium mb-2">Last Name</label>
-                <input asp-for="LastName" type="text" class="input w-full" placeholder="Enter your last name" />
-                <span asp-validation-for="LastName" class="text-sm text-destructive"></span>
+            <div class="mb-3">
+                <label asp-for="LastName" class="form-label small">Last Name</label>
+                <input asp-for="LastName" type="text" class="form-control" placeholder="Enter your last name" />
+                <span asp-validation-for="LastName" class="small text-danger"></span>
             </div>
 
-            <div>
-                <label asp-for="Email" class="block text-sm font-medium mb-2">Email Address</label>
-                <input asp-for="Email" type="email" class="input w-full" placeholder="Enter your email" />
-                <span asp-validation-for="Email" class="text-sm text-destructive"></span>
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label small">Email Address</label>
+                <input asp-for="Email" type="email" class="form-control" placeholder="Enter your email" />
+                <span asp-validation-for="Email" class="small text-danger"></span>
             </div>
 
-            <div>
-                <label asp-for="Phone" class="block text-sm font-medium mb-2">Phone Number</label>
-                <input asp-for="Phone" type="tel" class="input w-full" placeholder="Enter your phone number" />
-                <span asp-validation-for="Phone" class="text-sm text-destructive"></span>
+            <div class="mb-3">
+                <label asp-for="Phone" class="form-label small">Phone Number</label>
+                <input asp-for="Phone" type="tel" class="form-control" placeholder="Enter your phone number" />
+                <span asp-validation-for="Phone" class="small text-danger"></span>
             </div>
 
-            <div>
-                <label asp-for="Password" class="block text-sm font-medium mb-2">Password</label>
-                <input asp-for="Password" id="Password" type="password" class="input w-full" placeholder="Create a password" />
-                <span asp-validation-for="Password" class="text-sm text-destructive"></span>
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label small">Password</label>
+                <input asp-for="Password" id="Password" type="password" class="form-control" placeholder="Create a password" />
+                <span asp-validation-for="Password" class="small text-danger"></span>
             </div>
 
-            <div>
-                <label asp-for="ConfirmPassword" class="block text-sm font-medium mb-2">Confirm Password</label>
-                <input asp-for="ConfirmPassword" id="ConfirmPassword" type="password" class="input w-full" placeholder="Confirm your password" />
-                <span asp-validation-for="ConfirmPassword" class="text-sm text-destructive"></span>
+            <div class="mb-3">
+                <label asp-for="ConfirmPassword" class="form-label small">Confirm Password</label>
+                <input asp-for="ConfirmPassword" id="ConfirmPassword" type="password" class="form-control" placeholder="Confirm your password" />
+                <span asp-validation-for="ConfirmPassword" class="small text-danger"></span>
             </div>
 
-            <div class="flex items-center space-x-2">
-                <input id="showPasswordRegister" type="checkbox" class="mr-2" />
-                <label for="showPasswordRegister" class="text-sm">Show password</label>
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <input id="showPasswordRegister" type="checkbox" class="form-check-input" />
+                <label for="showPasswordRegister" class="form-check-label small">Show password</label>
             </div>
 
-            <button type="submit" class="btn btn-primary w-full btn-lg">Create Account</button>
+            <button type="submit" class="btn btn-primary w-100 btn-lg">Create Account</button>
         </form>
 
-        <div class="mt-6 text-center">
-            <p class="text-sm text-muted-foreground">
+        <div class="mt-4 text-center">
+            <p class="small text-muted mb-0">
                 Already have an account?
-                <a asp-action="Login" class="text-primary hover:underline">Sign in</a>
+                <a asp-action="Login" class="text-primary text-decoration-none">Sign in</a>
             </p>
         </div>
     </div>
 </div>
 
-<script src="~/js/user-register.js">
-    
-</script>
+<script src="~/js/user-register.js"></script>
 
 

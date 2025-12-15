@@ -2,138 +2,136 @@
     ViewData["Title"] = "Shipping Information";
 }
 
-<div class="max-w-4xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8">Shipping Information</h1>
+<div class="container mb-5" style="max-width: 64rem;">
+    <h1 class="h4 fw-bold mb-3">Shipping Information</h1>
 
-    <div class="space-y-8">
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Shipping Options</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="text-center p-6 border rounded-lg">
-                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
+    <div class="d-flex flex-column gap-3 small">
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Shipping Options</h2>
+            <div class="row g-3">
+                <div class="col-12 col-md-4">
+                    <div class="text-center border rounded-3 p-3 h-100">
+                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-2" style="width:4rem;height:4rem;">
+                            <i class="fas fa-box text-primary fs-4"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">Standard Shipping</h3>
+                        <p class="h5 fw-bold text-primary mb-1">$5.99</p>
+                        <p class="text-muted mb-0">5-7 business days</p>
                     </div>
-                    <h3 class="font-bold mb-2">Standard Shipping</h3>
-                    <p class="text-2xl font-bold text-primary mb-2">$5.99</p>
-                    <p class="text-sm text-muted-foreground">5-7 business days</p>
                 </div>
-                <div class="text-center p-6 border rounded-lg">
-                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
+                <div class="col-12 col-md-4">
+                    <div class="text-center border rounded-3 p-3 h-100">
+                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-2" style="width:4rem;height:4rem;">
+                            <i class="fas fa-bolt text-primary fs-4"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">Express Shipping</h3>
+                        <p class="h5 fw-bold text-primary mb-1">$12.99</p>
+                        <p class="text-muted mb-0">2-3 business days</p>
                     </div>
-                    <h3 class="font-bold mb-2">Express Shipping</h3>
-                    <p class="text-2xl font-bold text-primary mb-2">$12.99</p>
-                    <p class="text-sm text-muted-foreground">2-3 business days</p>
                 </div>
-                <div class="text-center p-6 border rounded-lg">
-                    <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
+                <div class="col-12 col-md-4">
+                    <div class="text-center border rounded-3 p-3 h-100">
+                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-2" style="width:4rem;height:4rem;">
+                            <i class="far fa-clock text-primary fs-4"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">Same Day Delivery</h3>
+                        <p class="h5 fw-bold text-primary mb-1">$19.99</p>
+                        <p class="text-muted mb-0">Same day (select areas)</p>
                     </div>
-                    <h3 class="font-bold mb-2">Same Day Delivery</h3>
-                    <p class="text-2xl font-bold text-primary mb-2">$19.99</p>
-                    <p class="text-sm text-muted-foreground">Same day (select areas)</p>
                 </div>
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Free Shipping</h2>
-            <p class="text-muted-foreground leading-relaxed mb-4">
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Free Shipping</h2>
+            <p class="text-muted mb-2">
                 Enjoy free standard shipping on orders over $50! This applies to all orders within the continental United States.
             </p>
-            <div class="bg-primary/10 p-4 rounded-lg">
-                <p class="text-primary font-medium">
-                    <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
+            <div class="rounded-3 bg-primary bg-opacity-10 p-2">
+                <p class="text-primary fw-semibold mb-0">
+                    <i class="far fa-clock me-1"></i>
                     Free shipping on orders over $50
                 </p>
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Shipping Destinations</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h3 class="text-xl font-bold mb-3">Domestic Shipping</h3>
-                    <ul class="space-y-2 text-muted-foreground">
-                        <li>• Continental United States</li>
-                        <li>• Alaska and Hawaii</li>
-                        <li>• Puerto Rico</li>
-                        <li>• US Virgin Islands</li>
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Shipping Destinations</h2>
+            <div class="row g-3">
+                <div class="col-12 col-md-6">
+                    <h3 class="fw-bold mb-1">Domestic Shipping</h3>
+                    <ul class="text-muted mb-0">
+                        <li>Continental United States</li>
+                        <li>Alaska and Hawaii</li>
+                        <li>Puerto Rico</li>
+                        <li>US Virgin Islands</li>
                     </ul>
                 </div>
-                <div>
-                    <h3 class="text-xl font-bold mb-3">International Shipping</h3>
-                    <ul class="space-y-2 text-muted-foreground">
-                        <li>• Canada</li>
-                        <li>• United Kingdom</li>
-                        <li>• European Union</li>
-                        <li>• Australia and New Zealand</li>
+                <div class="col-12 col-md-6">
+                    <h3 class="fw-bold mb-1">International Shipping</h3>
+                    <ul class="text-muted mb-0">
+                        <li>Canada</li>
+                        <li>United Kingdom</li>
+                        <li>European Union</li>
+                        <li>Australia and New Zealand</li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Order Processing</h2>
-            <div class="space-y-4">
-                <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">1</div>
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Order Processing</h2>
+            <div class="d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold" style="width:2rem;height:2rem;">1</div>
                     <div>
-                        <h3 class="font-bold">Order Placed</h3>
-                        <p class="text-sm text-muted-foreground">Your order is received and being processed</p>
+                        <h3 class="fw-bold mb-1">Order Placed</h3>
+                        <p class="text-muted mb-0">Your order is received and being processed</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">2</div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold" style="width:2rem;height:2rem;">2</div>
                     <div>
-                        <h3 class="font-bold">Order Confirmed</h3>
-                        <p class="text-sm text-muted-foreground">Payment is verified and order is confirmed</p>
+                        <h3 class="fw-bold mb-1">Order Confirmed</h3>
+                        <p class="text-muted mb-0">Payment is verified and order is confirmed</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">3</div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold" style="width:2rem;height:2rem;">3</div>
                     <div>
-                        <h3 class="font-bold">Order Shipped</h3>
-                        <p class="text-sm text-muted-foreground">Your order is packed and shipped</p>
+                        <h3 class="fw-bold mb-1">Order Shipped</h3>
+                        <p class="text-muted mb-0">Your order is packed and shipped</p>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center text-white font-bold">4</div>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center text-white fw-bold" style="width:2rem;height:2rem;">4</div>
                     <div>
-                        <h3 class="font-bold">Order Delivered</h3>
-                        <p class="text-sm text-muted-foreground">Your order arrives at your doorstep</p>
+                        <h3 class="fw-bold mb-1">Order Delivered</h3>
+                        <p class="text-muted mb-0">Your order arrives at your doorstep</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Tracking Your Order</h2>
-            <p class="text-muted-foreground leading-relaxed mb-4">
-                Once your order is shipped, you'll receive a tracking number via email. You can use this number to track your package 
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Tracking Your Order</h2>
+            <p class="text-muted mb-2">
+                Once your order is shipped, you'll receive a tracking number via email. You can use this number to track your package
                 on the carrier's website or through our order tracking system.
             </p>
-            <div class="flex space-x-4">
+            <div class="d-flex gap-2">
                 <a href="#" class="btn btn-primary">Track Order</a>
-                <a href="@Url.Action("Contact", "Home")" class="btn btn-secondary">Need Help?</a>
+                <a href="@Url.Action("Contact", "Home")" class="btn btn-outline-secondary">Need Help?</a>
             </div>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Shipping Restrictions</h2>
-            <p class="text-muted-foreground leading-relaxed mb-4">
-                Some items may have shipping restrictions due to size, weight, or regulatory requirements. 
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Shipping Restrictions</h2>
+            <p class="text-muted mb-2">
+                Some items may have shipping restrictions due to size, weight, or regulatory requirements.
                 These restrictions will be clearly indicated on the product page.
             </p>
-            <ul class="list-disc list-inside space-y-2 text-muted-foreground">
+            <ul class="text-muted mb-0">
                 <li>Large items may require special handling</li>
                 <li>Some electronics may have shipping restrictions</li>
                 <li>International orders may be subject to customs duties</li>
@@ -141,14 +139,14 @@
             </ul>
         </div>
 
-        <div class="card p-8">
-            <h2 class="text-2xl font-bold mb-4">Contact Shipping Support</h2>
-            <p class="text-muted-foreground leading-relaxed mb-4">
+        <div class="card p-3">
+            <h2 class="h5 fw-bold mb-2">Contact Shipping Support</h2>
+            <p class="text-muted mb-2">
                 If you have any questions about shipping, delivery, or tracking, our support team is here to help.
             </p>
-            <div class="flex space-x-4">
+            <div class="d-flex gap-2">
                 <a href="@Url.Action("Contact", "Home")" class="btn btn-primary">Contact Support</a>
-                <a href="mailto:shipping@buymate.com" class="btn btn-secondary">Email Shipping Team</a>
+                <a href="mailto:shipping@buymate.com" class="btn btn-outline-secondary">Email Shipping Team</a>
             </div>
         </div>
     </div>

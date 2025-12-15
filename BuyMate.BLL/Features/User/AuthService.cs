@@ -98,7 +98,7 @@ namespace BuyMate.BLL.Features.User
                 var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, lockoutOnFailure: false);
                 if (!signInResult.Succeeded)
                 {
-                    _logger.LogInformation("Sign-in failed for user {UserId}. Result: {Result}", user.Id, signInResult);
+                    _logger.LogInformation($"Sign-in failed for user {user.Id}. Result: {signInResult}", user.Id, signInResult);
                     return Response<bool>.Fail("Login failed. Please try again.");
                 }
 

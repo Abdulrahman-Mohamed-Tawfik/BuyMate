@@ -1,41 +1,33 @@
 ﻿@using BuyMate.DTO.ViewModels.Cart
 @model MiniCartViewModel
 
-<div class="relative cart-container" onmouseenter="showMiniCart()" onmouseleave="hideMiniCart()">
-    <a asp-controller="Cart" asp-action="Index" class="relative btn btn-ghost btn-sm cart-icon" aria-label="Shopping cart">
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"></path>
-            <path d="M3 6h18"></path>
-            <path d="M16 10a4 4 0 0 1-8 0"></path>
-        </svg>
-        <span class="cart-badge badge badge-destructive badge-sm absolute -top-2 -right-2" id="cartBadge" style="display:@(Model.TotalItems > 0 ? "inline-flex" : "none")">@Model.TotalItems</span>
+<div class="position-relative cart-container" onmouseenter="showMiniCart()" onmouseleave="hideMiniCart()">
+    <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-secondary btn-sm position-relative cart-icon" aria-label="Shopping cart">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge badge bg-danger text-white position-absolute" id="cartBadge" style="top:-0.4rem;right:-0.4rem;display:@(Model.TotalItems > 0 ? "inline-flex" : "none")">@Model.TotalItems</span>
     </a>
 
-    <!-- Mini cart hover popup -->
-    <div id="miniCart" class="mini-cart absolute right-0 top-full mt-2 w-80 bg-background border rounded-lg shadow-lg z-50" style="display: none;">
-        <div class="p-4 border-b">
-            <div class="flex items-center justify-between">
-                <h3 class="font-medium">Shopping Cart</h3>
-                <span class="cart-count badge badge-secondary" id="num-count">@(Model.TotalItems) items</span>
+    <div id="miniCart" class="mini-cart position-absolute end-0 mt-2" style="top:100%;width:20rem;display:none;z-index:1050;">
+        <div class="card shadow">
+            <div class="card-header py-2 px-3 d-flex justify-content-between align-items-center">
+                <h3 class="h6 mb-0">Shopping Cart</h3>
+                <span class="badge bg-secondary" id="num-count">@(Model.TotalItems) items</span>
             </div>
-        </div>
 
-        <div id="miniCartContent" class="max-h-64 overflow-y-auto">
-            <!-- Cart items will be dynamically inserted here -->
-        </div>
+            <div id="miniCartContent" class="max-h-64 overflow-y-auto"></div>
 
-        <div id="miniCartFooter" class="p-4 border-t">
-            <div class="flex items-center justify-between mb-4">
-                <span class="font-medium">Total: <span id="miniCartTotal">$@Model.TotalPrice</span></span>
-            </div>
-            <div class="space-y-2">
-                <a asp-controller="Cart" asp-action="Index" class="btn btn-primary w-full block text-center">View Cart</a>
-                <a asp-controller="Order" asp-action="Checkout" class="btn btn-secondary w-full block text-center">Checkout</a>
+            <div id="miniCartFooter" class="card-footer py-2 px-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="fw-semibold">Total:</span>
+                    <span id="miniCartTotal" class="fw-semibold">$@Model.TotalPrice</span>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <a asp-controller="Cart" asp-action="Index" class="btn btn-primary btn-sm w-100">View Cart</a>
+                    <a asp-controller="Order" asp-action="Checkout" class="btn btn-outline-secondary btn-sm w-100">Checkout</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<script src="~/js/Default.js">
-  
-</script>
+<script src="~/js/Default.js"></script>

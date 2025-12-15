@@ -2,114 +2,105 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<div class="space-y-10">
-    <!-- Gradient header with purple accent -->
-    <div class="rounded-xl text-white p-8 shadow-lg flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-12" style="background:linear-gradient(135deg,var(--color-purple-800) 0%,var(--color-purple-600) 45%,var(--color-purple-100) 140%);">
-        <div>
-            <h1 class="text-3xl font-bold tracking-tight">Admin Dashboard</h1>
-            <p class="text-sm text-white/80 mt-2">Control center for products & categories management.</p>
-        </div>
-        <div class="flex flex-wrap items-center gap-3">
-            <a asp-controller="Product" asp-action="Create" class="btn btn-sm bg-white/10 hover:bg-white/30 border-white/20 text-white backdrop-blur flex items-center gap-2">
-                <i class="fas fa-plus"></i>
-                <span>New Product</span>
-            </a>
-            <a asp-controller="Category" asp-action="Create" class="btn btn-sm bg-white/10 hover:bg-white/30 border-white/20 text-white backdrop-blur flex items-center gap-2">
-                <i class="fas fa-folder-plus"></i>
-                <span>New Category</span>
-            </a>
+<div class="container mb-5">
+    <div class="rounded-3 text-white p-4 p-md-5 mb-4 shadow" style="background:linear-gradient(135deg,#4c1d95 0%,#7c3aed 45%,#e9d5ff 140%);">
+        <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-md-between gap-3">
+            <div>
+                <h1 class="h4 fw-bold mb-1">Admin Dashboard</h1>
+                <p class="small text-white-50 mb-0">Control center for products & categories management.</p>
+            </div>
+            <div class="d-flex flex-wrap align-items-center gap-2">
+                <a asp-controller="Product" asp-action="Create" class="btn btn-outline-light btn-sm d-inline-flex align-items-center gap-1">
+                    <i class="fas fa-plus"></i>
+                    <span>New Product</span>
+                </a>
+                <a asp-controller="Category" asp-action="Create" class="btn btn-outline-light btn-sm d-inline-flex align-items-center gap-1">
+                    <i class="fas fa-folder-plus"></i>
+                    <span>New Category</span>
+                </a>
+            </div>
         </div>
     </div>
-    <br />
-    <!-- Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <!-- Products -->
-        <div class="group relative rounded-xl border border-purple-200/40 bg-white/60 backdrop-blur shadow hover:shadow-xl transition-all overflow-hidden cursor-pointer" onclick="location.href='@Url.Action("Index", "Product")'">
-            <div class="absolute inset-0" style="background:linear-gradient(135deg,var(--color-purple-100),transparent);opacity:0;transition:opacity .25s;" class="group-hover:opacity-100"></div>
-            <div class="p-6 flex flex-col h-full relative z-10">
-                <div class="flex items-start justify-between mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-purple-700">Products</h3>
-                        <p class="text-xs text-muted-foreground">Create, edit, and delete products.</p>
-                    </div>
-                    <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 group-hover:scale-105 transition-transform">
-                        <i class="fas fa-box-open text-xl"></i>
-                    </div>
-                </div>
-                <div class="mt-auto space-y-3">
-                    <div class="flex items-center justify-between text-xs text-muted-foreground">
-                        @* <span>Manage your product catalog</span> *@
-                    </div>
-                    <a asp-controller="Product" asp-action="Create" class="btn btn-ghost w-full btn-sm" onclick="event.stopPropagation();">
-                        <i class="fas fa-plus mr-1"></i> Create New
-                    </a>
-                </div>
-            </div>
-        </div>
 
-        <!-- Categories -->
-        <div class="group relative rounded-xl border border-purple-200/40 bg-white/60 backdrop-blur shadow hover:shadow-xl transition-all overflow-hidden cursor-pointer" onclick="location.href='@Url.Action("Index", "Category")'">
-            <div class="absolute inset-0" style="background:linear-gradient(135deg,var(--color-purple-100),transparent);opacity:0;transition:opacity .25s;" class="group-hover:opacity-100"></div>
-            <div class="p-6 flex flex-col h-full relative z-10">
-                <div class="flex items-start justify-between mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-purple-700">Categories</h3>
-                        <p class="text-xs text-muted-foreground">Organize products by categories.</p>
+    <div class="row g-4">
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-purple shadow-sm" style="cursor:pointer;" onclick="location.href='@Url.Action("Index", "Product")'">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-start justify-content-between mb-3">
+                        <div>
+                            <h3 class="small fw-bold text-primary mb-1">Products</h3>
+                            <p class="small text-muted mb-0">Create, edit, and delete products.</p>
+                        </div>
+                        <div class="rounded bg-light d-flex align-items-center justify-content-center text-primary" style="width:3rem;height:3rem;">
+                            <i class="fas fa-box-open"></i>
+                        </div>
                     </div>
-                    <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 group-hover:scale-105 transition-transform">
-                        <i class="fas fa-tags text-xl"></i>
-                    </div>
-                </div>
-                <div class="mt-auto space-y-3">
-                    <div class="flex items-center justify-between text-xs text-muted-foreground">
-                        @* <span> Organize your product categories</span> *@
-                    </div>
-                    <a asp-controller="Category" asp-action="Create" class="btn btn-ghost w-full btn-sm" onclick="event.stopPropagation();">
-                        <i class="fas fa-plus mr-1"></i> Create New
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <!-- Orders -->
-        <div class="group relative rounded-xl border border-purple-200/40 bg-white/60 backdrop-blur shadow hover:shadow-xl transition-all overflow-hidden cursor-pointer" onclick="location.href='@Url.Action("GetAll", "Order")'">
-            <div class="absolute inset-0" style="background:linear-gradient(135deg,var(--color-purple-100),transparent);opacity:0;transition:opacity .25s;" class="group-hover:opacity-100"></div>
-            <div class="p-6 flex flex-col h-full relative z-10">
-                <div class="flex items-start justify-between mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-purple-700">Orders</h3>
-                        <p class="text-xs text-muted-foreground">Manage customer orders.</p>
-                    </div>
-                    <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 group-hover:scale-105 transition-transform">
-                        <i class="fas fa-shopping-cart text-xl"></i>
-                    </div>
-                </div>
-                <div class="mt-auto space-y-3">
-                    <div class="flex items-center justify-between text-xs text-muted-foreground">
-                        @* <span> View and process orders</span> *@
+                    <div class="mt-auto">
+                        <a asp-controller="Product" asp-action="Create" class="btn btn-outline-primary btn-sm w-100" onclick="event.stopPropagation();">
+                            <i class="fas fa-plus me-1"></i> Create New
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Analytics placeholder -->
-        <div class="group relative rounded-xl border border-purple-200/40 bg-white/60 backdrop-blur shadow hover:shadow-xl transition-all overflow-hidden">
-            <div class="absolute inset-0" style="background:linear-gradient(135deg,var(--color-purple-100),transparent);opacity:0;transition:opacity .25s;" class="group-hover:opacity-100"></div>
-            <div class="p-6 flex flex-col h-full relative z-10">
-                <div class="flex items-start justify-between mb-4">
-                    <div>
-                        <h3 class="text-lg font-semibold text-purple-700">Analytics</h3>
-                        <p class="text-xs text-muted-foreground">Add sales and inventory KPIs here.</p>
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-purple shadow-sm" style="cursor:pointer;" onclick="location.href='@Url.Action("Index", "Category")'">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-start justify-content-between mb-3">
+                        <div>
+                            <h3 class="small fw-bold text-primary mb-1">Categories</h3>
+                            <p class="small text-muted mb-0">Organize products by categories.</p>
+                        </div>
+                        <div class="rounded bg-light d-flex align-items-center justify-content-center text-primary" style="width:3rem;height:3rem;">
+                            <i class="fas fa-tags"></i>
+                        </div>
                     </div>
-                    <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 group-hover:scale-105 transition-transform">
-                        <i class="fas fa-chart-line text-xl"></i>
+                    <div class="mt-auto">
+                        <a asp-controller="Category" asp-action="Create" class="btn btn-outline-primary btn-sm w-100" onclick="event.stopPropagation();">
+                            <i class="fas fa-plus me-1"></i> Create New
+                        </a>
                     </div>
-                </div>
-                <div class="mt-auto">
-                    <div class="text-xs text-muted-foreground">Coming soon...</div>
                 </div>
             </div>
         </div>
 
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-purple shadow-sm" style="cursor:pointer;" onclick="location.href='@Url.Action("GetAll", "Order")'">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-start justify-content-between mb-3">
+                        <div>
+                            <h3 class="small fw-bold text-primary mb-1">Orders</h3>
+                            <p class="small text-muted mb-0">Manage customer orders.</p>
+                        </div>
+                        <div class="rounded bg-light d-flex align-items-center justify-content-center text-primary" style="width:3rem;height:3rem;">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                    <div class="mt-auto small text-muted">
+                        View and process orders
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <div class="card h-100 border-purple shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-start justify-content-between mb-3">
+                        <div>
+                            <h3 class="small fw-bold text-primary mb-1">Analytics</h3>
+                            <p class="small text-muted mb-0">Add sales and inventory KPIs here.</p>
+                        </div>
+                        <div class="rounded bg-light d-flex align-items-center justify-content-center text-primary" style="width:3rem;height:3rem;">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+                    <div class="mt-auto small text-muted">
+                        Coming soon...
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

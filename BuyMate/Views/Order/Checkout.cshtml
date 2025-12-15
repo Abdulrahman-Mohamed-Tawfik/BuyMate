@@ -6,130 +6,130 @@
     ViewData["Title"] = "Checkout";
 }
 
-<div class="max-w-4xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8">Checkout</h1>
+<div class="container mb-5" style="max-width: 60rem;">
+    <h1 class="h3 fw-bold mb-4">Checkout</h1>
 
-    <form asp-action="Create" asp-controller="Order" method="post" class="space-y-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Shipping Information -->
-            <div class="space-y-6">
-                <div class="card p-6">
-                    <h2 class="text-xl font-bold mb-4">Shipping Information</h2>
+    <form asp-action="Create" asp-controller="Order" method="post">
+        <div class="row g-4">
+            <div class="col-12 col-lg-7">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h2 class="h5 fw-bold mb-3">Shipping Information</h2>
 
-                    <div class="space-y-4">
-
-                        <div>
-                            <label asp-for="ShippingAddress.Street" class="block text-sm font-medium mb-2">Street Address</label>
-                            <input asp-for="ShippingAddress.Street" class="input w-full" placeholder="Enter your street address" />
-                            <span asp-validation-for="ShippingAddress.Street" class="text-sm text-destructive"></span>
+                        <div class="mb-3">
+                            <label asp-for="ShippingAddress.Street" class="form-label small">Street Address</label>
+                            <input asp-for="ShippingAddress.Street" class="form-control" placeholder="Enter your street address" />
+                            <span asp-validation-for="ShippingAddress.Street" class="small text-danger"></span>
                         </div>
 
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label asp-for="ShippingAddress.City" class="block text-sm font-medium mb-2">City</label>
-                                <input asp-for="ShippingAddress.City" class="input w-full" placeholder="City" />
-                                <span asp-validation-for="ShippingAddress.City" class="text-sm text-destructive"></span>
+                        <div class="row g-3 mb-3">
+                            <div class="col-12 col-md-6">
+                                <label asp-for="ShippingAddress.City" class="form-label small">City</label>
+                                <input asp-for="ShippingAddress.City" class="form-control" placeholder="City" />
+                                <span asp-validation-for="ShippingAddress.City" class="small text-danger"></span>
                             </div>
-                            <div>
-                                <label asp-for="ShippingAddress.State" class="block text-sm font-medium mb-2">State</label>
-                                <input asp-for="ShippingAddress.State" class="input w-full" placeholder="State" />
-                                <span asp-validation-for="ShippingAddress.State" class="text-sm text-destructive"></span>
+                            <div class="col-12 col-md-6">
+                                <label asp-for="ShippingAddress.State" class="form-label small">State</label>
+                                <input asp-for="ShippingAddress.State" class="form-control" placeholder="State" />
+                                <span asp-validation-for="ShippingAddress.State" class="small text-danger"></span>
                             </div>
                         </div>
 
-                        <div>
-                            <label asp-for="ShippingAddress.ZipCode" class="block text-sm font-medium mb-2">ZIP Code</label>
-                            <input asp-for="ShippingAddress.ZipCode" class="input w-full" placeholder="ZIP Code" />
-                            <span asp-validation-for="ShippingAddress.ZipCode" class="text-sm text-destructive"></span>
-                        </div>
-                    </div>
-                </div>
-			
-             
-                <div class="card p-6">
-                    <h2 class="text-xl font-bold mb-4">Payment Method</h2>
-
-                    <div class="space-y-3">
-                        <div class="flex items-center">
-                            <input asp-for="PaymentMethod" type="radio" value="Card" id="pm-card" class="mr-3" />
-                            <label for="pm-card" class="text-sm">Credit/Debit Card</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input asp-for="PaymentMethod" type="radio" value="Wallet" id="pm-wallet" class="mr-3" />
-                            <label for="pm-wallet" class="text-sm">Digital Wallet</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input asp-for="PaymentMethod" type="radio" value="Cod" id="pm-cod" class="mr-3" />
-                            <label for="pm-cod" class="text-sm">Cash on Delivery</label>
+                        <div class="mb-3">
+                            <label asp-for="ShippingAddress.ZipCode" class="form-label small">ZIP Code</label>
+                            <input asp-for="ShippingAddress.ZipCode" class="form-control" placeholder="ZIP Code" />
+                            <span asp-validation-for="ShippingAddress.ZipCode" class="small text-danger"></span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Delivery Options -->
-                <div class="card p-6">
-                    <h2 class="text-xl font-bold mb-4">Delivery Options</h2>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h2 class="h5 fw-bold mb-3">Payment Method</h2>
 
-                    <div class="space-y-3">
-                        <div class="flex items-center">
-                            <input asp-for="DeliveryType" type="radio" value="Standard" id="dt-standard" class="mr-3" />
-                            <label for="dt-standard" class="text-sm">Standard Delivery (5-7 days) - Free</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input asp-for="DeliveryType" type="radio" value="Express" id="dt-express" class="mr-3" />
-                            <label for="dt-express" class="text-sm">Express Delivery (2-3 days) - $9.99</label>
-                        </div>
-                        <div class="flex items-center">
-                            <input asp-for="DeliveryType" type="radio" value="Scheduled" id="dt-scheduled" class="mr-3" />
-                            <label for="dt-scheduled" class="text-sm">Scheduled Delivery - $4.99</label>
+                        <div class="d-flex flex-column gap-2">
+                            <div class="form-check">
+                                <input asp-for="PaymentMethod" type="radio" value="Card" id="pm-card" class="form-check-input" />
+                                <label for="pm-card" class="form-check-label small">Credit/Debit Card</label>
+                            </div>
+                            <div class="form-check">
+                                <input asp-for="PaymentMethod" type="radio" value="Wallet" id="pm-wallet" class="form-check-input" />
+                                <label for="pm-wallet" class="form-check-label small">Digital Wallet</label>
+                            </div>
+                            <div class="form-check">
+                                <input asp-for="PaymentMethod" type="radio" value="Cod" id="pm-cod" class="form-check-input" />
+                                <label for="pm-cod" class="form-check-label small">Cash on Delivery</label>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div> 
 
-          
-            <div class="space-y-6">
-                <div class="card p-6">
-                    <h2 class="text-xl font-bold mb-4">Order Summary</h2>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h2 class="h5 fw-bold mb-3">Delivery Options</h2>
 
-                    <div class="space-y-4">
-                        @foreach (var item in Model.CartVm.Items)
-                        {
-                            <div class="flex items-center space-x-4">
-                                @*                                 <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-16 h-16 object-contain rounded-lg" />
- *@                                <div class="flex-1">
-                                    <h3 class="font-medium">@item.ProductName</h3>
-                                    <p class="text-sm text-muted-foreground">Qty: @item.Quantity</p>
+                        <div class="d-flex flex-column gap-2">
+                            <div class="form-check">
+                                <input asp-for="DeliveryType" type="radio" value="Standard" id="dt-standard" class="form-check-input" />
+                                <label for="dt-standard" class="form-check-label small">Standard Delivery (5-7 days) - Free</label>
+                            </div>
+                            <div class="form-check">
+                                <input asp-for="DeliveryType" type="radio" value="Express" id="dt-express" class="form-check-input" />
+                                <label for="dt-express" class="form-check-label small">Express Delivery (2-3 days) - $9.99</label>
+                            </div>
+                            <div class="form-check">
+                                <input asp-for="DeliveryType" type="radio" value="Scheduled" id="dt-scheduled" class="form-check-input" />
+                                <label for="dt-scheduled" class="form-check-label small">Scheduled Delivery - $4.99</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-5">
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="h5 fw-bold mb-3">Order Summary</h2>
+
+                        <div class="d-flex flex-column gap-2 mb-3">
+                            @foreach (var item in Model.CartVm.Items)
+                            {
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <div>
+                                        <div class="small fw-semibold">@item.ProductName</div>
+                                        <div class="small text-muted">Qty: @item.Quantity</div>
+                                    </div>
+                                    <span class="fw-bold">$@item.TotalPrice</span>
                                 </div>
-                                <span class="font-bold">$@item.TotalPrice</span>
+                            }
+                        </div>
+
+                        <hr class="my-3" />
+
+                        <div class="d-flex flex-column gap-1 mb-3">
+                            <div class="d-flex justify-content-between">
+                                <span>Subtotal</span>
+                                <span>$@Model.CartVm.Items.Sum(item => item.TotalPrice)</span>
                             </div>
-                        }
+                            <div class="d-flex justify-content-between">
+                                <span>Shipping</span>
+                                <span>Free</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span>Tax</span>
+                                <span>$0.00</span>
+                            </div>
+                            <hr class="my-2" />
+                            <div class="d-flex justify-content-between fw-bold">
+                                <span>Total</span>
+                                <span>$@Model.CartVm.Items.Sum(item => item.TotalPrice)</span>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 btn-lg mt-2">
+                            Place Order
+                        </button>
                     </div>
-
-                    <hr class="my-4" />
-
-                    <div class="space-y-2">
-                        <div class="flex justify-between">
-                            <span>Subtotal</span>
-                            <span>$@Model.CartVm.Items.Sum(item => item.TotalPrice)</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Shipping</span>
-                            <span>Free</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span>Tax</span>
-                            <span>$0.00</span>
-                        </div>
-                        <hr class="my-2" />
-                        <div class="flex justify-between text-lg font-bold">
-                            <span>Total</span>
-                            <span>$@Model.CartVm.Items.Sum(item => item.TotalPrice)</span>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-full btn-lg mt-6">
-                        Place Order
-                    </button>
                 </div>
             </div>
         </div>

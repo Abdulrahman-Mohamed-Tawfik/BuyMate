@@ -3,99 +3,88 @@
 @model ProductCreateViewModel
 
 @{
-	ViewData["Title"] = "Create Product";
+    ViewData["Title"] = "Create Product";
 }
 
-<div class="max-w-3xl mx-auto card p-8 mt-10">
-	<a asp-controller="Admin" asp-action="Index" class="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-		<i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
-	</a>
-	<h1 class="text-2xl font-bold mb-6">Create New Product</h1>
-	<form method="post" asp-action="Create" id="createForm" enctype="multipart/form-data">
-		@Html.AntiForgeryToken()
-		<!-- Name -->
-		<div class="mb-4">
-			<label class="font-medium">Name</label>
-			<input asp-for="Name" class="input w-full" />
-		</div>
+<div class="container mb-5" style="max-width: 48rem;">
+    <div class="card p-4 mt-4">
+        <a asp-controller="Admin" asp-action="Index" class="small text-muted text-decoration-none d-inline-flex align-items-center mb-2">
+            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+        </a>
+        <h1 class="h5 fw-bold mb-3">Create New Product</h1>
+        <form method="post" asp-action="Create" id="createForm" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
 
-		<!-- Brand (optional) -->
-		<div class="mb-4">
-			<label class="font-medium">Brand </label>
-			<input asp-for="Brand" class="input w-full" />
-		</div>
+            <div class="mb-2">
+                <label class="form-label small">Name</label>
+                <input asp-for="Name" class="form-control" />
+            </div>
 
-		<!-- Description -->
-		<div class="mb-4">
-			<label class="font-medium">Description</label>
-			<textarea asp-for="Description" class="input w-full"></textarea>
-		</div>
+            <div class="mb-2">
+                <label class="form-label small">Brand</label>
+                <input asp-for="Brand" class="form-control" />
+            </div>
 
-		<!-- Price -->
-		<div class="mb-4">
-			<label class="font-medium">Price</label>
-			<input asp-for="Price" type="number" step="0.01" class="input w-full" />
-		</div>
+            <div class="mb-2">
+                <label class="form-label small">Description</label>
+                <textarea asp-for="Description" class="form-control"></textarea>
+            </div>
 
-		<!-- Stock -->
-		<div class="mb-4">
-			<label class="font-medium">Stock Quantity</label>
-			<input asp-for="StockQuantity" type="number" class="input w-full" />
-		</div>
+            <div class="mb-2">
+                <label class="form-label small">Price</label>
+                <input asp-for="Price" type="number" step="0.01" class="form-control" />
+            </div>
 
-		<!-- Category selection dropdown (optional) -->
-		<div class="mb-4">
-			<label class="font-medium">Category </label>
-			<select id="categorySelect" class="input w-full" multiple>
-				@if (ViewBag.Categories != null)
-				{
-					foreach (var c in (ViewBag.Categories as List<CategoryViewModel>))
-					{
-						<option value="@c.Id">@c.Name (@c.ProductCount)</option>
-					}
-				}
-				else
-				{
-					<option disabled>No categories available</option>
-				}
-			</select>
-			<small class="text-muted-foreground">Selecting categories is optional. Hold Ctrl/Cmd to select multiple if desired.</small>
-		</div>
+            <div class="mb-2">
+                <label class="form-label small">Stock Quantity</label>
+                <input asp-for="StockQuantity" type="number" class="form-control" />
+            </div>
 
-		<div class="mb-6">
-			<label class="font-medium">Specifications</label>
+            <div class="mb-2">
+                <label class="form-label small">Category</label>
+                <select id="categorySelect" class="form-select" multiple>
+                    @if (ViewBag.Categories != null)
+                    {
+                        foreach (var c in (ViewBag.Categories as List<CategoryViewModel>))
+                        {
+                            <option value="@c.Id">@c.Name (@c.ProductCount)</option>
+                        }
+                    }
+                    else
+                    {
+                        <option disabled>No categories available</option>
+                    }
+                </select>
+                <small class="text-muted">Selecting categories is optional. Hold Ctrl/Cmd to select multiple if desired.</small>
+            </div>
 
-			<div id="specificationContainer" class="space-y-3"></div>
+            <div class="mb-3">
+                <label class="form-label small">Specifications</label>
+                <div id="specificationContainer" class="d-flex flex-column gap-2"></div>
+                <button type="button" id="addSpecBtn" class="btn btn-outline-secondary btn-sm mt-1">
+                    Add Specification
+                </button>
+            </div>
 
-			<button type="button" id="addSpecBtn" class="btn btn-outline mt-2">
-				Add Specification
-			</button>
-		</div>
+            <div class="mb-3">
+                <label class="form-label small">Images</label>
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <label for="files" class="btn btn-outline-secondary btn-sm mb-0">Select images</label>
+                    <span id="selectedFiles" class="small text-muted">No files chosen</span>
+                </div>
+                <input type="file" name="files" id="files" class="d-none" accept="image/*" multiple />
+                <small class="text-muted d-block">You can select multiple images. Max each 4MB. Allowed: jpg, jpeg, png, gif, webp.</small>
+            </div>
 
+            <div id="imagePreview" class="row g-2 mb-3"></div>
 
-		<!-- Upload Images (improved UI) -->
-		<div class="mb-4">
-			<label class="font-medium">Images</label>
-			<div class="flex items-center gap-3">
-				<label for="files" class="btn btn-outline">Select images</label>
-				<span id="selectedFiles" class="text-sm text-muted-foreground">No files chosen</span>
-			</div>
-			<input type="file" name="files" id="files" class="hidden" accept="image/*" multiple />
-			<small class="text-muted-foreground block mt-1">You can select multiple images. Max each4MB. Allowed: jpg, jpeg, png, gif, webp.</small>
-		</div>
-
-		<!-- Preview Images -->
-		<div id="imagePreview" class="grid grid-cols-3 gap-4 mb-6"></div>
-
-		<button type="submit" class="btn btn-primary w-full text-lg">Create Product</button>
-	</form>
+            <button type="submit" class="btn btn-primary w-100">Create Product</button>
+        </form>
+    </div>
 </div>
 
 @section Scripts {
-	<partial name="_ValidationScriptsPartial" />
-	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-	<script src="~/js/product-create.js"> </script>
-		
-	
+    <partial name="_ValidationScriptsPartial" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/product-create.js"></script>
 }

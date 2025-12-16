@@ -1,0 +1,74 @@
+@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "_AuthLayout";
+
+}
+
+<div class="max-w-md mx-auto">
+    <div class="card p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-bold mb-2">Create Account</h1>
+            <p class="text-muted-foreground">Join BUYMATE and start shopping</p>
+        </div>
+
+        <form asp-action="Register" method="post" class="space-y-6" asp-antiforgery="true">
+
+            <div>
+                <label asp-for="FirstName" class="block text-sm font-medium mb-2">First Name</label>
+                <input asp-for="FirstName" type="text" class="input w-full" placeholder="Enter your first name" />
+                <span asp-validation-for="FirstName" class="text-sm text-destructive"></span>
+            </div>
+
+            <div>
+                <label asp-for="LastName" class="block text-sm font-medium mb-2">Last Name</label>
+                <input asp-for="LastName" type="text" class="input w-full" placeholder="Enter your last name" />
+                <span asp-validation-for="LastName" class="text-sm text-destructive"></span>
+            </div>
+
+            <div>
+                <label asp-for="Email" class="block text-sm font-medium mb-2">Email Address</label>
+                <input asp-for="Email" type="email" class="input w-full" placeholder="Enter your email" />
+                <span asp-validation-for="Email" class="text-sm text-destructive"></span>
+            </div>
+
+            <div>
+                <label asp-for="Phone" class="block text-sm font-medium mb-2">Phone Number</label>
+                <input asp-for="Phone" type="tel" class="input w-full" placeholder="Enter your phone number" />
+                <span asp-validation-for="Phone" class="text-sm text-destructive"></span>
+            </div>
+
+            <div>
+                <label asp-for="Password" class="block text-sm font-medium mb-2">Password</label>
+                <input asp-for="Password" id="Password" type="password" class="input w-full" placeholder="Create a password" />
+                <span asp-validation-for="Password" class="text-sm text-destructive"></span>
+            </div>
+
+            <div>
+                <label asp-for="ConfirmPassword" class="block text-sm font-medium mb-2">Confirm Password</label>
+                <input asp-for="ConfirmPassword" id="ConfirmPassword" type="password" class="input w-full" placeholder="Confirm your password" />
+                <span asp-validation-for="ConfirmPassword" class="text-sm text-destructive"></span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <input id="showPasswordRegister" type="checkbox" class="mr-2" />
+                <label for="showPasswordRegister" class="text-sm">Show password</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-full btn-lg">Create Account</button>
+        </form>
+
+        <div class="mt-6 text-center">
+            <p class="text-sm text-muted-foreground">
+                Already have an account?
+                <a asp-action="Login" class="text-primary hover:underline">Sign in</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/user-register.js">
+    
+</script>
+
+

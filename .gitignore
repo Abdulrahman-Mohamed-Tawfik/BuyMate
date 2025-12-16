@@ -1,0 +1,154 @@
+# ---> Visual Studio
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Visual Studio working folder
+.vs/
+
+## Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+[Rr]eleases.*/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+[bB]uild/
+[Bb]ld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Ll]og/
+[Ll]ogs/
+
+## Rider/JetBrains
+.idea/
+*.sln.iml
+*.DotSettings.user
+.ReSharper*/
+*_Resharper*/
+*.resharper
+
+## NCrunch
+_NCrunch_*/
+.*crunch*.local.xml
+nCrunchTemp_*/
+*.ncrunchsolution
+*.ncrunchproject
+
+## Test
+[Tt]est[Rr]esult*/
+[Tt]est[Rr]esults*/
+[Bb]enchmarkDotNet.Artifacts/
+*.trx
+*.coverage
+*.coveragexml
+
+## NuGet
+*.nupkg
+*.snupkg
+# Packages folder can be used by legacy projects
+packages/
+# NuGet v3's project.json files
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Azure
+# Azure Functions localsettings (if used in the solution)
+local.settings.json
+
+## IIS Express
+IISExpress/*
+
+## VS Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+
+# ---> .NET
+# Build results
+*.dll
+*.exe
+*.appx
+*.appxbundle
+*.appxupload
+*.msi
+*.msix
+*.msixbundle
+*.ps1xml
+*.winmd
+*.pdb
+*.cache
+*.pri
+*.dbg
+
+# Publish outputs
+[Pp]ublish*/
+*.pubxml.user
+
+# ASP.NET Core
+appsettings.*.local.json
+# Common dotenv patterns
+.env
+.env.*
+.env.local
+.env.*.local
+
+# LibMan (restore client assets into wwwroot/lib)
+wwwroot/lib/
+libman.json
+
+# Entity Framework
+# (Migrations should be committed; no ignores here)
+
+# SQL Server/LocalDB
+*.mdf
+*.ldf
+*.ndf
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Others
+*.swp
+*.swo
+*.tmp
+*.temp
+~$*
+*.bak
+*.orig
+*.rej
+
+# Node/Yarn/PNPM
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+# lock files are typically committed; do not ignore by default
+
+# Code quality / coverage
+.sonarqube/
+.sonar/
+.coverage*
+.coverlet/**
+
+# Rider solution-wide caches
+/.idea/.idea.*
+/BuyMate/wwwroot/images/Products
+/BuyMate/wwwroot/images/Categories
+/BuyMate/wwwroot/images/UserProfileImages

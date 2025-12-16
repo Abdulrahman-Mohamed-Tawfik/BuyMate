@@ -1,0 +1,134 @@
+@{
+    ViewData["Title"] = "My Orders";
+}
+
+<div class="max-w-6xl mx-auto">
+    <h1 class="text-3xl font-bold mb-8">My Orders</h1>
+
+    <div class="space-y-8">
+        <div class="card p-6">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold">Order History</h2>
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm text-muted-foreground">Filter by:</span>
+                    <select class="select">
+                        <option>All Orders</option>
+                        <option>Pending</option>
+                        <option>Shipped</option>
+                        <option>Delivered</option>
+                        <option>Cancelled</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                <div class="border rounded-lg p-6 hover:shadow-md transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-bold">Order #12345</h3>
+                            <p class="text-sm text-muted-foreground">Placed on December 15, 2024</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-primary">$1,199.00</p>
+                            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Delivered</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="w-16 h-16 object-cover rounded-lg" />
+                        <div class="flex-1">
+                            <h4 class="font-medium">iPhone 15 Pro Max</h4>
+                            <p class="text-sm text-muted-foreground">Color: Space Black, Storage: 256GB</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <a href="@Url.Action("OrderDetail", "Home")" class="btn btn-secondary">View Details</a>
+                            <button class="btn btn-secondary">Buy Again</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border rounded-lg p-6 hover:shadow-md transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-bold">Order #12344</h3>
+                            <p class="text-sm text-muted-foreground">Placed on December 10, 2024</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-primary">$2,499.00</p>
+                            <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Shipped</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="w-16 h-16 object-cover rounded-lg" />
+                        <div class="flex-1">
+                            <h4 class="font-medium">MacBook Pro 16"</h4>
+                            <p class="text-sm text-muted-foreground">Color: Space Gray, Storage: 512GB</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <a href="@Url.Action("OrderDetail", "Home")" class="btn btn-secondary">View Details</a>
+                            <button class="btn btn-secondary">Track Package</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="border rounded-lg p-6 hover:shadow-md transition-all">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-bold">Order #12343</h3>
+                            <p class="text-sm text-muted-foreground">Placed on December 5, 2024</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-primary">$1,199.00</p>
+                            <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-sm font-medium">Pending</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="w-16 h-16 object-cover rounded-lg" />
+                        <div class="flex-1">
+                            <h4 class="font-medium">Samsung Galaxy S24 Ultra</h4>
+                            <p class="text-sm text-muted-foreground">Color: Titanium Black, Storage: 256GB</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <a href="@Url.Action("OrderDetail", "Home")" class="btn btn-secondary">View Details</a>
+                            <button class="btn btn-secondary">Cancel Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6">
+            <h2 class="text-xl font-bold mb-4">Quick Actions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <a href="@Url.Action("Contact", "Home")" class="card p-4 hover:shadow-lg transition-all cursor-pointer text-center">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold">Contact Support</h3>
+                    <p class="text-sm text-muted-foreground">Get help with your orders</p>
+                </a>
+
+                <a href="@Url.Action("Returns", "Home")" class="card p-4 hover:shadow-lg transition-all cursor-pointer text-center">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold">Start a Return</h3>
+                    <p class="text-sm text-muted-foreground">Return or exchange items</p>
+                </a>
+
+                <a href="@Url.Action("Shipping", "Home")" class="card p-4 hover:shadow-lg transition-all cursor-pointer text-center">
+                    <div class="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <svg class="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="font-bold">Shipping Info</h3>
+                    <p class="text-sm text-muted-foreground">Learn about shipping options</p>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

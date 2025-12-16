@@ -1,8 +1,6 @@
 using BuyMate.DAL;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using BuyMate.Seed; // added
-using Microsoft.AspNetCore.Authentication.Cookies;
+using BuyMate.Seed;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -27,28 +25,40 @@ builder.Services.AddHttpClient("api", client =>
 });
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 
-// Configure Authentication: Cookie for web, JWT Bearer for API
-//var secretKey = builder.Configuration["SecretKey"] ?? "";
-//var keyBytes = Encoding.UTF8.GetBytes(secretKey);
+// Configure Authentication: JWT Bearer for web + API using same secret key
+var secretKey = builder.Configuration["SecretKey"] ?? string.Empty;
+var keyBytes = Encoding.UTF8.GetBytes(secretKey);
 
-//builder.Services
-//    .AddAuthentication(options =>
-//    {
-//        options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//        options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-//    })
-//    .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
-//    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
-//    {
-//        options.TokenValidationParameters = new TokenValidationParameters
-//        {
-//            ValidateIssuerSigningKey = true,
-//            IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
-//            ValidateIssuer = false,
-//            ValidateAudience = false,
-//            ClockSkew = TimeSpan.FromMinutes(2)
-//        };
-//    });
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.FromMinutes(2)
+        };
+
+        // Read token from HTTP-only cookie for MVC/Razor requests
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                if (context.Request.Cookies.TryGetValue("AuthToken", out var token) && !string.IsNullOrEmpty(token))
+                {
+                    context.Token = token;
+                }
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 var app = builder.Build();
 

@@ -25,7 +25,7 @@
                 <form class="d-none d-md-flex flex-grow-1 mx-3" asp-controller="Shop" asp-action="Index" method="get">
                     <div class="input-group">
                         <input name="Search" type="text" class="form-control" placeholder="Search products..." />
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-dark">
                             <i class="fas fa-magnifying-glass text-white"></i>
                         </button>
                     </div>
@@ -74,11 +74,11 @@
                     }
                     else
                     {
-                        <a asp-controller="User" asp-action="Login" class="btn btn-outline-primary me-2" aria-label="Login">
+                        <a asp-controller="User" asp-action="Login" class="btn btn-outline-dark me-2" aria-label="Login">
                             <i class="fas fa-user me-1"></i>
                             <span>Login</span>
                         </a>
-                        <a asp-controller="User" asp-action="Register" class="btn btn-primary" aria-label="Register">
+                        <a asp-controller="User" asp-action="Register" class="btn btn-dark" aria-label="Register">
                             <i class="fas fa-user-plus me-1"></i>
                             <span>Register</span>
                         </a>
@@ -92,7 +92,7 @@
                 <form asp-controller="Shop" asp-action="Index" method="get">
                     <div class="input-group">
                         <input type="text" name="Search" class="form-control" placeholder="Search products..." />
-                        <button type="submit" class="btn btn-primary" aria-label="Search">
+                        <button type="submit" class="btn btn-dark" aria-label="Search">
                             <i class="fas fa-magnifying-glass text-white"></i>
                         </button>
                     </div>

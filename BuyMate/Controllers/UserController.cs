@@ -1,13 +1,7 @@
 ﻿using BuyMate.BLL.Contracts;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Security.Claims;
-using System.Linq;
 using BuyMate.DTO.ViewModels.User;
 
 namespace BuyMate.Controllers
@@ -16,15 +10,13 @@ namespace BuyMate.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IUserProfileService _userProfileService;
-        private readonly UserManager<BuyMate.Model.Entities.User> _userManager;
 
-        public UserController(IAuthService authService, IUserProfileService userProfileService, UserManager<BuyMate.Model.Entities.User> userManager)
+        public UserController(IAuthService authService, IUserProfileService userProfileService)
         {
             _authService = authService;
             _userProfileService = userProfileService;
-            _userManager = userManager;
         }
-      
+
 
         [Authorize]
         public async Task<IActionResult> Profile()
@@ -84,10 +76,24 @@ namespace BuyMate.Controllers
             {
                 return View(model);
             }
-            var result = await _authService.LoginMvcAsync(model);
+
+            // Use JWT-based login instead of Identity's PasswordSignInAsync
+            var result = await _authService.LoginApiAsync(model);
 
             if (result.Status == true)
             {
+                // Store JWT token in an HTTP-only cookie so MVC/Razor pages can send it automatically
+                if (!string.IsNullOrEmpty(result.Data))
+                {
+                    Response.Cookies.Append("AuthToken", result.Data, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddDays(7)
+                    });
+                }
+
                 return RedirectToAction("Index", "Home");
             }
 
@@ -112,6 +118,9 @@ namespace BuyMate.Controllers
 
             if (result.Status == true)
             {
+                // Remove JWT cookie on logout
+                Response.Cookies.Delete("AuthToken");
+
                 return RedirectToAction("Index", "Home");
             }
 
@@ -147,7 +156,7 @@ namespace BuyMate.Controllers
                 ModelState.AddModelError(string.Empty, result.Message);
                 return View(model);
             }
-            
+
             TempData["Success"] = "Profile updated successfully.";
             return RedirectToAction("Profile");
         }

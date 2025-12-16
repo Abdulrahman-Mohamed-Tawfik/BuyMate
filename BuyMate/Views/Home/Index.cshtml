@@ -13,7 +13,7 @@
         <div class="mx-auto" style="max-width: 48rem;">
             <h1 class="display-4 fw-bold mb-3">Welcome to BUYMATE</h1>
             <p class="fs-5 mb-4 text-light">Discover amazing products at unbeatable prices</p>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-light btn-lg d-inline-flex align-items-center">
+            <a asp-controller="Shop" asp-action="Index" class="btn btn-dark btn-lg d-inline-flex align-items-center">
                 Shop Now
                 <i class="fas fa-arrow-right ms-2"></i>
             </a>
@@ -108,7 +108,7 @@
                                         <span class="small text-muted text-decoration-line-through ms-2">$@product.OriginalPrice</span>
                                     }
                                 </div>
-                                <button class="btn btn-primary w-100" onclick="event.stopPropagation(); addToCart('@product.Id')">Add to Cart</button>
+                                <button class="btn btn-dark w-100" onclick="event.stopPropagation(); addToCart('@product.Id')">Add to Cart</button>
                             </div>
                         </div>
                     </div>
@@ -184,7 +184,7 @@
                 <input type="email" class="form-control" placeholder="Enter your email" />
             </div>
             <div class="col-12 col-sm-auto">
-                <button type="submit" class="btn btn-primary w-100">Subscribe</button>
+                <button type="submit" class="btn btn-dark w-100">Subscribe</button>
             </div>
         </form>
     </section>

@@ -12,7 +12,6 @@ namespace BuyMate.DAL
             modelBuilder.Entity<Order>().HasQueryFilter(p => !p.IsDeleted);
             modelBuilder.Entity<OrderItem>().HasQueryFilter(p => !p.IsDeleted);
             modelBuilder.Entity<Category>().HasQueryFilter(p => !p.IsDeleted);
-
         }
     }
 }

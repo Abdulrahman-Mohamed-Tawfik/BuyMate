@@ -1,6 +1,6 @@
 ﻿using BuyMate.BLL.Contracts;
 using BuyMate.BLL.Features.Cart;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.ViewModels.Order;
 using BuyMate.Model.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

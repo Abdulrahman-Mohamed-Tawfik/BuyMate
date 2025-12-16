@@ -2,155 +2,170 @@
     ViewData["Title"] = "My Wishlist";
 }
 
-<div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8">My Wishlist</h1>
+<div class="container mb-5" style="max-width: 72rem;">
+    <h1 class="h4 fw-bold mb-3">My Wishlist</h1>
 
-    <div class="space-y-8">
-        <div class="card p-6">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-xl font-bold">Saved Items (3)</h2>
-                <button class="btn btn-secondary">Clear All</button>
+    <div class="d-flex flex-column gap-3 small">
+        <div class="card p-3">
+            <div class="d-flex align-items-center justify-content-between mb-2">
+                <h2 class="h6 fw-bold mb-0">Saved Items (3)</h2>
+                <button class="btn btn-outline-secondary btn-sm">Clear All</button>
             </div>
 
-            <div class="space-y-4">
-                <div class="flex items-center space-x-4 p-4 border rounded-lg hover:shadow-md transition-all">
-                    <img src="~/images/buymate-logo.png" alt="Product" class="w-20 h-20 object-cover rounded-lg" />
-                    <div class="flex-1">
-                        <h3 class="font-bold">iPhone 15 Pro Max</h3>
-                        <p class="text-sm text-muted-foreground">Electronics</p>
-                        <div class="flex items-center space-x-2 mt-2">
-                            <span class="text-xl font-bold text-primary">$1,199</span>
-                            <span class="text-lg text-muted-foreground line-through">$1,399</span>
+            <div class="d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-3 p-2 border rounded-3">
+                    <img src="~/images/buymate-logo.png" alt="Product" class="rounded"
+                        style="width:80px;height:80px;object-fit:contain;" />
+                    <div class="flex-grow-1">
+                        <h3 class="fw-bold mb-1">iPhone 15 Pro Max</h3>
+                        <p class="text-muted mb-1">Electronics</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold text-primary">$1,199</span>
+                            <span class="text-muted text-decoration-line-through">$1,399</span>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <button class="btn btn-primary">Add to Cart</button>
-                        <button class="btn btn-secondary">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-primary btn-sm">Add to Cart</button>
+                        <button class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="flex items-center space-x-4 p-4 border rounded-lg hover:shadow-md transition-all">
-                    <img src="~/images/buymate-logo.png" alt="Product" class="w-20 h-20 object-cover rounded-lg" />
-                    <div class="flex-1">
-                        <h3 class="font-bold">MacBook Pro 16"</h3>
-                        <p class="text-sm text-muted-foreground">Electronics</p>
-                        <div class="flex items-center space-x-2 mt-2">
-                            <span class="text-xl font-bold text-primary">$2,499</span>
+                <div class="d-flex align-items-center gap-3 p-2 border rounded-3">
+                    <img src="~/images/buymate-logo.png" alt="Product" class="rounded"
+                        style="width:80px;height:80px;object-fit:contain;" />
+                    <div class="flex-grow-1">
+                        <h3 class="fw-bold mb-1">MacBook Pro 16"</h3>
+                        <p class="text-muted mb-1">Electronics</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold text-primary">$2,499</span>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <button class="btn btn-primary">Add to Cart</button>
-                        <button class="btn btn-secondary">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-primary btn-sm">Add to Cart</button>
+                        <button class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </div>
 
-                <div class="flex items-center space-x-4 p-4 border rounded-lg hover:shadow-md transition-all">
-                    <img src="~/images/buymate-logo.png" alt="Product" class="w-20 h-20 object-cover rounded-lg" />
-                    <div class="flex-1">
-                        <h3 class="font-bold">Samsung Galaxy S24 Ultra</h3>
-                        <p class="text-sm text-muted-foreground">Electronics</p>
-                        <div class="flex items-center space-x-2 mt-2">
-                            <span class="text-xl font-bold text-primary">$1,199</span>
+                <div class="d-flex align-items-center gap-3 p-2 border rounded-3">
+                    <img src="~/images/buymate-logo.png" alt="Product" class="rounded"
+                        style="width:80px;height:80px;object-fit:contain;" />
+                    <div class="flex-grow-1">
+                        <h3 class="fw-bold mb-1">Samsung Galaxy S24 Ultra</h3>
+                        <p class="text-muted mb-1">Electronics</p>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold text-primary">$1,199</span>
                         </div>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <button class="btn btn-primary">Add to Cart</button>
-                        <button class="btn btn-secondary">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
+                    <div class="d-flex align-items-center gap-2">
+                        <button class="btn btn-primary btn-sm">Add to Cart</button>
+                        <button class="btn btn-outline-secondary btn-sm">
+                            <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="card p-6">
-            <h2 class="text-xl font-bold mb-4">Recently Viewed</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="card p-4 hover:shadow-lg transition-all cursor-pointer">
-                    <img src="~/images/buymate-logo.png" alt="Product" class="w-full h-32 object-cover rounded-lg mb-3" />
-                    <h3 class="font-bold mb-2 text-sm">AirPods Pro</h3>
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="text-lg font-bold text-primary">$249</span>
+        <div class="card p-3">
+            <h2 class="h6 fw-bold mb-2">Recently Viewed</h2>
+            <div class="row g-3">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card p-2 h-100">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="rounded mb-2"
+                            style="width:100%;height:8rem;object-fit:contain;" />
+                        <h3 class="fw-bold mb-1" style="font-size:0.9rem;">AirPods Pro</h3>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="fw-bold text-primary">$249</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm w-100">Add to Cart</button>
                     </div>
-                    <button class="btn btn-primary w-full text-sm">Add to Cart</button>
                 </div>
-
-                <div class="card p-4 hover:shadow-lg transition-all cursor-pointer">
-                    <img src="~/images/buymate-logo.png" alt="Product" class="w-full h-32 object-cover rounded-lg mb-3" />
-                    <h3 class="font-bold mb-2 text-sm">iPad Air</h3>
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="text-lg font-bold text-primary">$599</span>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card p-2 h-100">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="rounded mb-2"
+                            style="width:100%;height:8rem;object-fit:contain;" />
+                        <h3 class="fw-bold mb-1" style="font-size:0.9rem;">iPad Air</h3>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="fw-bold text-primary">$599</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm w-100">Add to Cart</button>
                     </div>
-                    <button class="btn btn-primary w-full text-sm">Add to Cart</button>
                 </div>
-
-                <div class="card p-4 hover:shadow-lg transition-all cursor-pointer">
-                    <img src="~/images/buymate-logo.png" alt="Product" class="w-full h-32 object-cover rounded-lg mb-3" />
-                    <h3 class="font-bold mb-2 text-sm">Apple Watch Series 9</h3>
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="text-lg font-bold text-primary">$399</span>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card p-2 h-100">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="rounded mb-2"
+                            style="width:100%;height:8rem;object-fit:contain;" />
+                        <h3 class="fw-bold mb-1" style="font-size:0.9rem;">Apple Watch Series 9</h3>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="fw-bold text-primary">$399</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm w-100">Add to Cart</button>
                     </div>
-                    <button class="btn btn-primary w-full text-sm">Add to Cart</button>
                 </div>
-
-                <div class="card p-4 hover:shadow-lg transition-all cursor-pointer">
-                    <img src="~/images/buymate-logo.png" alt="Product" class="w-full h-32 object-cover rounded-lg mb-3" />
-                    <h3 class="font-bold mb-2 text-sm">MacBook Air M2</h3>
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="text-lg font-bold text-primary">$1,199</span>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card p-2 h-100">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="rounded mb-2"
+                            style="width:100%;height:8rem;object-fit:contain;" />
+                        <h3 class="fw-bold mb-1" style="font-size:0.9rem;">MacBook Air M2</h3>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="fw-bold text-primary">$1,199</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm w-100">Add to Cart</button>
                     </div>
-                    <button class="btn btn-primary w-full text-sm">Add to Cart</button>
                 </div>
             </div>
         </div>
 
-        <div class="card p-6">
-            <h2 class="text-xl font-bold mb-4">Recommended for You</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div class="card p-4 hover:shadow-lg transition-all cursor-pointer">
-                    <img src="~/images/buymate-logo.png" alt="Product" class="w-full h-32 object-cover rounded-lg mb-3" />
-                    <h3 class="font-bold mb-2 text-sm">Sony WH-1000XM5</h3>
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="text-lg font-bold text-primary">$399</span>
+        <div class="card p-3">
+            <h2 class="h6 fw-bold mb-2">Recommended for You</h2>
+            <div class="row g-3">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card p-2 h-100">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="rounded mb-2"
+                            style="width:100%;height:8rem;object-fit:contain;" />
+                        <h3 class="fw-bold mb-1" style="font-size:0.9rem;">Sony WH-1000XM5</h3>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="fw-bold text-primary">$399</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm w-100">Add to Cart</button>
                     </div>
-                    <button class="btn btn-primary w-full text-sm">Add to Cart</button>
                 </div>
-
-                <div class="card p-4 hover:shadow-lg transition-all cursor-pointer">
-                    <img src="~/images/buymate-logo.png" alt="Product" class="w-full h-32 object-cover rounded-lg mb-3" />
-                    <h3 class="font-bold mb-2 text-sm">Dell XPS 13</h3>
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="text-lg font-bold text-primary">$1,299</span>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card p-2 h-100">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="rounded mb-2"
+                            style="width:100%;height:8rem;object-fit:contain;" />
+                        <h3 class="fw-bold mb-1" style="font-size:0.9rem;">Dell XPS 13</h3>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="fw-bold text-primary">$1,299</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm w-100">Add to Cart</button>
                     </div>
-                    <button class="btn btn-primary w-full text-sm">Add to Cart</button>
                 </div>
-
-                <div class="card p-4 hover:shadow-lg transition-all cursor-pointer">
-                    <img src="~/images/buymate-logo.png" alt="Product" class="w-full h-32 object-cover rounded-lg mb-3" />
-                    <h3 class="font-bold mb-2 text-sm">Nintendo Switch</h3>
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="text-lg font-bold text-primary">$299</span>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card p-2 h-100">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="rounded mb-2"
+                            style="width:100%;height:8rem;object-fit:contain;" />
+                        <h3 class="fw-bold mb-1" style="font-size:0.9rem;">Nintendo Switch</h3>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="fw-bold text-primary">$299</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm w-100">Add to Cart</button>
                     </div>
-                    <button class="btn btn-primary w-full text-sm">Add to Cart</button>
                 </div>
-
-                <div class="card p-4 hover:shadow-lg transition-all cursor-pointer">
-                    <img src="~/images/buymate-logo.png" alt="Product" class="w-full h-32 object-cover rounded-lg mb-3" />
-                    <h3 class="font-bold mb-2 text-sm">Canon EOS R5</h3>
-                    <div class="flex items-center space-x-2 mb-2">
-                        <span class="text-lg font-bold text-primary">$3,899</span>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <div class="card p-2 h-100">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="rounded mb-2"
+                            style="width:100%;height:8rem;object-fit:contain;" />
+                        <h3 class="fw-bold mb-1" style="font-size:0.9rem;">Canon EOS R5</h3>
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="fw-bold text-primary">$3,899</span>
+                        </div>
+                        <button class="btn btn-primary btn-sm w-100">Add to Cart</button>
                     </div>
-                    <button class="btn btn-primary w-full text-sm">Add to Cart</button>
                 </div>
             </div>
         </div>

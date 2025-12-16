@@ -8,8 +8,11 @@
 
   <ItemGroup>
     <Compile Remove="Features\User\Login\**" />
+    <Compile Remove="GlobalHelpers\**" />
     <EmbeddedResource Remove="Features\User\Login\**" />
+    <EmbeddedResource Remove="GlobalHelpers\**" />
     <None Remove="Features\User\Login\**" />
+    <None Remove="GlobalHelpers\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -18,7 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="GlobalHelpers\" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.21" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.6.0" />
   </ItemGroup>
 
 </Project>

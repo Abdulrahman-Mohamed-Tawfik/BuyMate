@@ -1,64 +1,68 @@
-﻿@model IEnumerable<BuyMate.DTO.ViewModels.CategoryViewModel>
+﻿@using BuyMate.DTO.ViewModels.Category
+@model IEnumerable<CategoryViewModel>
 
 @{
     ViewData["Title"] = "Categories";
 }
 
-<div class="max-w-5xl mx-auto mt-10">
-    <a asp-controller="Admin" asp-action="Index" class="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-        <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
+<div class="container mb-5" style="max-width: 64rem;">
+    <a asp-controller="Admin" asp-action="Index" class="d-inline-flex align-items-center small text-muted text-decoration-none mb-3">
+        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
     </a>
-    <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold">Categories</h1>
+
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h4 fw-bold mb-0">Categories</h1>
         <a asp-action="Create" class="btn btn-primary">Add New Category</a>
     </div>
 
-    <div class="card p-0 overflow-hidden">
-        <table class="table w-full">
-            <thead class="bg-muted">
-                <tr>
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Name</th>
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Image</th>
-                    <th class="px-4 py-3 text-left text-sm font-semibold">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                @if (Model != null && Model.Any())
-                {
-                    foreach (var item in Model)
+    <div class="card">
+        <div class="table-responsive mb-0">
+            <table class="table align-middle mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
                     {
-                        <tr class="border-t">
-                            <td class="px-4 py-3 text-sm font-medium">@item.Name</td>
-                            <td class="px-4 py-3">
-                                @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
-                                {
-                                    <img src="/@item.ImageUrl" alt="@item.Name" class="h-12 w-12 object-cover rounded border" />
-                                }
-                                else
-                                {
-                                    <span class="text-xs text-muted-foreground">No image</span>
-                                }
-                            </td>
-                            <td class="px-4 py-3 text-sm">
-                                <div class="flex items-center gap-2">
-                                    <a asp-action="Edit" asp-route-id="@item.Id"  class="btn btn-outline btn-sm">Edit</a>
-                                    <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="swal-delete" data-confirm="Delete this category?">
-                                        @Html.AntiForgeryToken()
-                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                                    </form>
-                                </div>
-                            </td>
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="small fw-semibold">@item.Name</td>
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                    {
+                                        <img src="/@item.ImageUrl" alt="@item.Name" class="border rounded" style="width:48px;height:48px;object-fit:contain;" />
+                                    }
+                                    else
+                                    {
+                                        <span class="small text-muted">No image</span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
+                                        <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="swal-delete d-inline" data-confirm="Delete this category?">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center small text-muted py-4">No categories found.</td>
                         </tr>
                     }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="4" class="px-4 py-6 text-center text-sm text-muted-foreground">No categories found.</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

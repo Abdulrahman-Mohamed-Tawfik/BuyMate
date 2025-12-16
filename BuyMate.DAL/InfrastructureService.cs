@@ -3,18 +3,16 @@ using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.BLL.Features.Cart;
 using BuyMate.BLL.Features.User;
 using BuyMate.DAL.Repositories;
-using BuyMate.Infrastructure.Contracts;
-using BuyMate.Infrastructure.Services;
 using BuyMate.Model.Entities;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using BuyMate.BLL.Features.CategoryFeatures;
 using BuyMate.BLL.Features.OrderFeature;
+using BuyMate.BLL.Contracts.Helpers;
+using BuyMate.BLL.Features.Helpers;
+using BuyMate.BLL.Features.Product;
 
 namespace BuyMate.DAL
 {
@@ -22,10 +20,16 @@ namespace BuyMate.DAL
     {
         public static IServiceCollection AddInfrastructureService(this IServiceCollection services, IConfiguration configuration)
         {
-            // EF Core + SQL Server
+            // EF Core + MySQL with tuned settings to avoid timeouts on large migrations
             services.AddDbContext<BuyMateDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+                var connectionString = configuration.GetConnectionString("DefaultConnection");
+                options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString), mySqlOptions =>
+                {
+                    mySqlOptions.EnableRetryOnFailure(5);
+                })
+                .EnableDetailedErrors()
+                .EnableSensitiveDataLogging();
             });
 
             services.AddIdentity<User, IdentityRole<Guid>>(options =>
@@ -41,10 +45,9 @@ namespace BuyMate.DAL
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.AllowedForNewUsers = true;
 
-            }).AddEntityFrameworkStores<BuyMateDbContext>().AddDefaultTokenProviders(); ;
+            }).AddEntityFrameworkStores<BuyMateDbContext>().AddDefaultTokenProviders();
 
 
-           
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/User/Login"; // redirect to login if not authorized
@@ -59,7 +62,7 @@ namespace BuyMate.DAL
             services.AddScoped<IUserProfileService, UserProfileService>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductImageRepository, ProductImageRepository>();
-            services.AddScoped<IProductService, BuyMate.BLL.Features.Product.ProductService>();
+            services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
@@ -70,7 +73,6 @@ namespace BuyMate.DAL
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
-            
 
 
             //Roles

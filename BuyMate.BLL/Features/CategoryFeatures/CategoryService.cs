@@ -1,14 +1,13 @@
-﻿using BuyMate.BLL.Contracts;
+﻿using BuyMate.BLL.Constants;
+using BuyMate.BLL.Contracts;
+using BuyMate.BLL.Contracts.Helpers;
 using BuyMate.BLL.Contracts.Repositories;
-using BuyMate.DTO.Category;
 using BuyMate.DTO.Common;
-using BuyMate.DTO.Enum;
-using BuyMate.DTO.ViewModels;
-using BuyMate.Infrastructure.Contracts;
+using BuyMate.DTO.Entities.Category;
+using BuyMate.DTO.ViewModels.Category;
 using BuyMate.Model.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
 
 namespace BuyMate.BLL.Features.CategoryFeatures
 {
@@ -17,9 +16,6 @@ namespace BuyMate.BLL.Features.CategoryFeatures
         private readonly ICategoryRepository _categoryRepository;
         private readonly IFileService _fileService;
 
-        private const string CategoriesFolderName = "Categories";
-        private static readonly string[] AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
-        private const long MaxFileSizeBytes = 4 * 1024 * 1024; //4 MB
         public CategoryService(ICategoryRepository categoryRepository, IFileService fileService)
         {
             _categoryRepository = categoryRepository;
@@ -72,10 +68,8 @@ namespace BuyMate.BLL.Features.CategoryFeatures
 
             if (imageFile != null && imageFile.Length > 0)
             {
-              
-                var result  = await _fileService.SaveImageAsync(imageFile,MaxFileSizeBytes, AllowedExtensions,CategoriesFolderName, category.Id.ToString());
-
-                category.ImageUrl = "images/"+result.Data;
+                var result = await _fileService.SaveImageAsync(imageFile, AppConstants.MaxImageFileSizeBytes, AppConstants.AllowedImageExtensions, AppConstants.CategoriesFolderName, category.Id.ToString());
+                category.ImageUrl = "images/" + result.Data;
             }
             else
             {
@@ -84,8 +78,8 @@ namespace BuyMate.BLL.Features.CategoryFeatures
 
             await _categoryRepository.CreateAsync(category);
 
-            var vm = new CategoryViewModel { Id = category.Id, Name = category.Name, ImageUrl = category.ImageUrl };
-            return Response<CategoryViewModel>.Success(vm, "Category created successfully.");
+            var categoryVm = new CategoryViewModel { Id = category.Id, Name = category.Name, ImageUrl = category.ImageUrl };
+            return Response<CategoryViewModel>.Success(categoryVm, "Category created successfully.");
         }
 
         public async Task<Response<bool>> UpdateAsync(Guid id, CreateCategoryDto dto, IFormFile? imageFile = null)
@@ -102,9 +96,9 @@ namespace BuyMate.BLL.Features.CategoryFeatures
 
             if (imageFile != null && imageFile.Length > 0)
             {
-                 _fileService.DeleteImage(category.ImageUrl.Replace("images/","")); // Delete old image if exists
+                _fileService.DeleteImage(category.ImageUrl.Replace("images/", "")); // Delete old image if exists
 
-                var result = await _fileService.SaveImageAsync(imageFile, MaxFileSizeBytes, AllowedExtensions, CategoriesFolderName, category.Id.ToString());
+                var result = await _fileService.SaveImageAsync(imageFile, AppConstants.MaxImageFileSizeBytes, AppConstants.AllowedImageExtensions, AppConstants.CategoriesFolderName, category.Id.ToString());
 
                 category.ImageUrl = "images/" + result.Data;
             }
@@ -114,7 +108,7 @@ namespace BuyMate.BLL.Features.CategoryFeatures
             return Response<bool>.Success(true, "Category updated successfully.");
         }
 
-        public async Task<Response<bool>> DeleteAsync(Guid id)
+        public async Task<Response<bool>> DeletePhysicalAsync(Guid id)
         {
             var category = (await _categoryRepository.GetAsync(x => x.Id == id)).FirstOrDefault();
 
@@ -125,6 +119,14 @@ namespace BuyMate.BLL.Features.CategoryFeatures
             if (!deleted)
                 return Response<bool>.Fail("Category not found or could not be deleted.");
 
+            return Response<bool>.Success(true, "Category deleted successfully.");
+        }
+
+        public async Task<Response<bool>> DeleteSoftAsync(Category category)
+        {
+            var deleted = await _categoryRepository.DeleteSoftAsync(category);
+            if (!deleted)
+                return Response<bool>.Fail("Category not found or could not be deleted.");
             return Response<bool>.Success(true, "Category deleted successfully.");
         }
     }

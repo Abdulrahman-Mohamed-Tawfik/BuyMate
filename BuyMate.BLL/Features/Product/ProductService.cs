@@ -1,8 +1,10 @@
+using BuyMate.BLL.Constants;
 using BuyMate.BLL.Contracts;
+using BuyMate.BLL.Contracts.Helpers;
 using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
-using BuyMate.Infrastructure.Contracts;
+using BuyMate.DTO.ViewModels.Category;
+using BuyMate.DTO.ViewModels.Product;
 using BuyMate.Model.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -14,70 +16,50 @@ namespace BuyMate.BLL.Features.Product
 {
     public class ProductService : IProductService
     {
-        private readonly IProductRepository _repo;
-        private readonly IProductImageRepository _imageRepo;
+        private readonly IProductRepository _productRepository;
+        private readonly IProductImageRepository _productImageRepository;
         private readonly IFileService _fileService;
 
-
-        // Configuration constants
-        private const string ProductsFolderName = "Products";
-        private static readonly string[] AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
-        private const long MaxFileSizeBytes = 4 * 1024 * 1024; //4 MB
         public ProductService(IProductRepository repo, IProductImageRepository imageRepo, IFileService fileService)
         {
-            _repo = repo;
-            _imageRepo = imageRepo;
+            _productRepository = repo;
+            _productImageRepository = imageRepo;
             _fileService = fileService;
         }
 
-        public async Task<PaginatedResponse<List<ProductViewModel>>> GetAllPaginatedAsync(
-            ProductFilter? filter = null)
+        public async Task<PaginatedResponse<List<ProductViewModel>>> GetAllPaginatedAsync(ProductFilter? filter = null)
         {
-
             filter ??= new ProductFilter();
-            //Get All Products
-            var query = _repo.GetAllQueryable();
-
+            // Get All Products
+            var query = _productRepository.GetAllQueryable();
 
             // apply additional filters
             query = ApplyFilters(query, filter);
 
             int totalCount = query.Count();
 
-
-            //pagination
+            // pagination
             var products = await query
                 .Skip((filter.PageNumber - 1) * filter.PageSize)
                 .Take(filter.PageSize)
                 .ToListAsync();
 
-
-
             // Include related data
-
             var ids = products.Select(p => p.Id).ToList();
-            var allImages = await _imageRepo.GetAllQueryable(i => ids.Contains(i.ProductId)).ToListAsync();
+            var allImages = await _productImageRepository.GetAllQueryable(i => ids.Contains(i.ProductId)).ToListAsync();
             //Group images by product
             var imagesByProduct = allImages
                 .GroupBy(i => i.ProductId)
                 .ToDictionary(g => g.Key, g => g.ToList());
             //Map to ViewModel
-            var ProductsList = products.Select(p =>
+            var productsList = products.Select(p =>
             {
                 var imgs = imagesByProduct.TryGetValue(p.Id, out var gi) ? gi : new List<ProductImage>();
                 var cats = p.ProductCategories.Select(pc => pc.Category!).ToList();
                 return ToViewModel(p, imgs, cats);
             }).ToList();
 
-            return new PaginatedResponse<List<ProductViewModel>>
-            {
-                Data = ProductsList,
-                Message = "Products",
-                Status = true,
-                TotalCount = totalCount,
-                PageNumber = filter.PageNumber,
-                PageSize = filter.PageSize
-            };
+            return PaginatedResponse<List<ProductViewModel>>.Success(productsList, totalCount, filter.PageSize, filter.PageNumber, "Products Retrieved Successfully");
         }
 
         private IQueryable<ProductEntity> ApplyFilters(IQueryable<ProductEntity> query, ProductFilter? filter)
@@ -113,10 +95,10 @@ namespace BuyMate.BLL.Features.Product
             {
                 var max = filter.MaxPrice.Value;
                 query = query.Where(p =>
- ((p.DiscountPercentage.HasValue && p.DiscountPercentage.Value > 0 && p.DiscountPercentage.Value < 100)
- ? p.Price * (1 - p.DiscountPercentage.Value / 100m)
- : p.Price) <= max
- );
+                 ((p.DiscountPercentage.HasValue && p.DiscountPercentage.Value > 0 && p.DiscountPercentage.Value < 100)
+                 ? p.Price * (1 - p.DiscountPercentage.Value / 100m)
+                 : p.Price) <= max
+                 );
             }
             //Filter by Discount
             if (filter.HasDiscount.HasValue)
@@ -139,7 +121,7 @@ namespace BuyMate.BLL.Features.Product
                     query = query.Where(p => p.CreatedAt < fourteenDaysAgo);
             }
             // Apply Ordering
-            query = _repo.OrderBy(query, filter.OrderBy, filter.Asc)
+            query = _productRepository.OrderBy(query, filter.OrderBy, filter.Asc)
                         .Include(p => p.ProductCategories).ThenInclude(pc => pc.Category)
                         .Include(p => p.Reviews);
 
@@ -148,27 +130,20 @@ namespace BuyMate.BLL.Features.Product
 
         public async Task<Response<ProductViewModel?>> GetByIdAsync(Guid id)
         {
-            var entity = await _repo.GetByIdAsync(id);
+            var entity = await _productRepository.GetByIdAsync(id);
             if (entity == null)
-                return new Response<ProductViewModel?>
-                {
-                    Data = null,
-                    Status = false,
-                    Message = "Not Found"
-                };
+                return Response<ProductViewModel?>.Fail("Not Found");
 
             // Load related data that may not have been included by repository
-            var images = await _imageRepo.GetByProductIdAsync(id);
+            var images = await _productImageRepository.GetByProductIdAsync(id);
 
             // Ensure categories are available
             var categories = entity.ProductCategories?.Select(pc => pc.Category!).ToList() ?? new List<Category>();
 
-            return new Response<ProductViewModel?>
-            {
-                Data = ToViewModel(entity, images, categories),
-                Status = true,
-                Message = "Product"
-            };
+            return Response<ProductViewModel?>.Success(
+                ToViewModel(entity, images, categories),
+                "Product Retrieved Successfully"
+            );
         }
 
         public async Task<Response<Guid>> CreateAsync(ProductCreateViewModel model, List<IFormFile> files)
@@ -176,19 +151,14 @@ namespace BuyMate.BLL.Features.Product
             //save images
             var result = await _fileService.SaveImagesAsync(
                 files,
-                MaxFileSizeBytes,
-                AllowedExtensions,
-                ProductsFolderName
-                );
+                AppConstants.MaxImageFileSizeBytes,
+                AppConstants.AllowedImageExtensions,
+                AppConstants.ProductsFolderName
+            );
             //Some Images were invalid return error
             if (result.Status == false)
             {
-                return new Response<Guid>
-                {
-                    Data = Guid.Empty,
-                    Status = false,
-                    Message = result.Message
-                };
+                return Response<Guid>.Fail(result.Message ?? "Failed to upload images.");
             }
             model.ImageUrls = result.Data;
             //create product entity
@@ -200,22 +170,22 @@ namespace BuyMate.BLL.Features.Product
                 Price = model.Price,
                 StockQuantity = model.StockQuantity
             };
-            var created = await _repo.CreateAsync(entity);
+            var createdProduct = await _productRepository.CreateAsync(entity);
             //create images
             if (model.ImageUrls.Any())
             {
                 var images = model.ImageUrls.Select((url, index) => new ProductImage
                 {
-                    ProductId = created.Id,
+                    ProductId = createdProduct.Id,
                     ImageUrl = url,
                     IsMain = index == 0
                 }).ToList();
 
-                await _imageRepo.CreateRangeAsync(images);
+                await _productImageRepository.CreateRangeAsync(images);
             }
             //link categories
             if (model.CategoryIds.Any())
-                await _repo.AddProductCategoriesAsync(created.Id, model.CategoryIds);
+                await _productRepository.AddProductCategoriesAsync(createdProduct.Id, model.CategoryIds);
 
             // After creating 'created' entity and categories:
             if (model.Specifications != null && model.Specifications.Any())
@@ -224,25 +194,19 @@ namespace BuyMate.BLL.Features.Product
                 {
                     Key = s.Key,
                     Value = s.Value,
-                    ProductId = created.Id
+                    ProductId = createdProduct.Id
                 }).ToList();
 
-                await _repo.AddProductSpecificationsAsync(created.Id, specs);
+                await _productRepository.AddProductSpecificationsAsync(createdProduct.Id, specs);
             }
 
-
-            return new Response<Guid>
-            {
-                Data = created.Id,
-                Status = true,
-                Message = "Product Created Successfully"
-            };
+            return Response<Guid>.Success(createdProduct.Id, "Product Created Successfully");
         }
 
         public async Task<Response<bool>> UpdateAsync(Guid id, ProductUpdateViewModel model, List<IFormFile>? files)
         {
 
-            var entity = await _repo.GetByIdAsync(id);
+            var entity = await _productRepository.GetByIdAsync(id);
             if (entity == null)
                 return new Response<bool> { Status = false, Data = false, Message = "Not Found" };
 
@@ -251,9 +215,9 @@ namespace BuyMate.BLL.Features.Product
             {
                 var saveResult = await _fileService.SaveImagesAsync(
                     files,
-                    MaxFileSizeBytes,
-                    AllowedExtensions,
-                    ProductsFolderName
+                    AppConstants.MaxImageFileSizeBytes,
+                    AppConstants.AllowedImageExtensions,
+                    AppConstants.ProductsFolderName
                 );
 
                 if (!saveResult.Status)
@@ -286,13 +250,13 @@ namespace BuyMate.BLL.Features.Product
             }
 
 
-            await _repo.UpdateAsync(entity);
+            await _productRepository.UpdateAsync(entity);
 
             // If ImageUrls is provided (even empty), user intends to control images: remove and recreate
             if (model.ImageUrls != null && model.ImageUrls.Count != 0)
             {
                 // fetch existing images so we can delete files that are removed
-                var existingImages = await _imageRepo.GetByProductIdAsync(id);
+                var existingImages = await _productImageRepository.GetByProductIdAsync(id);
 
                 // determine which urls were removed by the user
                 var kept = new HashSet<string>(model.ImageUrls ?? new List<string>());
@@ -302,7 +266,7 @@ namespace BuyMate.BLL.Features.Product
                     .ToList();
 
                 // remove DB records
-                await _imageRepo.RemoveByProductIdAsync(id);
+                await _productImageRepository.RemoveByProductIdAsync(id);
 
                 // delete physical files for removed images (best-effort)
                 foreach (var url in toDelete)
@@ -326,18 +290,18 @@ namespace BuyMate.BLL.Features.Product
                         IsMain = index == 0
                     }).ToList();
 
-                    await _imageRepo.CreateRangeAsync(imgs);
+                    await _productImageRepository.CreateRangeAsync(imgs);
                 }
             }
 
             // update categories
-            await _repo.RemoveProductCategoriesAsync(id);
+            await _productRepository.RemoveProductCategoriesAsync(id);
 
             if (model.CategoryIds.Any())
-                await _repo.AddProductCategoriesAsync(id, model.CategoryIds);
+                await _productRepository.AddProductCategoriesAsync(id, model.CategoryIds);
 
             // update specifications: remove old ones and add new
-            await _repo.RemoveProductSpecificationsAsync(id);
+            await _productRepository.RemoveProductSpecificationsAsync(id);
             if (model.Specifications != null && model.Specifications.Any())
             {
                 var specs = model.Specifications.Select(s => new ProductSpecification
@@ -346,52 +310,41 @@ namespace BuyMate.BLL.Features.Product
                     Value = s.Value,
                     ProductId = id
                 }).ToList();
-                await _repo.AddProductSpecificationsAsync(id, specs);
+                await _productRepository.AddProductSpecificationsAsync(id, specs);
             }
 
-            return new Response<bool>
-            {
-                Data = true,
-                Status = true,
-                Message = "Updated"
-            };
+            return Response<bool>.Success(true, "Updated Successfully");
         }
 
-
-        public async Task<Response<bool>> UpdateProductsStockAsync (List<ProductViewModel> products)
+        public async Task<Response<bool>> UpdateProductsStockAsync(List<ProductViewModel> products)
         {
-            if(products is null || products.Count == 0)
+            if (products is null || products.Count == 0)
             {
-                return  Response<bool>.Fail("Products Not Found ");
+                return Response<bool>.Fail("Products Not Found ");
             }
 
             foreach (var product in products)
             {
-                var entity =  await _repo.GetByIdAsync(product.Id);
+                var entity = await _productRepository.GetByIdAsync(product.Id);
 
                 entity.StockQuantity = product.StockQuantity;
 
-                await _repo.UpdateAsync(entity);
+                await _productRepository.UpdateAsync(entity);
 
             }
 
-            return Response<bool>.Success(true);
+            return Response<bool>.Success(true, "Stock Updated Successfully");
         }
         public async Task<Response<bool>> DeleteAsync(Guid id)
         {
+            var deleted = await _productRepository.SoftDeleteAsync(id);
 
-
-            var ok = await _repo.SoftDeleteAsync(id);
-
-            return new Response<bool>
-            {
-                Data = ok,
-                Status = ok,
-                Message = ok ? "Deleted" : "Not Found"
-            };
+            if (!deleted)
+                return Response<bool>.Fail("Not Found");
+            return Response<bool>.Success(true, "Deleted Successfully");
         }
 
-        public async Task<Response<List<ProductViewModel>>> GetProductsByIdsAsync (List<Guid> ids)
+        public async Task<Response<List<ProductViewModel>>> GetProductsByIdsAsync(List<Guid> ids)
         {
             if (ids == null || ids.Count == 0)
             {
@@ -402,7 +355,7 @@ namespace BuyMate.BLL.Features.Product
             ids = ids.Distinct().ToList();
 
             // 1. Get the products
-            var products = await _repo.GetAllQueryable(p => ids.Contains(p.Id))
+            var products = await _productRepository.GetAllQueryable(p => ids.Contains(p.Id))
                 .ToListAsync();
 
             if (!products.Any())
@@ -410,12 +363,10 @@ namespace BuyMate.BLL.Features.Product
                 return Response<List<ProductViewModel>>.Fail("No products found.");
             }
 
-           
-
             // 3. Map to view models
             var result = products.Select(p =>
             {
-                var imgs =  new List<ProductImage>();
+                var imgs = new List<ProductImage>();
 
                 var cats = new List<Category>();
 
@@ -464,13 +415,10 @@ namespace BuyMate.BLL.Features.Product
             };
         }
 
-
         Task<List<string>> IProductService.GetAllBrandsAsync()
         {
-            return _repo.GetAllBrandsAsync();
+            return _productRepository.GetAllBrandsAsync();
         }
-
-
 
         // Helper Methods
         private static decimal CalculateDiscountPrice(ProductEntity p)
@@ -512,7 +460,6 @@ namespace BuyMate.BLL.Features.Product
             return isNewArrival;
         }
 
-
         private static bool IsBestSeller(ProductEntity p)
         {
             int totalSold = p.OrderItems?.Sum(oi => oi.Quantity) ?? 0;
@@ -533,9 +480,6 @@ namespace BuyMate.BLL.Features.Product
                 .Where(s => !string.IsNullOrEmpty(s.Key))
                 .ToDictionary(s => s.Key, s => s.Value ?? string.Empty);
         }
-
-
-
 
     }
 }

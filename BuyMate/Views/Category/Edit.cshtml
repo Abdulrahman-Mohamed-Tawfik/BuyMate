@@ -1,72 +1,71 @@
-﻿@model BuyMate.DTO.Category.CreateCategoryDto
+﻿@using BuyMate.DTO.Entities.Category
+@model CreateCategoryDto
 @{
     ViewData["Title"] = "Edit Category";
     var categoryId = ViewBag.Id as Guid?;
 }
 
-<div class="max-w-3xl mx-auto card p-8 mt-10">
-    <a asp-controller="Admin" asp-action="Index" class="inline-flex items-center text-sm text-muted-foreground hover:text-primary mb-4">
-        <i class="fas fa-arrow-left mr-2"></i> Back to Dashboard
-    </a>
-    <h1 class="text-2xl font-bold mb-2">Edit Category</h1>
-    <p class="text-sm text-muted-foreground mb-6">Update the category name or replace its image. Leave image empty to keep the current one.</p>
+<div class="container mb-5" style="max-width: 48rem;">
+    <div class="card p-4 p-md-5 mt-4">
+        <a asp-controller="Admin" asp-action="Index" class="d-inline-flex align-items-center small text-muted text-decoration-none mb-3">
+            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
+        <h1 class="h4 fw-bold mb-1">Edit Category</h1>
+        <p class="small text-muted mb-3">Update the category name or replace its image. Leave image empty to keep the current one.</p>
 
-    @if (TempData["Success"] != null)
-    {
-        <div class="mb-4 p-3 rounded bg-green-50 text-green-700 text-sm">@TempData["Success"]</div>
-    }
-    @if (TempData["Error"] != null)
-    {
-        <div class="mb-4 p-3 rounded bg-red-50 text-red-700 text-sm">@TempData["Error"]</div>
-    }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success small mb-3">@TempData["Success"]</div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger small mb-3">@TempData["Error"]</div>
+        }
 
-    <form asp-controller="Category"
-          asp-action="Edit"
-          asp-route-id="@categoryId"
-          method="post"
-          enctype="multipart/form-data"
-          id="editCategoryForm"
-          class="space-y-6">
-        @Html.AntiForgeryToken()
+        <form asp-controller="Category"
+              asp-action="Edit"
+              asp-route-id="@categoryId"
+              method="post"
+              enctype="multipart/form-data"
+              id="editCategoryForm">
+            @Html.AntiForgeryToken()
 
-        <!-- Name -->
-        <div>
-            <label asp-for="Name" class="font-medium">Name</label>
-            <input asp-for="Name" class="input w-full mt-1" placeholder="Category name" />
-            <span asp-validation-for="Name" class="text-xs text-red-600"></span>
-        </div>
-
-        <!-- Image (optional) -->
-        <div>
-            <label class="font-medium">Replace Image (optional)</label>
-            <div class="flex items-center gap-3 mt-1 mb-2">
-                <label for="imageFile" class="btn btn-outline">Select image</label>
-                <span id="selectedFile" class="text-sm text-muted-foreground">No file chosen</span>
-                <button type="button" id="clearImageBtn" class="btn btn-outline btn-sm hidden">Clear</button>
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label small">Name</label>
+                <input asp-for="Name" class="form-control" placeholder="Category name" />
+                <span asp-validation-for="Name" class="small text-danger"></span>
             </div>
-            <input type="file" name="imageFile" id="imageFile" class="hidden" accept="image/*" />
-            <small class="text-muted-foreground block">Leave empty to keep current. Max 2MB. Allowed: jpg, jpeg, png, gif, webp.</small>
-        </div>
 
-        <!-- Preview -->
-        <div id="imagePreview" class="grid grid-cols-3 gap-4"></div>
+            <div class="mb-3">
+                <label class="form-label small">Replace Image (optional)</label>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <label for="imageFile" class="btn btn-outline-secondary btn-sm">Select image</label>
+                    <span id="selectedFile" class="small text-muted">No file chosen</span>
+                    <button type="button" id="clearImageBtn" class="btn btn-outline-secondary btn-sm d-none">Clear</button>
+                </div>
+                <input type="file" name="imageFile" id="imageFile" class="d-none" accept="image/*" />
+                <small class="text-muted d-block">Leave empty to keep current. Max 2MB. Allowed: jpg, jpeg, png, gif, webp.</small>
+            </div>
 
-        <div class="flex gap-3 pt-4">
-            <button type="submit" class="btn btn-primary flex-1">Save Changes</button>
-            <a asp-controller="Category" asp-action="Index" class="btn btn-outline">Cancel</a>
-        </div>
-    </form>
+            <div id="imagePreview" class="row g-3 mb-3"></div>
 
-    <hr class="my-8" />
+            <div class="d-flex gap-2 mt-2">
+                <button type="submit" class="btn btn-primary flex-fill">Save Changes</button>
+                <a asp-controller="Category" asp-action="Index" class="btn btn-outline-secondary flex-fill">Cancel</a>
+            </div>
+        </form>
 
-    <form asp-controller="Category"
-          asp-action="Delete"
-          asp-route-id="@categoryId"
-          method="post"
-          id="deleteCategoryForm">
-        @Html.AntiForgeryToken()
-        <button type="submit" class="btn btn-danger w-full">Delete Category</button>
-    </form>
+        <hr class="my-4" />
+
+        <form asp-controller="Category"
+              asp-action="Delete"
+              asp-route-id="@categoryId"
+              method="post"
+              id="deleteCategoryForm">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger w-100">Delete Category</button>
+        </form>
+    </div>
 </div>
 
 @section Scripts {

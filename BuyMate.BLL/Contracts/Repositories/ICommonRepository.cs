@@ -14,8 +14,8 @@ namespace BuyMate.BLL.Contracts.Repositories
         Task<TEntity> UpdateAsync(TEntity entity);
         IQueryable<TEntity> OrderBy(IQueryable<TEntity> entities, string? orderBy, bool isAccending = true);
         Task<bool> DeletePhysicallyAsync(Guid id);
-        Task<bool> DeletePhysicallyAsync(long id);
         bool DeletePhysically(Guid id);
+        Task<bool> DeleteSoftAsync(TEntity entity);
         Task<int> SaveChangesAsync();
         int SaveChanges();
         List<TEntity> Get(Expression<Func<TEntity, bool>>? filter = null);

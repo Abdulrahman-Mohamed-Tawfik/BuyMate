@@ -1,7 +1,7 @@
 using BuyMate.BLL.Contracts;
 using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.ViewModels.Cart;
 using BuyMate.Model.Entities;
 
 namespace BuyMate.BLL.Features.Cart;
@@ -130,9 +130,7 @@ public class CartService : ICartService
         if (cart is null || cart.Items.Count == 0)
             return Response<bool>.Success(true);
 
-       await _cartItemRepository.DeleteCartItemsByCartIdAsync(cart.Id);
-
-        
+        await _cartItemRepository.DeleteCartItemsByCartIdAsync(cart.Id);
 
         return Response<bool>.Success(true, "Items removed from cart successfully.");
     }

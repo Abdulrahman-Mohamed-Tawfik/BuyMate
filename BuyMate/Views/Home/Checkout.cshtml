@@ -2,44 +2,44 @@
     ViewData["Title"] = "Checkout";
 }
 
-<div class="max-w-6xl mx-auto">
-    <h1 class="text-3xl font-bold mb-8">Checkout</h1>
+<div class="container mb-5" style="max-width: 72rem;">
+    <h1 class="h4 fw-bold mb-3">Checkout</h1>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 space-y-8">
-            <div class="card p-8">
-                <h2 class="text-2xl font-bold mb-6">Shipping Information</h2>
-                <form class="space-y-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium mb-2">First Name</label>
-                            <input type="text" class="input w-full" placeholder="Enter your first name" />
+    <div class="row g-3 small">
+        <div class="col-12 col-lg-8 d-flex flex-column gap-3">
+            <div class="card p-3">
+                <h2 class="h5 fw-bold mb-3">Shipping Information</h2>
+                <form>
+                    <div class="row g-2 mb-2">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small">First Name</label>
+                            <input type="text" class="form-control" placeholder="Enter your first name" />
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Last Name</label>
-                            <input type="text" class="input w-full" placeholder="Enter your last name" />
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small">Last Name</label>
+                            <input type="text" class="form-control" placeholder="Enter your last name" />
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Email Address</label>
-                        <input type="email" class="input w-full" placeholder="Enter your email address" />
+                    <div class="mb-2">
+                        <label class="form-label small">Email Address</label>
+                        <input type="email" class="form-control" placeholder="Enter your email address" />
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Phone Number</label>
-                        <input type="tel" class="input w-full" placeholder="Enter your phone number" />
+                    <div class="mb-2">
+                        <label class="form-label small">Phone Number</label>
+                        <input type="tel" class="form-control" placeholder="Enter your phone number" />
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Address</label>
-                        <input type="text" class="input w-full" placeholder="Enter your street address" />
+                    <div class="mb-2">
+                        <label class="form-label small">Address</label>
+                        <input type="text" class="form-control" placeholder="Enter your street address" />
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium mb-2">City</label>
-                            <input type="text" class="input w-full" placeholder="Enter your city" />
+                    <div class="row g-2 mb-0">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small">City</label>
+                            <input type="text" class="form-control" placeholder="Enter your city" />
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-2">State</label>
-                            <select class="select w-full">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small">State</label>
+                            <select class="form-select">
                                 <option>Select State</option>
                                 <option>California</option>
                                 <option>New York</option>
@@ -47,122 +47,120 @@
                                 <option>Florida</option>
                             </select>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-2">ZIP Code</label>
-                            <input type="text" class="input w-full" placeholder="Enter ZIP code" />
+                        <div class="col-12 col-md-4">
+                            <label class="form-label small">ZIP Code</label>
+                            <input type="text" class="form-control" placeholder="Enter ZIP code" />
                         </div>
                     </div>
                 </form>
             </div>
 
-            <div class="card p-8">
-                <h2 class="text-2xl font-bold mb-6">Payment Information</h2>
-                <form class="space-y-6">
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Card Number</label>
-                        <input type="text" class="input w-full" placeholder="1234 5678 9012 3456" />
+            <div class="card p-3">
+                <h2 class="h5 fw-bold mb-3">Payment Information</h2>
+                <form>
+                    <div class="mb-2">
+                        <label class="form-label small">Card Number</label>
+                        <input type="text" class="form-control" placeholder="1234 5678 9012 3456" />
                     </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Expiry Date</label>
-                            <input type="text" class="input w-full" placeholder="MM/YY" />
+                    <div class="row g-2 mb-2">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small">Expiry Date</label>
+                            <input type="text" class="form-control" placeholder="MM/YY" />
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-2">CVV</label>
-                            <input type="text" class="input w-full" placeholder="123" />
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small">CVV</label>
+                            <input type="text" class="form-control" placeholder="123" />
                         </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium mb-2">Cardholder Name</label>
-                        <input type="text" class="input w-full" placeholder="Enter cardholder name" />
+                    <div class="mb-0">
+                        <label class="form-label small">Cardholder Name</label>
+                        <input type="text" class="form-control" placeholder="Enter cardholder name" />
                     </div>
                 </form>
             </div>
 
-            <div class="card p-8">
-                <h2 class="text-2xl font-bold mb-6">Shipping Method</h2>
-                <div class="space-y-4">
-                    <label class="flex items-center space-x-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50">
-                        <input type="radio" name="shipping" class="radio" checked />
-                        <div class="flex-1">
-                            <div class="flex items-center justify-between">
-                                <span class="font-medium">Standard Shipping</span>
-                                <span class="font-bold text-primary">$5.99</span>
+            <div class="card p-3">
+                <h2 class="h5 fw-bold mb-3">Shipping Method</h2>
+                <div class="d-flex flex-column gap-2">
+                    <label class="d-flex align-items-center gap-3 p-2 border rounded-3" style="cursor:pointer;">
+                        <input type="radio" name="shipping" class="form-check-input" checked />
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">Standard Shipping</span>
+                                <span class="fw-bold text-primary">$5.99</span>
                             </div>
-                            <p class="text-sm text-muted-foreground">5-7 business days</p>
+                            <p class="text-muted mb-0">5-7 business days</p>
                         </div>
                     </label>
-                    <label class="flex items-center space-x-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50">
-                        <input type="radio" name="shipping" class="radio" />
-                        <div class="flex-1">
-                            <div class="flex items-center justify-between">
-                                <span class="font-medium">Express Shipping</span>
-                                <span class="font-bold text-primary">$12.99</span>
+                    <label class="d-flex align-items-center gap-3 p-2 border rounded-3" style="cursor:pointer;">
+                        <input type="radio" name="shipping" class="form-check-input" />
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">Express Shipping</span>
+                                <span class="fw-bold text-primary">$12.99</span>
                             </div>
-                            <p class="text-sm text-muted-foreground">2-3 business days</p>
+                            <p class="text-muted mb-0">2-3 business days</p>
                         </div>
                     </label>
-                    <label class="flex items-center space-x-3 p-4 border rounded-lg cursor-pointer hover:bg-muted/50">
-                        <input type="radio" name="shipping" class="radio" />
-                        <div class="flex-1">
-                            <div class="flex items-center justify-between">
-                                <span class="font-medium">Same Day Delivery</span>
-                                <span class="font-bold text-primary">$19.99</span>
+                    <label class="d-flex align-items-center gap-3 p-2 border rounded-3" style="cursor:pointer;">
+                        <input type="radio" name="shipping" class="form-check-input" />
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-semibold">Same Day Delivery</span>
+                                <span class="fw-bold text-primary">$19.99</span>
                             </div>
-                            <p class="text-sm text-muted-foreground">Same day (select areas)</p>
+                            <p class="text-muted mb-0">Same day (select areas)</p>
                         </div>
                     </label>
                 </div>
             </div>
         </div>
 
-        <div class="lg:col-span-1">
-            <div class="card p-6 sticky top-8">
-                <h2 class="text-xl font-bold mb-4">Order Summary</h2>
-                
-                <div class="space-y-4 mb-6">
-                    <div class="flex items-center space-x-3">
-                        <img src="~/images/buymate-logo.png" alt="Product" class="w-16 h-16 object-cover rounded-lg" />
-                        <div class="flex-1">
-                            <h3 class="font-medium">iPhone 15 Pro Max</h3>
-                            <p class="text-sm text-muted-foreground">Color: Space Black, Storage: 256GB</p>
-                            <div class="flex items-center space-x-2 mt-1">
-                                <span class="font-bold text-primary">$1,199.00</span>
-                                <span class="text-sm text-muted-foreground">x1</span>
+        <div class="col-12 col-lg-4">
+            <div class="card p-3 position-sticky" style="top:1rem;">
+                <h2 class="h6 fw-bold mb-2">Order Summary</h2>
+
+                <div class="d-flex flex-column gap-2 mb-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="~/images/buymate-logo.png" alt="Product" class="rounded" style="width:64px;height:64px;object-fit:contain;" />
+                        <div class="flex-grow-1">
+                            <h3 class="fw-semibold mb-1">iPhone 15 Pro Max</h3>
+                            <p class="text-muted mb-1">Color: Space Black, Storage: 256GB</p>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="fw-bold text-primary">$1,199.00</span>
+                                <span class="text-muted">x1</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="space-y-2 border-t pt-4">
-                    <div class="flex justify-between">
-                        <span class="text-muted-foreground">Subtotal</span>
-                        <span class="font-medium">$1,199.00</span>
+                <div class="border-top pt-2 d-flex flex-column gap-1 mb-3">
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Subtotal</span>
+                        <span class="fw-semibold">$1,199.00</span>
                     </div>
-                    <div class="flex justify-between">
-                        <span class="text-muted-foreground">Shipping</span>
-                        <span class="font-medium">$5.99</span>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Shipping</span>
+                        <span class="fw-semibold">$5.99</span>
                     </div>
-                    <div class="flex justify-between">
-                        <span class="text-muted-foreground">Tax</span>
-                        <span class="font-medium">$0.00</span>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Tax</span>
+                        <span class="fw-semibold">$0.00</span>
                     </div>
-                    <div class="flex justify-between border-t pt-2">
-                        <span class="font-bold">Total</span>
-                        <span class="font-bold text-xl">$1,204.99</span>
+                    <div class="d-flex justify-content-between border-top pt-2">
+                        <span class="fw-bold">Total</span>
+                        <span class="fw-bold h5 mb-0">$1,204.99</span>
                     </div>
                 </div>
 
-                <button class="btn btn-primary w-full mt-6">Place Order</button>
-                
-                <div class="mt-4 text-center">
-                    <p class="text-xs text-muted-foreground">
-                        By placing your order, you agree to our 
-                        <a href="@Url.Action("Terms", "Home")" class="text-primary hover:underline">Terms of Service</a> 
-                        and 
-                        <a href="@Url.Action("Privacy", "Home")" class="text-primary hover:underline">Privacy Policy</a>
-                    </p>
-                </div>
+                <button class="btn btn-primary w-100 mb-2">Place Order</button>
+
+                <p class="text-center text-muted mb-0" style="font-size:0.75rem;">
+                    By placing your order, you agree to our
+                    <a href="@Url.Action("Terms", "Home")" class="text-primary text-decoration-none">Terms of Service</a>
+                    and
+                    <a href="@Url.Action("Privacy", "Home")" class="text-primary text-decoration-none">Privacy Policy</a>.
+                </p>
             </div>
         </div>
     </div>

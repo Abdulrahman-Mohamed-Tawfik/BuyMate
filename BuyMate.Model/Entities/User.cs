@@ -22,5 +22,16 @@ namespace BuyMate.Model.Entities
         public ICollection<Wishlist> Wishlists { get; set; } = new List<Wishlist>();
         public ICollection<Order> Orders { get; set; } = new List<Order>();
         public ICollection<ProductReview> Reviews { get; set; } = new List<ProductReview>();
+
+        // Encapsulation helpers
+        public void SetToken(string? token)
+        {
+            Token = string.IsNullOrWhiteSpace(token) ? null : token;
+        }
+
+        public void ClearToken()
+        {
+            Token = null;
+        }
     }
 }

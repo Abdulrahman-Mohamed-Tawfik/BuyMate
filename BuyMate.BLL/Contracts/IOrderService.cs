@@ -1,10 +1,5 @@
 ﻿using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using BuyMate.DTO.ViewModels.Order;
 
 namespace BuyMate.BLL.Contracts
 {

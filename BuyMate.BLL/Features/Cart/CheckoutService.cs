@@ -1,6 +1,6 @@
 using BuyMate.BLL.Contracts;
 using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.ViewModels.Order;
 
 namespace BuyMate.BLL.Features.Cart;
 
@@ -15,24 +15,14 @@ public class CheckoutService : ICheckoutService
     {
         var cartResponse = await _cartService.GetCartAsync(userId);
         if (cartResponse.Status is false)
-        {
-            return new Response<CheckoutViewModel>
-            {
-                Status = false,
-                Message = "Your cart is empty.",
-                Data = null
-            };
-        }
+            return Response<CheckoutViewModel>.Fail("Your cart is empty.");
+
         var checkoutViewModel = new CheckoutViewModel
         {
             CartVm = cartResponse.Data!
         };
-        return new Response<CheckoutViewModel>
-        {
-            Status = true,
-            Message = "Checkout data retrieved successfully.",
-            Data = checkoutViewModel
-        };
+
+        return Response<CheckoutViewModel>.Success(checkoutViewModel, "Checkout data retrieved successfully.");
     }
 }
 

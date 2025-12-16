@@ -82,7 +82,7 @@ fileInput.addEventListener('change', function () {
     reader.onload = e => {
         const div = document.createElement('div');
         div.className = 'relative';
-        div.innerHTML = `<img src="${e.target.result}" class="w-full h-32 object-cover rounded-lg border" alt="Preview" />`;
+        div.innerHTML = `<img src="${e.target.result}" class="w-full h-32 object-contain rounded-lg border" alt="Preview" />`;
         previewContainer.appendChild(div);
     };
     reader.readAsDataURL(file);

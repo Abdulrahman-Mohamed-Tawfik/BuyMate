@@ -1,15 +1,12 @@
-﻿using BuyMate.BLL.Contracts;
+﻿using BuyMate.BLL.Constants;
+using BuyMate.BLL.Contracts;
+using BuyMate.BLL.Contracts.Helpers;
 using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
-using BuyMate.Infrastructure.Contracts;
+using BuyMate.DTO.ViewModels.User;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-using System.Linq;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace BuyMate.BLL.Features.User
 {
@@ -19,12 +16,6 @@ namespace BuyMate.BLL.Features.User
         private readonly SignInManager<Model.Entities.User> _signInManager;
         private readonly ILogger<UserProfileService> _logger;
         private readonly IFileService _fileService;
-
-        // Configuration constants
-        private const string ProfilesFolderName = "UserProfileImages";
-        private const string DefaultImageFileName = "Default.webp";
-        private static readonly string[] AllowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif" };
-        private const long MaxFileSizeBytes = 2 * 1024 * 1024; //2 MB
 
         public UserProfileService(UserManager<Model.Entities.User> userManager, SignInManager<Model.Entities.User> signInManager, ILogger<UserProfileService> logger, IFileService fileService)
         {
@@ -38,12 +29,7 @@ namespace BuyMate.BLL.Features.User
         {
             var user = await _userManager.GetUserAsync(userPrincipal);
             if (user == null)
-                return new Response<ProfileViewModel>
-                {
-                    Data = null,
-                    Status = false,
-                    Message = "User Not Found"
-                };
+                return Response<ProfileViewModel>.Fail("User Not Found");
 
             var profile = new ProfileViewModel
             {
@@ -59,41 +45,22 @@ namespace BuyMate.BLL.Features.User
                 IsAdmin = await _userManager.IsInRoleAsync(user, "Admin")
             };
 
-            return new Response<ProfileViewModel>
-            {
-                Data = profile,
-                Status = true,
-                Message = "Profile"
-            };
-
+            return Response<ProfileViewModel>.Success(profile, "Profile Data retrieved successfully");
         }
 
         public async Task<Response<bool>> UpdateProfileAsync(ProfileViewModel model, ClaimsPrincipal userPrincipal, IFormFile? avatarFile)
         {
             var user = await _userManager.GetUserAsync(userPrincipal);
             if (user == null)
-            {
-                return new Response<bool>
-                {
-                    Status = false,
-                    Message = "User not found",
-                    Data = false
-                };
-            }
+                return Response<bool>.Fail("User not found.");
 
             // Friendly duplicate checks
             if (!string.Equals(user.Email, model.Email, StringComparison.OrdinalIgnoreCase))
             {
                 var existingByEmail = await _userManager.FindByEmailAsync(model.Email);
                 if (existingByEmail is not null)
-                {
-                    return new Response<bool>
-                    {
-                        Data = false,
-                        Status = false,
-                        Message = "Email is already registered"
-                    };
-                }
+                    return Response<bool>.Fail("Email is already registered.");
+
                 user.Email = model.Email;
                 user.UserName = model.Email.Split('@')[0];
             }
@@ -102,14 +69,7 @@ namespace BuyMate.BLL.Features.User
             {
                 var phoneExists = _userManager.Users.Any(u => u.PhoneNumber == model.Phone && u.Id != user.Id);
                 if (phoneExists)
-                {
-                    return new Response<bool>
-                    {
-                        Data = false,
-                        Status = false,
-                        Message = "Phone Number is already registered."
-                    };
-                }
+                    return Response<bool>.Fail("Phone Number is already registered.");
             }
 
 
@@ -120,7 +80,6 @@ namespace BuyMate.BLL.Features.User
             user.BirthDate = model.BirthDate;
             user.Gender = model.Gender;
             user.Address = model.Address;
-
 
             // First use previous avatar and check if it exists
             if (!string.IsNullOrEmpty(model.Avatar))
@@ -135,17 +94,11 @@ namespace BuyMate.BLL.Features.User
                 {
                     var safeUser = string.IsNullOrWhiteSpace(user.UserName) ? user.Id.ToString() : user.UserName;
 
-                    var response = await _fileService.SaveImageAsync(avatarFile, MaxFileSizeBytes, AllowedExtensions, ProfilesFolderName, safeUser);
+                    var response = await _fileService.SaveImageAsync(avatarFile, AppConstants.MaxImageFileSizeBytes, AppConstants.AllowedImageExtensions, AppConstants.UserProfileImagesFolder, safeUser);
 
                     if (!response.Status)
-                    {
-                        return new Response<bool>
-                        {
-                            Data = false,
-                            Status = false,
-                            Message = response.Message
-                        };
-                    }
+                        return Response<bool>.Fail(response.Message);
+
                     // Save the image using the file service
                     var relativePath = response.Data;
 
@@ -169,28 +122,15 @@ namespace BuyMate.BLL.Features.User
                 catch (Exception ex)
                 {
                     _logger.LogError(ex, "Error saving avatar for user {UserId}", user.Id);
-                    return new Response<bool>
-                    {
-                        Data = false,
-                        Status = false,
-                        Message = "Failed to save avatar."
-                    };
+                    return Response<bool>.Fail("Failed to save avatar.");
                 }
             }
-
-
-
 
             var result = await _userManager.UpdateAsync(user);
             if (!result.Succeeded)
             {
                 string errs = string.Join("; ", result.Errors.Select(e => e.Description));
-                return new Response<bool>
-                {
-                    Status = false,
-                    Message = errs,
-                    Data = false
-                };
+                return Response<bool>.Fail(errs);
             }
 
             // Update avatar claim
@@ -211,23 +151,17 @@ namespace BuyMate.BLL.Features.User
                 _logger.LogWarning(ex, "Failed to refresh sign-in for user {UserId}", user.Id);
             }
 
-            return new Response<bool>
-            {
-                Status = true,
-                Message = "Profile updated successfully",
-                Data = true
-            };
+            return Response<bool>.Success(true, "Profile updated successfully");
         }
-
 
         private bool IsDefaultImage(string? profileImageUrl)
         {
             if (string.IsNullOrWhiteSpace(profileImageUrl)) return true;
             var normalized = profileImageUrl.Replace("\\", "/");
-            // Support both "UserProfileImages/Default.webp" and "/UserProfileImages/Default.webp"
-            return normalized.EndsWith($"/{DefaultImageFileName}", StringComparison.OrdinalIgnoreCase)
-                   || normalized.Equals(DefaultImageFileName, StringComparison.OrdinalIgnoreCase)
-                   || normalized.EndsWith($"{DefaultImageFileName}", StringComparison.OrdinalIgnoreCase) && normalized.Contains(ProfilesFolderName, StringComparison.OrdinalIgnoreCase);
+            // Check if the URL ends with the default image filename or is just the filename
+            return normalized.EndsWith($"/{AppConstants.DefaultProfileImageFileName}", StringComparison.OrdinalIgnoreCase)
+                   || normalized.Equals(AppConstants.DefaultProfileImageFileName, StringComparison.OrdinalIgnoreCase)
+                   || normalized.EndsWith($"{AppConstants.DefaultProfileImageFileName}", StringComparison.OrdinalIgnoreCase) && normalized.Contains(AppConstants.UserProfileImagesFolder, StringComparison.OrdinalIgnoreCase);
         }
 
     }

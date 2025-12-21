@@ -23,10 +23,10 @@
                             <p class="small text-muted mb-0">User: @order.UserId</p>
                         </div>
                         <div class="text-end">
-                            <p class="fw-bold text-primary mb-1">$@order.Total</p>
+                            <p class="fw-bold text-dark mb-1">$@order.Total</p>
                             <span class="badge rounded-pill @(
                                 order.Status == OrderStatusViewModel.Delivered ? "bg-success" :
-                                order.Status == OrderStatusViewModel.Shipped ? "bg-primary" :
+                                order.Status == OrderStatusViewModel.Shipped ? "bg-dark" :
                                 order.Status == OrderStatusViewModel.Cancelled ? "bg-danger" : "bg-warning text-dark")">
                                 @order.Status
                             </span>

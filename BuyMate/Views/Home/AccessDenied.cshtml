@@ -10,7 +10,7 @@
         <p class="text-muted mb-3">You do not have permission to view this page. If you think this is a mistake, please contact support or sign in with an account that has the required access.</p>
 
         <div class="d-flex justify-content-center gap-2 mb-2">
-            <a asp-controller="Home" asp-action="Index" class="btn btn-primary btn-sm">Go to Home</a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-dark btn-sm">Go to Home</a>
             @if (!User.Identity?.IsAuthenticated ?? true)
             {
                 <a asp-controller="User" asp-action="Login" class="btn btn-outline-secondary btn-sm">Sign In</a>

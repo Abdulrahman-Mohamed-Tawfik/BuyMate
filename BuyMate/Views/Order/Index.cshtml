@@ -19,8 +19,8 @@
                             <p class="small text-muted mb-0">Placed on @order.OrderDate.ToString("MMM dd, yyyy")</p>
                         </div>
                         <div class="text-end">
-                            <p class="fw-bold text-primary mb-1">$@order.Total</p>
-                            <span class="badge @((order.Status == OrderStatusViewModel.Delivered) ? "bg-success" : (order.Status == OrderStatusViewModel.Shipped ? "bg-primary" : "bg-warning text-dark"))">@order.Status</span>
+                            <p class="fw-bold text-dark mb-1">$@order.Total</p>
+                            <span class="badge @((order.Status == OrderStatusViewModel.Delivered) ? "bg-success" : (order.Status == OrderStatusViewModel.Shipped ? "bg-dark" : "bg-warning text-dark"))">@order.Status</span>
                         </div>
                     </div>
 
@@ -56,7 +56,7 @@
         <div class="text-center py-5">
             <h2 class="h5 fw-bold mb-2">No orders yet</h2>
             <p class="text-muted mb-3">When you place your first order, it will appear here.</p>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-primary btn-lg">
+            <a asp-controller="Shop" asp-action="Index" class="btn btn-dark btn-lg">
                 Start Shopping
             </a>
         </div>

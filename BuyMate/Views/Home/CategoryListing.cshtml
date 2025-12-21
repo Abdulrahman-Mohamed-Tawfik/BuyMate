@@ -8,7 +8,7 @@
 <div class="container mb-5" style="max-width: 72rem;">
     <div class="d-flex justify-content-between align-items-end mb-3">
         <h1 class="h4 fw-bold mb-0">Shop by Category</h1>
-        <a asp-controller="Category" asp-action="Create" class="small fw-semibold text-primary text-decoration-none">
+        <a asp-controller="Category" asp-action="Create" class="small fw-semibold text-dark text-decoration-none">
             + Add New Category
         </a>
     </div>
@@ -20,7 +20,7 @@
                 <div class="col-12">
                     <div class="text-center p-4 border border-dashed rounded-3">
                         <p class="text-muted mb-2">No categories found in the database.</p>
-                        <a asp-controller="Category" asp-action="Create" class="btn btn-primary btn-sm">
+                        <a asp-controller="Category" asp-action="Create" class="btn btn-dark btn-sm">
                             Create First Category
                         </a>
                     </div>
@@ -32,7 +32,7 @@
                 {
                     <div class="col-12 col-md-6 col-lg-4">
                         <div class="card p-3 h-100 border" style="cursor:pointer;">
-                            <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3" style="width:4rem;height:4rem;">
+                            <div class="rounded-circle bg-dark bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-3" style="width:4rem;height:4rem;">
                                 @Html.Raw(GetIconForCategory(category.Name))
                             </div>
 
@@ -40,7 +40,7 @@
                             <p class="text-center text-muted mb-2">0 products</p>
 
                             <div class="text-center">
-                                <a href="#" class="small text-primary text-decoration-none">View Products</a>
+                                <a href="#" class="small text-dark text-decoration-none">View Products</a>
 
                                 <div class="d-flex justify-content-center gap-2 mt-3 pt-2 border-top">
                                     <a asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id" class="small fw-semibold text-warning text-decoration-none">Edit</a>
@@ -61,8 +61,8 @@
             <div class="row g-2">
                 <div class="col-6 col-md-3 col-lg-2">
                     <a href="#" class="d-block text-center p-3 border rounded-3 text-decoration-none h-100">
-                        <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-2" style="width:3rem;height:3rem;">
-                            <i class="fas fa-mobile-alt text-primary"></i>
+                        <div class="rounded-circle bg-dark bg-opacity-10 d-flex align-items-center justify-content-center mx-auto mb-2" style="width:3rem;height:3rem;">
+                            <i class="fas fa-mobile-alt text-dark"></i>
                         </div>
                         <p class="small fw-semibold mb-0">Smartphones</p>
                     </a>
@@ -76,7 +76,7 @@
     // Helper to keep your icons looking good
     string GetIconForCategory(string name)
     {
-        var start = "<svg class='w-8 h-8 text-primary' fill='none' stroke='currentColor' viewBox='0 0 24 24'>";
+        var start = "<svg class='w-8 h-8 text-dark' fill='none' stroke='currentColor' viewBox='0 0 24 24'>";
         var content = "<path stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z'></path>"; // Default Box Icon
 
         if (string.IsNullOrEmpty(name)) return start + content + "</svg>";

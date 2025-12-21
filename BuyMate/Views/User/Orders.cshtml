@@ -21,7 +21,7 @@
                         <div class="text-end">
                             <span class="badge rounded-pill @(
                                 order.Status == OrderStatusViewModel.Delivered ? "bg-success" :
-                                order.Status == OrderStatusViewModel.Shipped ? "bg-primary" : "bg-danger")">
+                                order.Status == OrderStatusViewModel.Shipped ? "bg-dark" : "bg-danger")">
                                 @order.Status
                             </span>
                             <p class="fw-semibold mt-1 mb-0">$@order.Total</p>
@@ -67,7 +67,7 @@
             <i class="far fa-file-alt fa-3x text-muted mb-2"></i>
             <h2 class="h5 fw-bold mb-1">No orders yet</h2>
             <p class="text-muted mb-3">When you place your first order, it will appear here.</p>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-primary btn-sm">
+            <a asp-controller="Shop" asp-action="Index" class="btn btn-dark btn-sm">
                 Start Shopping
             </a>
         </div>

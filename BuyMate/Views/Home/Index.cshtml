@@ -4,16 +4,20 @@
     ViewData["Title"] = "Home";
     var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
+<link rel="stylesheet" href="~/css/home.css" />
 
 <div class="container mb-5">
     <input type="hidden" id="__RequestVerificationToken" value="@requestToken" />
 
-    <!-- Hero Section -->
-    <section class="bg-primary text-white rounded-3 p-5 mb-5 text-center">
-        <div class="mx-auto" style="max-width: 48rem;">
+    <section class="hero-section text-white p-5 mb-5 text-center">
+        <div class="mx-auto hero-content">
             <h1 class="display-4 fw-bold mb-3">Welcome to BUYMATE</h1>
-            <p class="fs-5 mb-4 text-light">Discover amazing products at unbeatable prices</p>
-            <a asp-controller="Shop" asp-action="Index" class="btn btn-dark btn-lg d-inline-flex align-items-center">
+            <p class="fs-5 mb-4 text-light">
+                Discover amazing products at unbeatable prices
+            </p>
+            <a asp-controller="Shop"
+               asp-action="Index"
+               class="btn btn-dark btn-lg d-inline-flex align-items-center">
                 Shop Now
                 <i class="fas fa-arrow-right ms-2"></i>
             </a>
@@ -42,7 +46,7 @@
                                 }
                                 else
                                 {
-                                    <div class="bg-primary rounded-circle" style="width:3rem;height:3rem;"></div>
+                                    <div class="bg-dark rounded-circle" style="width:3rem;height:3rem;"></div>
                                 }
                             </div>
                             <h3 class="h6 fw-semibold mb-1">@category.Name</h3>
@@ -91,7 +95,9 @@
                                 <p class="small text-muted mb-2">@product.Brand</p>
                                 <div class="d-flex align-items-center mb-2">
                                     <div class="me-2">
-                                        @{ var roundedRating = (int)Math.Round(product.Rating); }
+                                        @{
+                                            var roundedRating = (int)Math.Round(product.Rating);
+                                        }
                                         @for (int i = 1; i <= 5; i++)
                                         {
                                             <i class="fa-star @(i <= roundedRating ? "fas text-warning" : "far text-muted") small"></i>
@@ -151,7 +157,9 @@
                             <p class="small text-muted mb-2">@product.Brand</p>
                             <div class="d-flex align-items-center mb-2">
                                 <div class="me-2">
-                                    @{ var roundedRating = (int)Math.Round(product.Rating); }
+                                    @{
+                                        var roundedRating = (int)Math.Round(product.Rating);
+                                    }
                                     @for (int i = 1; i <= 5; i++)
                                     {
                                         <i class="fa-star @(i <= roundedRating ? "fas text-warning" : "far text-muted") small"></i>
@@ -191,3 +199,4 @@
 </div>
 
 <script src="~/js/cart.js"></script>
+<script src="~/js/home.js"></script>

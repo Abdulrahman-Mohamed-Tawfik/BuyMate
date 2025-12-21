@@ -88,7 +88,7 @@
                         }
                         @if (Model.IsFeatured)
                         {
-                            <span class="badge bg-primary">Featured</span>
+                            <span class="badge bg-dark">Featured</span>
                         }
                         @if (Model.IsBestSeller)
                         {
@@ -114,7 +114,7 @@
                     </div>
                 </div>
 
-                <button id="addToCartBtn" class="btn btn-primary w-100 w-sm-auto" type="button" onclick="addToCart('@Model.Id', event)" @(Model.StockQuantity <= 0 ? "disabled" : "")>
+                <button id="addToCartBtn" class="btn btn-dark w-100 w-sm-auto" type="button" onclick="addToCart('@Model.Id', event)" @(Model.StockQuantity <= 0 ? "disabled" : "")>
                     @(Model.StockQuantity > 0 ? "Add to Cart" : "Notify Me")
                 </button>
             </div>
@@ -146,7 +146,7 @@
         <div class="card">
             <div class="card-body text-center py-4">
                 <p class="text-muted mb-3">No reviews yet. Be the first to review this product!</p>
-                <button class="btn btn-primary">Write a Review</button>
+                <button class="btn btn-dark">Write a Review</button>
             </div>
         </div>
     </section>

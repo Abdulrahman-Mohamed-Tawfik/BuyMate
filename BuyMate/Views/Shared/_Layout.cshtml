@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="~/css/profile.css" asp-append-version="true" />
     <link rel="icon" type="image/png" href="~/images/buymate-icon.webp" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 </head>
 <body class="bg-background text-foreground d-flex flex-column min-vh-100">
     <header class="border-bottom bg-light">
@@ -113,7 +114,7 @@
                         @if (User.IsInRole("admin"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-primary" asp-controller="Admin" asp-action="Index">Admin Dashboard</a>
+                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Admin Dashboard</a>
                             </li>
                         }
                     </ul>
@@ -201,7 +202,6 @@
     </footer>
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

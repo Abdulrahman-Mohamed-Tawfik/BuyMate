@@ -15,13 +15,13 @@
     <header class="border-bottom bg-light">
         <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
             <div class="container">
+                <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mainSidePanel" aria-controls="mainSidePanel" aria-label="Open menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+
                 <a class="navbar-brand d-flex align-items-center" asp-controller="Home" asp-action="Index" aria-label="Go to homepage">
                     <img src="~/images/buymate-logo.webp" alt="BUYMATE - Click. Buy. Smile" class="me-2" style="height:40px; width:auto;" />
                 </a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
 
                 <form class="d-none d-md-flex flex-grow-1 mx-3" asp-controller="Shop" asp-action="Index" method="get">
                     <div class="input-group">
@@ -88,6 +88,44 @@
             </div>
         </nav>
 
+        <div class="offcanvas offcanvas-start" tabindex="-1" id="mainSidePanel" aria-labelledby="mainSidePanelLabel" data-bs-scroll="true">
+            <div class="offcanvas-header border-bottom bg-light">
+                <div class="d-flex align-items-center gap-2">
+                    <img src="~/images/buymate-icon.webp" alt="BUYMATE" style="width:28px;height:28px;object-fit:contain;" />
+                    <div class="lh-sm">
+                        <div class="fw-semibold" id="mainSidePanelLabel">BUYMATE</div>
+                        <div class="small text-muted">Browse</div>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body p-0">
+                <div class="p-3">
+                    <div class="small text-uppercase text-muted fw-semibold mb-2">Shop</div>
+                    <div class="list-group list-group-flush">
+                        <a class="list-group-item list-group-item-action d-flex align-items-center gap-2" asp-controller="Shop" asp-action="Index">
+                            <i class="fas fa-store text-secondary"></i>
+                            <span>Shop</span>
+                        </a>
+                        <a class="list-group-item list-group-item-action d-flex align-items-center gap-2 text-danger" asp-controller="Shop" asp-action="Deals">
+                            <i class="fas fa-bolt"></i>
+                            <span>Flash Deals</span>
+                        </a>
+
+                        @if (User.IsInRole("admin"))
+                        {
+                            <div class="border-top my-2"></div>
+                            <div class="small text-uppercase text-muted fw-semibold mb-2">Admin</div>
+                            <a class="list-group-item list-group-item-action d-flex align-items-center gap-2" asp-controller="Admin" asp-action="Index">
+                                <i class="fas fa-gauge text-secondary"></i>
+                                <span>Admin Dashboard</span>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="bg-white border-top d-md-none">
             <div class="container py-2">
                 <form asp-controller="Shop" asp-action="Index" method="get">
@@ -98,27 +136,6 @@
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
-
-        <div class="bg-light border-top">
-            <div class="container">
-                <div class="collapse navbar-collapse" id="mainNavbar">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Shop" asp-action="Index">Shop</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-danger" asp-controller="Shop" asp-action="Deals">Flash Deals</a>
-                        </li>
-                        @if (User.IsInRole("admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Admin" asp-action="Index">Admin Dashboard</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
             </div>
         </div>
     </header>

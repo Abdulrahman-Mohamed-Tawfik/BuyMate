@@ -1,14 +1,8 @@
 ﻿using BuyMate.BLL.Contracts;
-using BuyMate.DTO.ViewModels;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Security.Claims;
-using System.Linq;
+using BuyMate.DTO.ViewModels.User;
 
 namespace BuyMate.Controllers
 {
@@ -22,7 +16,7 @@ namespace BuyMate.Controllers
             _authService = authService;
             _userProfileService = userProfileService;
         }
-       
+
 
         [Authorize]
         public async Task<IActionResult> Profile()
@@ -30,13 +24,10 @@ namespace BuyMate.Controllers
             var result = await _userProfileService.GetProfileAsync(User);
             if (result.Status == false)
             {
-                //TempData["Error"] = "User not found. Please login again.";
                 return RedirectToAction("Login");
             }
 
             return View(result.Data);
-
-
         }
 
         [HttpGet]
@@ -85,11 +76,23 @@ namespace BuyMate.Controllers
             {
                 return View(model);
             }
-            var result = await _authService.LoginAsync(model);
+
+            // Use JWT-based login instead of Identity's PasswordSignInAsync
+            var result = await _authService.LoginApiAsync(model);
 
             if (result.Status == true)
             {
-                //TempData["Success"] = "Login Successful.";
+                // Store JWT token in an HTTP-only cookie so MVC/Razor pages can send it automatically
+                if (!string.IsNullOrEmpty(result.Data))
+                {
+                    Response.Cookies.Append("AuthToken", result.Data, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.Strict,
+                        Expires = DateTimeOffset.UtcNow.AddDays(7)
+                    });
+                }
 
                 return RedirectToAction("Index", "Home");
             }
@@ -115,7 +118,9 @@ namespace BuyMate.Controllers
 
             if (result.Status == true)
             {
-                //TempData["Success"] = result.Message;
+                // Remove JWT cookie on logout
+                Response.Cookies.Delete("AuthToken");
+
                 return RedirectToAction("Index", "Home");
             }
 
@@ -151,11 +156,34 @@ namespace BuyMate.Controllers
                 ModelState.AddModelError(string.Empty, result.Message);
                 return View(model);
             }
-            
+
             TempData["Success"] = "Profile updated successfully.";
             return RedirectToAction("Profile");
         }
 
+        // API endpoint for login (for Flutter/Angular/MAUI/etc.)
+        [AllowAnonymous]
+        [HttpPost("api/login")]
+        public async Task<IActionResult> ApiLogin([FromBody] LoginViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    message = "Invalid login payload.",
+                    errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage)
+                });
+            }
+
+            var result = await _authService.LoginApiAsync(model);
+            if (!result.Status)
+            {
+                return Unauthorized(new { success = false, message = result.Message });
+            }
+
+            return Ok(new { success = true, token = result.Data });
+        }
 
     }
 }

@@ -12,6 +12,7 @@ using BuyMate.BLL.Features.CategoryFeatures;
 using BuyMate.BLL.Features.OrderFeature;
 using BuyMate.BLL.Contracts.Helpers;
 using BuyMate.BLL.Features.Helpers;
+using BuyMate.BLL.Features.Product;
 
 namespace BuyMate.DAL
 {
@@ -44,7 +45,7 @@ namespace BuyMate.DAL
                 options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
                 options.Lockout.AllowedForNewUsers = true;
 
-            }).AddEntityFrameworkStores<BuyMateDbContext>().AddDefaultTokenProviders();;
+            }).AddEntityFrameworkStores<BuyMateDbContext>().AddDefaultTokenProviders();
 
 
             services.ConfigureApplicationCookie(options =>
@@ -61,7 +62,7 @@ namespace BuyMate.DAL
             services.AddScoped<IUserProfileService, UserProfileService>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductImageRepository, ProductImageRepository>();
-            services.AddScoped<IProductService, BuyMate.BLL.Features.Product.ProductService>();
+            services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
@@ -72,7 +73,6 @@ namespace BuyMate.DAL
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
-
 
 
             //Roles

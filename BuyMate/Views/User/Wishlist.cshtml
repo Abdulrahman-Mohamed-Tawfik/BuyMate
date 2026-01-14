@@ -1,71 +1,66 @@
-@model BuyMate.DTO.ViewModels.WishlistViewModel
+@using BuyMate.DTO.ViewModels.Wishlist
+@model WishlistViewModel
 @{
- ViewData["Title"] = "Wishlist";
+    ViewData["Title"] = "Wishlist";
 }
 
-<div class="max-w-6xl mx-auto">
- <h1 class="text-3xl font-bold mb-8">My Wishlist</h1>
+<div class="container mb-5" style="max-width: 72rem;">
+    <h1 class="h4 fw-bold mb-3">My Wishlist</h1>
 
- @if (Model.Items.Any())
- {
- <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
- @foreach (var item in Model.Items)
- {
- <div class="card product-card" onclick="location.href='@Url.Action("Product", "Shop", new { id = item.ProductId })'">
- <div class="relative">
- <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-full h-48 object-cover rounded-t-lg" />
- <button class="absolute top-2 right-2 btn btn-ghost btn-sm text-destructive" onclick="event.stopPropagation(); removeFromWishlist('@item.ProductId')">
- <svg class="w-5 h-5" fill="currentColor" viewBox="002020">
- <path d="M4.3186.318a4.54.500006.364L1220.364l7.682-7.682a4.54.5000-6.364-6.364L127.636l-1.318-1.318a4.54.5000-6.3640z"></path>
- </svg>
- </button>
- </div>
- <div class="card-content p-4">
- <h3 class="font-medium mb-2 line-clamp-2">@item.ProductName</h3>
- <p class="text-sm text-muted-foreground mb-2">@item.Brand</p>
- <div class="flex items-center mb-2">
- <div class="flex items-center">
- @for (int i =1; i <=5; i++)
- {
- <svg class="w-4 h-4 @(i <= item.Rating ? "text-yellow-400" : "text-gray-300")" fill="currentColor" viewBox="002020">
- <path d="M9.0492.927c.3-.9211.603-.9211.9020l1.073.292a11000.95.69h3.462c.96901.3711.24.5881.81l-2.82.034a11000-.3641.118l1.073.292c.3.921-.7551.688-1.541.118l-2.8-2.034a11000-1.1750l-2.82.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a11000-.364-1.118L2.988.72c-.783-.57-.38-1.81.588-1.81h3.461a11000.951-.69l1.07-3.292z"></path>
- </svg>
- }
- </div>
- <span class="text-sm text-muted-foreground ml-2">(@item.ReviewCount)</span>
- </div>
- <div class="flex items-center justify-between">
- <div>
- <span class="text-lg font-bold">$@item.Price</span>
- @if (item.OriginalPrice.HasValue)
- {
- <span class="text-sm text-muted-foreground line-through ml-2">$@item.OriginalPrice</span>
- }
- </div>
- <button class="btn btn-primary btn-sm" onclick="event.stopPropagation(); addToCart('@item.ProductId')">
- Add to Cart
- </button>
- </div>
- </div>
- </div>
- }
- </div>
- }
- else
- {
- <div class="text-center py-12">
- <svg class="w-24 h-24 mx-auto text-muted-foreground mb-4" fill="none" stroke="currentColor" viewBox="002424">
- <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.3186.318a4.54.500006.364L1220.364l7.682-7.682a4.54.5000-6.364-6.364L127.636l-1.318-1.318a4.54.5000-6.3640z"></path>
- </svg>
- <h2 class="text-2xl font-bold mb-2">Your wishlist is empty</h2>
- <p class="text-muted-foreground mb-6">Save items you love for later by adding them to your wishlist.</p>
- <a asp-controller="Shop" asp-action="Index" class="btn btn-primary btn-lg">
- Start Shopping
- </a>
- </div>
- }
+    @if (Model.Items.Any())
+    {
+        <div class="row g-3 small">
+            @foreach (var item in Model.Items)
+            {
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="card h-100" style="cursor:pointer;" onclick="location.href='@Url.Action("Product", "Shop", new { id = item.ProductId })'">
+                        <div class="position-relative">
+                            <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="card-img-top p-2" style="height:12rem;object-fit:contain;" />
+                            <button class="btn btn-outline-danger btn-sm position-absolute" style="top:0.4rem;right:0.4rem;" onclick="event.stopPropagation(); removeFromWishlist('@item.ProductId')">
+                                <i class="fas fa-heart-broken"></i>
+                            </button>
+                        </div>
+                        <div class="card-body p-2 d-flex flex-column">
+                            <h3 class="fw-semibold mb-1" style="font-size:0.95rem;">@item.ProductName</h3>
+                            <p class="text-muted mb-1">@item.Brand</p>
+                            <div class="d-flex align-items-center mb-1">
+                                <div class="text-warning me-1">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <i class="fas fa-star @(i <= item.Rating ? string.Empty : "text-secondary")" style="font-size:0.75rem;"></i>
+                                    }
+                                </div>
+                                <span class="text-muted">(@item.ReviewCount)</span>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mt-auto">
+                                <div>
+                                    <span class="fw-bold text-dark">$@item.Price</span>
+                                    @if (item.OriginalPrice.HasValue)
+                                    {
+                                        <span class="text-muted text-decoration-line-through ms-1">$@item.OriginalPrice</span>
+                                    }
+                                </div>
+                                <button class="btn btn-dark btn-sm" onclick="event.stopPropagation(); addToCart('@item.ProductId')">
+                                    Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="far fa-heart fa-3x text-muted mb-2"></i>
+            <h2 class="h5 fw-bold mb-1">Your wishlist is empty</h2>
+            <p class="text-muted mb-3">Save items you love for later by adding them to your wishlist.</p>
+            <a asp-controller="Shop" asp-action="Index" class="btn btn-dark btn-sm">
+                Start Shopping
+            </a>
+        </div>
+    }
 </div>
 
-<script src="~/js/user-wishlist.js">
- 
-</script>
+<script src="~/js/user-wishlist.js"></script>

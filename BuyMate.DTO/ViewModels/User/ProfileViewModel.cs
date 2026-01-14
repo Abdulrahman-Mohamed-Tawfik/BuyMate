@@ -1,12 +1,10 @@
-using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BuyMate.DTO.ViewModels
+namespace BuyMate.DTO.ViewModels.User
 {
     public class ProfileViewModel
     {
         public string Id { get; set; } = string.Empty;
-
 
         [Required(ErrorMessage = "First name is required.")]
         [StringLength(50, ErrorMessage = "First name must not exceed 50 characters.")]
@@ -50,11 +48,7 @@ namespace BuyMate.DTO.ViewModels
         [StringLength(200, ErrorMessage = "Address must not exceed 200 characters.")]
         public string? Address { get; set; }
 
-
-        
         public string? Avatar { get; set; }
-
-
         public bool IsAdmin { get; set; }
     }
 }

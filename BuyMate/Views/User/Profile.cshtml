@@ -1,173 +1,160 @@
-@model BuyMate.DTO.ViewModels.ProfileViewModel
+@using BuyMate.DTO.ViewModels.User
+@model ProfileViewModel
 @{
-	ViewData["Title"] = "My Profile";
-	string gender = "Unspecified";
-	
-	if (Model.Gender == 1)
-	{
-		gender = "Male";
-	}
-	else if(Model.Gender == 2)
-	{
-		gender = "Female";
-	}
+    ViewData["Title"] = "My Profile";
+    string gender = "Unspecified";
+
+    if (Model.Gender == 1)
+    {
+        gender = "Male";
+    }
+    else if (Model.Gender == 2)
+    {
+        gender = "Female";
+    }
 }
 
+<div class="container mb-5" style="max-width: 64rem;">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h4 fw-bold mb-0">My Profile</h1>
+        <a asp-controller="User" asp-action="EditProfile" class="btn btn-dark">Edit Profile</a>
+    </div>
 
-<div class="max-w-4xl mx-auto">
-	<div class="flex items-center justify-between mb-6">
-		<h1 class="text-3xl font-bold">My Profile</h1>
-		<a asp-controller="User" asp-action="EditProfile" class="btn btn-primary">Edit Profile</a>
-	</div>
+    <div class="d-flex flex-column gap-4">
+        <div class="card p-4">
+            <h2 class="h5 fw-bold mb-3">Personal Information</h2>
+            <form>
+                <div class="row g-3 mb-2">
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small">First Name</label>
+                        <input type="text" class="form-control" value="@Model.FirstName" readonly />
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <label class="form-label small">Last Name</label>
+                        <input type="text" class="form-control" value="@Model.LastName" readonly />
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Email Address</label>
+                    <input type="email" class="form-control" value="@Model.Email" readonly />
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Phone Number</label>
+                    <input type="tel" class="form-control" value="@Model.Phone" readonly />
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Address</label>
+                    <input type="text" class="form-control" value="@(!string.IsNullOrEmpty(Model.Address) ? Model.Address : "No address added")" readonly />
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Gender</label>
+                    <input type="text" class="form-control" value="@gender" readonly />
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Date of Birth</label>
+                    <input type="date" class="form-control" value="@(Model.BirthDate.HasValue? Model.BirthDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
+                </div>
+                <div class="mb-2">
+                    <label class="form-label small">Profile Picture</label>
+                    <div class="d-flex align-items-center gap-3 mt-1">
+                        @if (!string.IsNullOrEmpty(Model.Avatar))
+                        {
+                            <img src="/images/@Model.Avatar" alt="Avatar" class="rounded-circle" style="width:80px;height:80px;object-fit:contain;" />
+                        }
+                        else
+                        {
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:80px;height:80px;">
+                                <i class="fas fa-user text-muted fa-2x"></i>
+                            </div>
+                        }
 
-	<div class="space-y-8">
-		<div class="card p-8">
-			<h2 class="text-2xl font-bold mb-6">Personal Information</h2>
-			<form class="space-y-6">
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-					<div>
-						<label class="block text-sm font-medium mb-2">First Name</label>
-						<input type="text" class="input w-full" value="@Model.FirstName" readonly />
-					</div>
-					<div>
-						<label class="block text-sm font-medium mb-2">Last Name</label>
-						<input type="text" class="input w-full" value="@Model.LastName" readonly />
-					</div>
-				</div>
-				<div>
-					<label class="block text-sm font-medium mb-2">Email Address</label>
-					<input type="email" class="input w-full" value="@Model.Email" readonly />
-				</div>
-				<div>
-					<label class="block text-sm font-medium mb-2">Phone Number</label>
-					<input type="tel" class="input w-full" value="@Model.Phone" readonly />
-				</div>
+                        <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary">Change Photo / Edit</a>
+                    </div>
+                </div>
+            </form>
+        </div>
 
-				<div>
-					<label class="block text-sm font-medium mb-2">Address</label>
-					<input type="email"
-						   class="input w-full"
-						   value="@(!string.IsNullOrEmpty(Model.Address) ? Model.Address : "No address added")"
-						   readonly />
-				</div>
+        <div class="card p-4">
+            <h2 class="h5 fw-bold mb-3">Account Settings</h2>
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="small fw-bold mb-1">Email Notifications</h3>
+                        <p class="small text-muted mb-0">Receive updates about your orders and promotions</p>
+                    </div>
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" id="emailNotif" checked>
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="small fw-bold mb-1">SMS Notifications</h3>
+                        <p class="small text-muted mb-0">Receive text messages about your orders</p>
+                    </div>
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" id="smsNotif">
+                    </div>
+                </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="small fw-bold mb-1">Marketing Emails</h3>
+                        <p class="small text-muted mb-0">Receive promotional offers and product updates</p>
+                    </div>
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" id="marketingNotif" checked>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-				<div>
-					<label class="block text-sm font-medium mb-2">Gender</label>
-					<input type="email" class="input w-full" value="@gender" readonly />
-				</div>
+        <div class="card p-4">
+            <h2 class="h5 fw-bold mb-3">Security</h2>
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="small fw-bold mb-1">Change Password</h3>
+                        <p class="small text-muted mb-0">Update your account password</p>
+                    </div>
+                    <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary btn-sm">Change</a>
+                </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="small fw-bold mb-1">Two-Factor Authentication</h3>
+                        <p class="small text-muted mb-0">Add an extra layer of security to your account</p>
+                    </div>
+                    <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary btn-sm">Enable</a>
+                </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="small fw-bold mb-1">Login Activity</h3>
+                        <p class="small text-muted mb-0">View recent login attempts and sessions</p>
+                    </div>
+                    <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary btn-sm">View</a>
+                </div>
+            </div>
+        </div>
 
-				<div>
-					<label class="block text-sm font-medium mb-2">Date of Birth</label>
-					<input type="date" class="input w-full" value="@(Model.BirthDate.HasValue? Model.BirthDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
-				</div>
-				<div>
-					<label class="block text-sm font-medium mb-2">Profile Picture</label>
-					<div class="flex items-center space-x-4">
-						@if (!string.IsNullOrEmpty(Model.Avatar))
-						{
-							<img src="/images/@Model.Avatar" alt="Avatar" class="w-20 h-20 rounded-full object-cover" />
-						}
-						else
-						{
-							<div class="w-20 h-20 rounded-full bg-muted flex items-center justify-center">
-								<svg class="w-10 h-10 text-muted-foreground" fill="none" stroke="currentColor" viewBox="002424">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M167a44011-804400180zM1214a77000-77h14a77000-7-7z"></path>
-								</svg>
-							</div>
-						}
-
-						<a asp-controller="User" asp-action="EditProfile" class="btn btn-secondary">Change Photo / Edit</a>
-					</div>
-				</div>
-			</form>
-		</div>
-
-		
-
-		<div class="card p-8">
-			<h2 class="text-2xl font-bold mb-6">Account Settings</h2>
-			<div class="space-y-6">
-				<div class="flex items-center justify-between">
-					<div>
-						<h3 class="font-bold">Email Notifications</h3>
-						<p class="text-sm text-muted-foreground">Receive updates about your orders and promotions</p>
-					</div>
-					<label class="switch">
-						<input type="checkbox" checked />
-						<span class="slider"></span>
-					</label>
-				</div>
-				<div class="flex items-center justify-between">
-					<div>
-						<h3 class="font-bold">SMS Notifications</h3>
-						<p class="text-sm text-muted-foreground">Receive text messages about your orders</p>
-					</div>
-					<label class="switch">
-						<input type="checkbox" />
-						<span class="slider"></span>
-					</label>
-				</div>
-				<div class="flex items-center justify-between">
-					<div>
-						<h3 class="font-bold">Marketing Emails</h3>
-						<p class="text-sm text-muted-foreground">Receive promotional offers and product updates</p>
-					</div>
-					<label class="switch">
-						<input type="checkbox" checked />
-						<span class="slider"></span>
-					</label>
-				</div>
-			</div>
-		</div>
-
-		<div class="card p-8">
-			<h2 class="text-2xl font-bold mb-6">Security</h2>
-			<div class="space-y-4">
-				<div class="flex items-center justify-between">
-					<div>
-						<h3 class="font-bold">Change Password</h3>
-						<p class="text-sm text-muted-foreground">Update your account password</p>
-					</div>
-					<a asp-controller="User" asp-action="EditProfile" class="btn btn-secondary">Change</a>
-				</div>
-				<div class="flex items-center justify-between">
-					<div>
-						<h3 class="font-bold">Two-Factor Authentication</h3>
-						<p class="text-sm text-muted-foreground">Add an extra layer of security to your account</p>
-					</div>
-					<a asp-controller="User" asp-action="EditProfile" class="btn btn-secondary">Enable</a>
-				</div>
-				<div class="flex items-center justify-between">
-					<div>
-						<h3 class="font-bold">Login Activity</h3>
-						<p class="text-sm text-muted-foreground">View recent login attempts and sessions</p>
-					</div>
-					<a asp-controller="User" asp-action="EditProfile" class="btn btn-secondary">View</a>
-				</div>
-			</div>
-		</div>
-
-		<div class="card p-8">
-			<h2 class="text-2xl font-bold mb-6">Account Actions</h2>
-			<div class="space-y-4">
-				<div class="flex items-center justify-between">
-					<div>
-						<h3 class="font-bold">Download Data</h3>
-						<p class="text-sm text-muted-foreground">Download a copy of your personal data</p>
-					</div>
-					<a asp-controller="User" asp-action="EditProfile" class="btn btn-secondary">Download</a>
-				</div>
-				<div class="flex items-center justify-between">
-					<div>
-						<h3 class="font-bold">Delete Account</h3>
-						<p class="text-sm text-muted-foreground">Permanently delete your account and all data</p>
-					</div>
-					<form asp-controller="User" asp-action="Delete" method="post" onsubmit="return confirm('Are you sure you want to delete your account?');">
-						<button type="button" class="btn btn-destructive" disabled>Delete</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+        <div class="card p-4">
+            <h2 class="h5 fw-bold mb-3">Account Actions</h2>
+            <div class="d-flex flex-column gap-3">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="small fw-bold mb-1">Download Data</h3>
+                        <p class="small text-muted mb-0">Download a copy of your personal data</p>
+                    </div>
+                    <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary btn-sm">Download</a>
+                </div>
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <h3 class="small fw-bold mb-1">Delete Account</h3>
+                        <p class="small text-muted mb-0">Permanently delete your account and all data</p>
+                    </div>
+                    <form asp-controller="User" asp-action="Delete" method="post" onsubmit="return confirm('Are you sure you want to delete your account?');">
+                        <button type="button" class="btn btn-danger btn-sm" disabled>Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 

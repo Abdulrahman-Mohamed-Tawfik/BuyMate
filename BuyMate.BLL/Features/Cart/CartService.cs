@@ -1,7 +1,7 @@
 using BuyMate.BLL.Contracts;
 using BuyMate.BLL.Contracts.Repositories;
 using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.ViewModels.Cart;
 using BuyMate.Model.Entities;
 
 namespace BuyMate.BLL.Features.Cart;

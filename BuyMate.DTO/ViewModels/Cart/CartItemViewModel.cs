@@ -1,4 +1,4 @@
-﻿namespace BuyMate.DTO.ViewModels;
+﻿namespace BuyMate.DTO.ViewModels.Cart;
 
 public class CartItemViewModel
 {

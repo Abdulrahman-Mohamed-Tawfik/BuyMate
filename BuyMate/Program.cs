@@ -1,7 +1,9 @@
 using BuyMate.DAL;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using BuyMate.Seed; // added
+using BuyMate.Seed;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,41 @@ builder.Services.AddHttpClient("api", client =>
     client.BaseAddress = new Uri("https://localhost:7233/");
 });
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
+
+// Configure Authentication: JWT Bearer for web + API using same secret key
+var secretKey = builder.Configuration["SecretKey"] ?? string.Empty;
+var keyBytes = Encoding.UTF8.GetBytes(secretKey);
+
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(keyBytes),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ClockSkew = TimeSpan.FromMinutes(2)
+        };
+
+        // Read token from HTTP-only cookie for MVC/Razor requests
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                if (context.Request.Cookies.TryGetValue("AuthToken", out var token) && !string.IsNullOrEmpty(token))
+                {
+                    context.Token = token;
+                }
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 var app = builder.Build();
 

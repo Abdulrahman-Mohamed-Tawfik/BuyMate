@@ -1,9 +1,8 @@
 using BuyMate.DTO.Common;
 using BuyMate.DTO.Validations;
-using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace BuyMate.DTO.ViewModels
+namespace BuyMate.DTO.ViewModels.Product
 {
     public class ProductCreateViewModel
     {
@@ -33,7 +32,6 @@ namespace BuyMate.DTO.ViewModels
 
         [UniqueSpecifications(ErrorMessage = "Each specification key must be unique.")]
         public List<ProductSpecficationInput> Specifications { get; set; } = new();
-
 
     }
 

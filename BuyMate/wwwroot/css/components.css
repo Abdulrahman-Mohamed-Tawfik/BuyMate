@@ -79,7 +79,7 @@
     animation: bounce 0.6s ease;
 }
 
-/* Dropdown Menus */
+/* Dropdown Menus (works with Bootstrap dropdown markup) */
 .dropdown-container {
     position: relative;
 }
@@ -141,10 +141,6 @@
     }
 }
 
-.mini-cart .last\:border-b-0:last-child {
-    border-bottom: 0 !important;
-}
-
 .cart-container:hover .mini-cart {
     display: block !important;
 }
@@ -175,7 +171,7 @@
 
 .thumbnail.active {
     opacity: 1;
-    border-color: var(--primary);
+    border-color: var(--dark);
 }
 
 .gallery-prev,
@@ -210,7 +206,7 @@
 }
 
 /* Modal/Dialog */
-.modal {
+.modal-custom {
     position: fixed;
     top: 0;
     left: 0;
@@ -225,12 +221,12 @@
     transition: opacity 0.3s ease;
 }
 
-.modal.show {
+.modal-custom.show {
     display: flex;
     opacity: 1;
 }
 
-.modal-dialog {
+.modal-dialog-custom {
     background: var(--card);
     border-radius: var(--radius);
     max-width: 600px;
@@ -242,11 +238,11 @@
     transition: transform 0.3s ease;
 }
 
-.modal.show .modal-dialog {
+.modal-custom.show .modal-dialog-custom {
     transform: scale(1);
 }
 
-.modal-header {
+.modal-header-custom {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -254,13 +250,13 @@
     border-bottom: 1px solid var(--border);
 }
 
-.modal-title {
+.modal-title-custom {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0;
 }
 
-.modal-close {
+.modal-close-custom {
     background: none;
     border: none;
     font-size: 1.5rem;
@@ -275,16 +271,16 @@
     border-radius: 0.25rem;
 }
 
-.modal-close:hover {
+.modal-close-custom:hover {
     background: var(--muted);
     color: var(--foreground);
 }
 
-.modal-body {
+.modal-body-custom {
     padding: 1.5rem;
 }
 
-.modal-footer {
+.modal-footer-custom {
     display: flex;
     align-items: center;
     justify-content: flex-end;
@@ -322,8 +318,8 @@
 }
 
 .tab-trigger.active {
-    color: var(--primary);
-    border-bottom-color: var(--primary);
+    color: var(--dark);
+    border-bottom-color: var(--dark);
 }
 
 .tab-content {
@@ -336,21 +332,21 @@
 }
 
 /* Accordion */
-.accordion {
+.accordion-custom {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
 }
 
-.accordion-item {
+.accordion-item-custom {
     border-bottom: 1px solid var(--border);
 }
 
-.accordion-item:last-child {
+.accordion-item-custom:last-child {
     border-bottom: none;
 }
 
-.accordion-trigger {
+.accordion-trigger-custom {
     width: 100%;
     padding: 1rem 1.5rem;
     background: none;
@@ -364,21 +360,21 @@
     font-weight: 500;
 }
 
-.accordion-trigger:hover {
+.accordion-trigger-custom:hover {
     background: var(--muted);
 }
 
-.accordion-trigger::after {
+.accordion-trigger-custom::after {
     content: '+';
     font-size: 1.5rem;
     transition: transform 0.15s ease;
 }
 
-.accordion-trigger.active::after {
+.accordion-trigger-custom.active::after {
     transform: rotate(45deg);
 }
 
-.accordion-content {
+.accordion-content-custom {
     display: none;
     padding: 0 1.5rem 1rem;
     color: var(--muted-foreground);
@@ -424,19 +420,7 @@
     outline: none;
 }
 
-/* Badge/Counter */
-.badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    border-radius: 9999px;
-    background: var(--primary);
-    color: var(--primary-foreground);
-}
-
+/* Badge/Counter helpers (used in mini-cart, wishlist, etc.) */
 .badge-destructive {
     background: var(--destructive);
     color: var(--destructive-foreground);
@@ -483,21 +467,6 @@
     font-weight: 600;
 }
 
-.badge-sale {
-    background: var(--destructive);
-    color: var(--destructive-foreground);
-}
-
-.badge-new {
-    background: #10b981;
-    color: white;
-}
-
-.badge-featured {
-    background: #3b82f6;
-    color: white;
-}
-
 /* Wishlist Button */
 .wishlist-button {
     position: absolute;
@@ -538,7 +507,7 @@
     width: 40px;
     height: 40px;
     border: 4px solid var(--muted);
-    border-top-color: var(--primary);
+    border-top-color: var(--dark);
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
@@ -584,14 +553,14 @@ img[data-src].loaded {
         left: 10px;
         min-width: auto;
     }
-    
+
     .dropdown-menu {
         left: 0;
         right: 0;
         width: 100%;
     }
-    
-    .modal-dialog {
+
+    .modal-dialog-custom {
         width: 95%;
     }
 }
@@ -604,4 +573,10 @@ img[data-src].loaded {
     .notification {
         display: none !important;
     }
+}
+
+/* Ensure dropdowns use solid white background */
+.dropdown-menu,
+.dropdown-content {
+    background-color: #ffffff !important;
 }

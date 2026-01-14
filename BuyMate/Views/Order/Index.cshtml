@@ -1,64 +1,64 @@
-@model List<BuyMate.DTO.ViewModels.OrderViewModel>
+@using BuyMate.DTO.ViewModels.Order
+@model List<OrderViewModel>
 @{
-	ViewData["Title"] = "My Orders";
+    ViewData["Title"] = "My Orders";
 }
 
-<div class="max-w-4xl mx-auto">
-	<h1 class="text-3xl font-bold mb-8">My Orders</h1>
+<div class="container mb-5" style="max-width: 48rem;">
+    <h1 class="h4 fw-bold mb-3">My Orders</h1>
 
-	@if (Model != null && Model.Any())
-	{
-		<div class="space-y-6">
-			@foreach (var order in Model)
-			{
-				<div class="card p-6 hover:shadow-md transition-all">
-					<div class="flex items-center justify-between mb-4">
-						<div>
-							<h3 class="font-semibold">Order #@order.TrackingNumber</h3>
-							<p class="text-sm text-muted-foreground">Placed on @order.OrderDate.ToString("MMM dd, yyyy")</p>
-						</div>
-						<div class="text-right">
-							<p class="text-lg font-bold text-primary">$@order.Total</p>
-							<span class="px-3 py-1 rounded-full text-sm font-medium @(order.Status == BuyMate.DTO.ViewModels.OrderStatusViewModel.Delivered ? "bg-green-100 text-green-800" : order.Status == BuyMate.DTO.ViewModels.OrderStatusViewModel.Shipped ? "bg-blue-100 text-blue-800" : "bg-yellow-100 text-yellow-800")">@order.Status</span>
-						</div>
-					</div>
+    @if (Model != null && Model.Any())
+    {
+        <div class="d-flex flex-column gap-3">
+            @foreach (var order in Model)
+            {
+                <div class="card p-3">
+                    <div class="d-flex align-items-center justify-content-between mb-2">
+                        <div>
+                            <h3 class="small fw-bold mb-1">Order #@order.TrackingNumber</h3>
+                            <p class="small text-muted mb-0">Placed on @order.OrderDate.ToString("MMM dd, yyyy")</p>
+                        </div>
+                        <div class="text-end">
+                            <p class="fw-bold text-dark mb-1">$@order.Total</p>
+                            <span class="badge @((order.Status == OrderStatusViewModel.Delivered) ? "bg-success" : (order.Status == OrderStatusViewModel.Shipped ? "bg-dark" : "bg-warning text-dark"))">@order.Status</span>
+                        </div>
+                    </div>
 
-					<div class="space-y-3">
-						@foreach (var item in order.Items)
-						{
-							<div class="flex items-center space-x-4">
-								<img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-16 h-16 object-cover rounded-lg" />
-								<div class="flex-1">
-									<h4 class="font-medium">@item.ProductName</h4>
-									<p class="text-sm text-muted-foreground">Qty: @item.Quantity</p>
-								</div>
-								<span class="font-medium">$@item.TotalPrice</span>
-							</div>
-						}
-					</div>
+                    <div class="d-flex flex-column gap-2 mb-2">
+                        @foreach (var item in order.Items)
+                        {
+                            <div class="d-flex align-items-center gap-3">
+                                <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="rounded" style="width:64px;height:64px;object-fit:contain;" />
+                                <div class="flex-grow-1">
+                                    <h4 class="small fw-semibold mb-1">@item.ProductName</h4>
+                                    <p class="small text-muted mb-0">Qty: @item.Quantity</p>
+                                </div>
+                                <span class="small fw-semibold">$@item.TotalPrice</span>
+                            </div>
+                        }
+                    </div>
 
-					<div class="flex items-center justify-between mt-4 pt-4 border-t">
-						<div class="text-sm text-muted-foreground">
-							
-							@if (order.EstimatedDelivery.HasValue)
-							{
-								<p>Estimated delivery: @order.EstimatedDelivery.Value.ToString("MMM dd, yyyy")</p>
-							}
-						</div>
-						<a asp-controller="Order" asp-action="Get" asp-route-orderid="@order.Id" class="btn btn-secondary btn-sm">View Details</a>
-					</div>
-				</div>
-			}
-		</div>
-	}
-	else
-	{
-		<div class="text-center py-12">
-			<h2 class="text-2xl font-bold mb-2">No orders yet</h2>
-			<p class="text-muted-foreground mb-6">When you place your first order, it will appear here.</p>
-			<a asp-controller="Shop" asp-action="Index" class="btn btn-primary btn-lg">
-				Start Shopping
-			</a>
-		</div>
-	}
-</div>
+                    <div class="d-flex align-items-center justify-content-between border-top pt-2 mt-2">
+                        <div class="small text-muted">
+                            @if (order.EstimatedDelivery.HasValue)
+                            {
+                                <p class="mb-0">Estimated delivery: @order.EstimatedDelivery.Value.ToString("MMM dd, yyyy")</p>
+                            }
+                        </div>
+                        <a asp-controller="Order" asp-action="Get" asp-route-orderid="@order.Id" class="btn btn-outline-secondary btn-sm">View Details</a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <h2 class="h5 fw-bold mb-2">No orders yet</h2>
+            <p class="text-muted mb-3">When you place your first order, it will appear here.</p>
+            <a asp-controller="Shop" asp-action="Index" class="btn btn-dark btn-lg">
+                Start Shopping
+            </a>
+        </div>
+    }
+</div></div>

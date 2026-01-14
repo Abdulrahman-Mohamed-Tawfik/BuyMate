@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BuyMate.DTO.ViewModels
+namespace BuyMate.DTO.ViewModels.User
 {
     public class LoginViewModel
     {

@@ -1,79 +1,65 @@
-@model BuyMate.DTO.ViewModels.OrderViewModel
+@using BuyMate.DTO.ViewModels.Order
+@model OrderViewModel
 @{
     ViewData["Title"] = "Order Detail (Admin)";
 }
 
-<div class="max-w-4xl mx-auto">
-    <div class="mb-8">
-        <a asp-controller="Order" asp-action="GetAll" class="btn btn-ghost mb-4">Back to All Orders</a>
-
-        <h1 class="text-3xl font-bold">Order #@Model.Id</h1>
-        <p class="text-muted-foreground">Placed on @Model.OrderDate.ToString("MMM dd, yyyy 'at' h:mm tt")</p>
+<div class="container mb-5" style="max-width: 48rem;">
+    <div class="mb-3">
+        <a asp-controller="Order" asp-action="GetAll" class="btn btn-outline-secondary btn-sm mb-2">Back to All Orders</a>
+        <h1 class="h4 fw-bold mb-1">Order #@Model.Id</h1>
+        <p class="small text-muted">Placed on @Model.OrderDate.ToString("MMM dd, yyyy 'at' h:mm tt")</p>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div class="lg:col-span-2 space-y-6">
-            <div class="card p-6">
-                <h2 class="text-xl font-bold mb-4">Order Items</h2>
-                <div class="space-y-4">
+    <div class="row g-4">
+        <div class="col-12 col-lg-8 d-flex flex-column gap-3">
+            <div class="card p-3">
+                <h2 class="h5 fw-bold mb-3">Order Items</h2>
+                <div class="d-flex flex-column gap-2">
                     @foreach (var item in Model.Items)
                     {
-                        <div class="flex items-center space-x-4">
-                            <img src="@("/images/" + item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="w-20 h-20 object-cover rounded-lg" />
-                            <div class="flex-1">
-                                <h3 class="font-medium">@item.ProductName</h3>
-                                <p class="text-sm text-muted-foreground">@item.Brand</p>
-                                <p class="text-sm text-muted-foreground">Quantity: @item.Quantity</p>
+                        <div class="d-flex align-items-center gap-3">
+                            <img src="@((!string.IsNullOrEmpty(item.ImageUrl) ? "/images/" + item.ImageUrl : "/images/placeholder.png"))" alt="@item.ProductName" class="rounded" style="width:80px;height:80px;object-fit:contain;" />
+                            <div class="flex-grow-1">
+                                <h3 class="small fw-semibold mb-0">@item.ProductName</h3>
+                                <p class="small text-muted mb-0">@item.Brand</p>
+                                <p class="small text-muted mb-0">Quantity: @item.Quantity</p>
                             </div>
-                            <div class="text-right">
-                                <p class="font-medium">$@item.UnitPrice</p>
-                                <p class="text-sm text-muted-foreground">Total: $@item.TotalPrice</p>
+                            <div class="text-end">
+                                <p class="small fw-semibold mb-0">$@item.UnitPrice</p>
+                                <p class="small text-muted mb-0">Total: $@item.TotalPrice</p>
                             </div>
                         </div>
                     }
                 </div>
             </div>
 
-            <div class="card p-6">
-                <h2 class="text-xl font-bold mb-4">Shipping Information</h2>
-                <div class="text-sm text-muted-foreground">
-                    <p>@Model.Address.Street</p>
-                    <p>@Model.Address.City, @Model.Address.State @Model.Address.ZipCode</p>
-                </div>
+            <div class="card p-3">
+                <h2 class="h5 fw-bold mb-3">Shipping Information</h2>
+                <p class="small text-muted mb-0">@Model.Address.Street</p>
+                <p class="small text-muted mb-0">@Model.Address.City, @Model.Address.State @Model.Address.ZipCode</p>
             </div>
         </div>
 
-        <div class="space-y-6">
-            <div class="card p-6">
-                <h2 class="text-xl font-bold mb-4">Order Summary</h2>
-                <div class="space-y-2">
-                    <div class="flex justify-between">
-                        <span>Subtotal</span>
-                        <span>$@Model.Subtotal</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>Shipping</span>
-                        <span>Free</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>Tax</span>
-                        <span>$0.00</span>
-                    </div>
+        <div class="col-12 col-lg-4 d-flex flex-column gap-3">
+            <div class="card p-3">
+                <h2 class="h5 fw-bold mb-3">Order Summary</h2>
+                <div class="d-flex flex-column gap-1 small">
+                    <div class="d-flex justify-content-between"><span>Subtotal</span><span>$@Model.Subtotal</span></div>
+                    <div class="d-flex justify-content-between"><span>Shipping</span><span>Free</span></div>
+                    <div class="d-flex justify-content-between"><span>Tax</span><span>$0.00</span></div>
                     <hr class="my-2" />
-                    <div class="flex justify-between text-lg font-bold">
-                        <span>Total</span>
-                        <span>$@Model.Total</span>
-                    </div>
+                    <div class="d-flex justify-content-between fw-bold"><span>Total</span><span>$@Model.Total</span></div>
                 </div>
             </div>
 
-            <div class="card p-6">
-                <h2 class="text-xl font-bold mb-4">Order Actions</h2>
-                <div class="space-y-3">
+            <div class="card p-3">
+                <h2 class="h5 fw-bold mb-3">Order Actions</h2>
+                <div class="d-flex flex-column gap-2">
                     <a asp-controller="Order" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Status</a>
                     <form asp-controller="Order" asp-action="Delete" method="post" onsubmit="return confirm('Are you sure?');">
                         <input type="hidden" name="id" value="@Model.Id" />
-                        <button type="submit" class="btn btn-destructive">Delete Order</button>
+                        <button type="submit" class="btn btn-danger">Delete Order</button>
                     </form>
                 </div>
             </div>

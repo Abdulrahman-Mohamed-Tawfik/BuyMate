@@ -1,11 +1,9 @@
 using System.Diagnostics;
 using BuyMate.BLL.Contracts;
-using BuyMate.DTO.Category;
 using BuyMate.DTO.Common;
-using BuyMate.DTO.ViewModels;
-using BuyMate.Model;
-
-using Microsoft.AspNetCore.Authorization;
+using BuyMate.DTO.ViewModels.Error;
+using BuyMate.DTO.ViewModels.Product;
+using BuyMate.DTO.ViewModels.Shop;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.Controllers

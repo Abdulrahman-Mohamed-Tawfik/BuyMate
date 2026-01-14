@@ -1,0 +1,27 @@
+﻿.hero-section {
+    position: relative;
+    min-height: 420px;
+    background-image: url('/images/o3.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.9375rem;
+}
+
+/* Dark overlay for readability */
+.hero-section::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    border-radius: inherit;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 48rem;
+}

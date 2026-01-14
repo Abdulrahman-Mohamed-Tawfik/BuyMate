@@ -1,5 +1,5 @@
 ﻿using BuyMate.BLL.Contracts;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.ViewModels.Cart;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuyMate.ViewComponents;

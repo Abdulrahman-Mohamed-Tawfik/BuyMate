@@ -1,93 +1,87 @@
-@model BuyMate.DTO.ViewModels.ProfileViewModel
+@using BuyMate.DTO.ViewModels.User
+@model ProfileViewModel
 @{
-	ViewData["Title"] = "Edit Profile";
+    ViewData["Title"] = "Edit Profile";
 }
 
+<div class="container mb-5" style="max-width: 40rem;">
+    <h1 class="h4 fw-bold mb-3">Edit Profile</h1>
 
-<div class="max-w-2xl mx-auto">
-	<h1 class="text-3xl font-bold mb-8">Edit Profile</h1>
+    <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-3">
+        <div class="card p-3 small">
+            <h2 class="h6 fw-bold mb-2">Personal Information</h2>
 
-	<form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="space-y-6">
-		<div class="card p-6">
-			<h2 class="text-xl font-bold mb-4">Personal Information</h2>
+            <div class="row g-2 mb-2">
+                <div class="col-12 col-md-6">
+                    <label asp-for="FirstName" class="form-label small">First Name</label>
+                    <input asp-for="FirstName" class="form-control" />
+                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label asp-for="LastName" class="form-label small">Last Name</label>
+                    <input asp-for="LastName" class="form-control" />
+                    <span asp-validation-for="LastName" class="text-danger small"></span>
+                </div>
+            </div>
 
-			<div class="space-y-4">
-				<div class="grid grid-cols-2 gap-4">
-					<div>
-						<label asp-for="FirstName" class="block text-sm font-medium mb-2">First Name</label>
-						<input asp-for="FirstName" class="input w-full" />
-						<span asp-validation-for="FirstName" class="text-sm text-destructive"></span>
-					</div>
-					<div>
-						<label asp-for="LastName" class="block text-sm font-medium mb-2">Last Name</label>
-						<input asp-for="LastName" class="input w-full" />
-						<span asp-validation-for="LastName" class="text-sm text-destructive"></span>
-					</div>
-				</div>
+            <div class="mb-2">
+                <label asp-for="Email" class="form-label small">Email Address</label>
+                <input asp-for="Email" type="email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
 
-				<div>
-					<label asp-for="Email" class="block text-sm font-medium mb-2">Email Address</label>
-					<input asp-for="Email" type="email" class="input w-full" />
-					<span asp-validation-for="Email" class="text-sm text-destructive"></span>
+            <div class="row g-2 mb-2">
+                <div class="col-12 col-md-6">
+                    <label asp-for="Phone" class="form-label small">Phone Number</label>
+                    <input asp-for="Phone" type="tel" class="form-control" />
+                    <span asp-validation-for="Phone" class="text-danger small"></span>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label asp-for="BirthDate" class="form-label small">Birth Date</label>
+                    <input asp-for="BirthDate" type="date" class="form-control" />
+                </div>
+            </div>
 
-				</div>
+            <div class="mb-2">
+                <label asp-for="Gender" class="form-label small">Gender</label>
+                <select asp-for="Gender" class="form-select" style="max-width:12rem;">
+                    <option value="0">Unspecified</option>
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                </select>
+            </div>
 
-				<div class="grid grid-cols-2 gap-4">
-					<div>
-						<label asp-for="Phone" class="block text-sm font-medium mb-2">Phone Number</label>
-						<input asp-for="Phone" type="tel" class="input w-full" />
-						<span asp-validation-for="Phone" class="text-sm text-destructive"></span>
-					</div>
-					<div>
-						<label asp-for="BirthDate" class="block text-sm font-medium mb-2">Birth Date</label>
-						<input asp-for="BirthDate" type="date" class="input w-full" />
-					</div>
-				</div>
+            <div class="mb-2">
+                <label asp-for="Address" class="form-label small">Address</label>
+                <input asp-for="Address" class="form-control" />
+            </div>
 
-				<div>
-					<label asp-for="Gender" class="block text-sm font-medium mb-2">Gender</label>
-					<select asp-for="Gender" class="input w-48">
-						<option value="0">Unspecified</option>
-						<option value="1">Male</option>
-						<option value="2">Female</option>
-					</select>
-				</div>
+            <div class="mb-0">
+                <label class="form-label small">Profile Picture</label>
+                <div class="d-flex align-items-center gap-3">
+                    <div class="d-flex flex-column align-items-center">
+                        <img id="profilePreview" src="/images/@(@User.FindFirst("avatar")?.Value ?? "UserProfileImages/Default.webp")"
+                             alt="Profile"
+                             class="rounded-circle border" style="width:64px;height:64px;object-fit:contain;" />
+                        <span id="fileNameDisplay" class="small text-muted mt-1"></span>
+                    </div>
 
-				<div>
-					<label asp-for="Address" class="block text-sm font-medium mb-2">Address</label>
-					<input asp-for="Address" class="input w-full" />
-				</div>
+                    <label class="btn btn-dark btn-sm mb-0">
+                        Upload New Image
+                        <input id="avatarFileInput" name="avatarFile"
+                               type="file"
+                               accept="image/*"
+                               class="d-none" />
+                    </label>
+                </div>
+            </div>
+        </div>
 
-				<div>
-					<label class="block text-sm font-medium mb-2">Profile Picture</label>
-					<div class="flex items-center space-x-4">
-						<div class="flex flex-col items-center">
-							<img id="profilePreview" src="/images/@(@User.FindFirst("avatar")?.Value ?? "UserProfileImages/Default.webp")"
-								 alt="Profile"
-								 class="w-16 h-16 rounded-full object-cover ring-2 ring-gray-200" />
-							<span id="fileNameDisplay" class="text-sm text-gray-700 mt-2"></span>
-						</div>
-
-						<label class="btn btn-primary">
-							Upload New Image
-							<input id="avatarFileInput" name="avatarFile"
-								   type="file"
-								   accept="image/*"
-								   class="hidden" />
-						</label>
-					</div>
-
-				</div>
-			</div>
-		</div>
-
-		<div class="flex space-x-4">
-			<button type="submit" class="btn btn-primary">Save Changes</button>
-			<a asp-action="Profile" class="btn btn-secondary">Cancel</a>
-		</div>
-	</form>
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-dark btn-sm">Save Changes</button>
+            <a asp-action="Profile" class="btn btn-outline-secondary btn-sm">Cancel</a>
+        </div>
+    </form>
 </div>
 
-<script src="~/js/user-editprofile.js">
-	
-</script>
+<script src="~/js/user-editprofile.js"></script>

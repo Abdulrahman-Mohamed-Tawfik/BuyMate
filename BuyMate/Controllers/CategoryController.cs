@@ -1,6 +1,6 @@
 ﻿using BuyMate.BLL.Contracts;
-using BuyMate.DTO.Category;
-using BuyMate.DTO.ViewModels;
+using BuyMate.DTO.Entities.Category;
+using BuyMate.DTO.ViewModels.Category;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

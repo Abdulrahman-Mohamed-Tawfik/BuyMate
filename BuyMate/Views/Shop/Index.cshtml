@@ -220,48 +220,7 @@
                     @foreach (var product in Model.Products)
                     {
                         <div class="col-12 col-sm-6 col-lg-6">
-                            <div class="card h-100" style="cursor:pointer;" onclick="location.href='@Url.Action("Product", "Shop", new { id = product.Id })'">
-                                <div class="position-relative">
-                                    <img src="@(String.IsNullOrEmpty(product.ImageUrl) ? "/images/placeholder.png" : "/images/" + product.ImageUrl)" alt="@product.Name" class="card-img-top" style="height:280px;object-fit:contain;" />
-                                    @if (product.IsFlashDeal)
-                                    {
-                                        <span class="badge bg-danger position-absolute top-0 start-0 m-2">Flash Deal</span>
-                                    }
-                                    @if (product.Discount.HasValue && product.Discount != 0)
-                                    {
-                                        <span class="badge bg-secondary position-absolute top-0 end-0 m-2">-@product.Discount%</span>
-                                    }
-                                </div>
-                                <div class="card-body d-flex flex-column">
-                                    <div class="mb-3">
-                                        <h3 class="h6 fw-semibold mb-1 text-truncate" title="@product.Name">@product.Name</h3>
-                                        <p class="small text-muted mb-2">@product.Brand</p>
-                                        <div class="d-flex align-items-center mb-2">
-                                            <div class="me-2">
-                                                @{
-                                                    var roundedRating = (int)Math.Round(product.Rating);
-                                                }
-                                                @for (int i = 1; i <= 5; i++)
-                                                {
-                                                    <i class="fa-star @(i <= roundedRating ? "fas text-warning" : "far text-muted") small"></i>
-                                                }
-                                            </div>
-                                            <span class="small text-muted">@product.Rating.ToString("F1") (@product.ReviewCount)</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="mt-auto">
-                                        <div class="d-flex align-items-baseline mb-2">
-                                            <span class="h5 fw-bold mb-0">$@product.Price</span>
-                                            @if (product.OriginalPrice.HasValue)
-                                            {
-                                                <span class="small text-muted text-decoration-line-through ms-2">$@product.OriginalPrice</span>
-                                            }
-                                        </div>
-                                        <button class="btn btn-dark w-100" onclick="event.stopPropagation(); addToCart('@product.Id')">Add to Cart</button>
-                                    </div>
-                                </div>
-                            </div>
+                            <partial name="_ProductCard" model="product" view-data='new ViewDataDictionary(ViewData) { { "ImageClass", "product-card-image product-card-image--shop" } }' />
                         </div>
                     }
                 </div>

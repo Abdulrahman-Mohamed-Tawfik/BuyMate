@@ -1,0 +1,32 @@
+@using BuyMate.DTO.ViewModels.Shop
+@model ShopViewModel
+@{
+    var totalPages = (int)Math.Ceiling((double)Model.TotalCount / (Model.PageSize > 0 ? Model.PageSize : 1));
+    var prev = Model.PageNumber - 1;
+    var next = Model.PageNumber + 1;
+
+    var routeData = new Dictionary<string, string>
+    {
+        { "search", Model.Search },
+        { "brand", Model.SelectedBrand },
+        { "minPrice", Model.SelectedMinPrice?.ToString() },
+        { "maxPrice", Model.SelectedMaxPrice?.ToString() },
+        { "hasDiscount", Model.HasDiscount.HasValue ? Model.HasDiscount.ToString() : null },
+        { "isFeatured", Model.IsFeatured.HasValue ? Model.IsFeatured.ToString() : null },
+        { "orderBy", Model.OrderBy },
+        { "asc", Model.Asc.ToString() },
+        { "categoryId", Model.SelectedCategoryId?.ToString() }
+    };
+}
+
+<div class="mt-4 d-flex justify-content-center">
+    <div class="btn-group" role="group">
+        <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-secondary btn-sm"
+           asp-all-route-data="routeData" asp-route-pageNumber="@Math.Max(1, prev)">Prev</a>
+           
+        <span class="btn btn-outline-secondary btn-sm disabled">Page @Model.PageNumber of @totalPages</span>
+        
+        <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-secondary btn-sm"
+           asp-all-route-data="routeData" asp-route-pageNumber="@(next <= totalPages ? next : totalPages)">Next</a>
+    </div>
+</div>

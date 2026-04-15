@@ -25,18 +25,7 @@
         <div class="mb-2">
             <h3 class="h6 fw-semibold mb-1 text-truncate" title="@Model.Name">@Model.Name</h3>
             <p class="small text-muted mb-2">@Model.Brand</p>
-            <div class="d-flex align-items-center mb-2">
-                <div class="me-2">
-                    @{
-                        var roundedRating = (int)Math.Round(Model.Rating);
-                    }
-                    @for (int i = 1; i <= 5; i++)
-                    {
-                        <i class="fa-star @(i <= roundedRating ? "fas text-warning" : "far text-muted") small"></i>
-                    }
-                </div>
-                <span class="small text-muted">@Model.Rating.ToString("F1") (@Model.ReviewCount)</span>
-            </div>
+            <partial name="_StarRating" model="((double)Model.Rating, Model.ReviewCount)" />
         </div>
 
         <div class="mt-auto">

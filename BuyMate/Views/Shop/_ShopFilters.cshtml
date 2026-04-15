@@ -1,0 +1,118 @@
+@using BuyMate.DTO.ViewModels.Shop
+@model ShopViewModel
+@{
+    var routeData = new Dictionary<string, string>
+    {
+        { "search", Model.Search },
+        { "brand", Model.SelectedBrand },
+        { "minPrice", Model.SelectedMinPrice?.ToString() },
+        { "maxPrice", Model.SelectedMaxPrice?.ToString() },
+        { "hasDiscount", Model.HasDiscount.HasValue ? Model.HasDiscount.ToString() : null },
+        { "isFeatured", Model.IsFeatured.HasValue ? Model.IsFeatured.ToString() : null },
+        { "orderBy", Model.OrderBy },
+        { "asc", Model.Asc.ToString() },
+        { "pageNumber", "1" }
+    };
+}
+
+<aside class="col-12 col-lg-3">
+    <div class="d-flex justify-content-between align-items-center mb-3 d-lg-none">
+        <button id="filterToggle" class="btn btn-outline-secondary btn-sm">Filters</button>
+    </div>
+
+    <div id="filterSidebar" class="card p-3" style="max-height:60vh;overflow:auto;">
+        <h3 class="h6 fw-semibold mb-3">Filters</h3>
+
+        <form method="get" asp-controller="Shop" asp-action="Index" class="mb-3">
+            @if (Model.SelectedCategoryId.HasValue)
+            {
+                <input type="hidden" name="categoryId" value="@Model.SelectedCategoryId" />
+            }
+            <div class="mb-3">
+                <label class="form-label small">Search</label>
+                <input type="text" name="search" value="@Model.Search" class="form-control form-control-sm" placeholder="Search products..." />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small">Brand</label>
+                <select name="brand" class="form-select form-select-sm">
+                    <option value="" selected="@string.IsNullOrEmpty(Model.SelectedBrand)">All brands</option>
+                    @foreach (var b in Model.Brands)
+                    {
+                        <option value="@b" selected="@(string.Equals(Model.SelectedBrand, b, StringComparison.OrdinalIgnoreCase))">@b</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small">Price range</label>
+                <div class="row g-2">
+                    <div class="col-6">
+                        <input type="number" name="minPrice" step="0.01" placeholder="Min" value="@(Model.SelectedMinPrice?.ToString() ?? "")" class="form-control form-control-sm" />
+                    </div>
+                    <div class="col-6">
+                        <input type="number" name="maxPrice" step="0.01" placeholder="Max" value="@(Model.SelectedMaxPrice?.ToString() ?? "")" class="form-control form-control-sm" />
+                    </div>
+                </div>
+                @if (Model.MinPrice.HasValue || Model.MaxPrice.HasValue)
+                {
+                    <p class="small text-muted mt-1">Price range: $@Model.MinPrice - $@Model.MaxPrice</p>
+                }
+            </div>
+
+            <div class="mb-3">
+                <div class="form-check form-check-sm">
+                    <input type="checkbox" name="hasDiscount" value="true" @(Model.HasDiscount == true ? "checked" : "") class="form-check-input" id="hasDiscountChk" />
+                    <label class="form-check-label small" for="hasDiscountChk">Has discount</label>
+                </div>
+                <div class="form-check form-check-sm">
+                    <input type="checkbox" name="isFeatured" value="true" @(Model.IsFeatured == true ? "checked" : "") class="form-check-input" id="isFeaturedChk" />
+                    <label class="form-check-label small" for="isFeaturedChk">Featured</label>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label small">Sort by</label>
+                <div class="row g-2">
+                    <div class="col-8">
+                        <select name="orderBy" class="form-select form-select-sm">
+                            <option value="" selected="@string.IsNullOrEmpty(Model.OrderBy)">Default</option>
+                            <option value="price" selected="@(Model.OrderBy == "price")">Price</option>
+                            <option value="name" selected="@(Model.OrderBy == "name")">Name</option>
+                            <option value="rating" selected="@(Model.OrderBy == "rating")">Rating</option>
+                        </select>
+                    </div>
+                    <div class="col-4">
+                        <select name="asc" class="form-select form-select-sm">
+                            <option value="true" selected="@(Model.Asc)">Asc</option>
+                            <option value="false" selected="@(!Model.Asc)">Desc</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-dark btn-sm">Apply</button>
+                <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-secondary btn-sm">Clear</a>
+            </div>
+        </form>
+
+        <hr />
+
+        <h3 class="h6 fw-semibold mb-2">Categories</h3>
+        <div class="d-flex flex-column gap-1">
+            @{
+                var allProductsRouteData = new Dictionary<string, string>(routeData);
+                allProductsRouteData.Remove("categoryId");
+            }
+            <a asp-controller="Shop" asp-action="Index" class="small @(Model.SelectedCategoryId == null ? "text-dark" : "text-muted") text-decoration-none"
+               asp-all-route-data="allProductsRouteData">All Products</a>
+
+            @foreach (var category in Model.Categories)
+            {
+                <a asp-controller="Shop" asp-action="Index" class="small @(Model.SelectedCategoryId == category.Id ? "text-dark fw-semibold" : "text-muted") text-decoration-none"
+                   asp-all-route-data="routeData" asp-route-categoryId="@category.Id">@category.Name (@category.ProductCount)</a>
+            }
+        </div>
+    </div>
+</aside>

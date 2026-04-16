@@ -15,7 +15,7 @@
         <partial name="_ShopFilters" model="Model" />
 
         <section class="col-12 col-lg-9">
-            @if (Model.Products.Any())
+            @if (Model.Products?.Any() == true)
             {
                 <div class="row g-4">
                     @foreach (var product in Model.Products)

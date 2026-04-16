@@ -4,10 +4,10 @@
     var imageClass = ViewData["ImageClass"]?.ToString() ?? "product-card-image";
 }
 
-<div class="card h-100 product-card" style="cursor:pointer;" onclick="location.href='@Url.Action("Product", "Shop", new { id = Model.Id })'">
-    <div class="position-relative">
-        <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/placeholder.png" : (Model.ImageUrl.StartsWith("/") ? Model.ImageUrl : "/images/" + Model.ImageUrl))" alt="@Model.Name" class="@imageClass" />
-        
+<div class="card h-100 product-card position-relative">
+    <div class="position-relative text-center p-3">
+        <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "/images/placeholder.png" : (Model.ImageUrl.StartsWith("/") ? Model.ImageUrl : "/images/" + Model.ImageUrl))" alt="@Model.Name" class="@imageClass img-fluid" style="max-height: 200px; object-fit: contain;" />
+
         @if (Model.IsFlashDeal)
         {
             <span class="badge bg-danger position-absolute top-0 start-0 m-2">Flash Deal</span>
@@ -16,19 +16,18 @@
         {
             <span class="badge bg-secondary position-absolute top-0 end-0 m-2">-@Model.Discount%</span>
         }
-
-        <!-- Example Wishlist Button (You only need to add this here!) -->
-        @* <button class="wishlist-button" onclick="event.stopPropagation(); toggleWishlist('@Model.Id')"><i class="far fa-heart"></i></button> *@
     </div>
-    
+
     <div class="card-body d-flex flex-column">
         <div class="mb-2">
-            <h3 class="h6 fw-semibold mb-1 text-truncate" title="@Model.Name">@Model.Name</h3>
+            <h3 class="h6 fw-semibold mb-1 text-truncate" title="@Model.Name">
+                <a asp-controller="Shop" asp-action="Product" asp-route-id="@Model.Id" class="text-dark text-decoration-none stretched-link">@Model.Name</a>
+            </h3>
             <p class="small text-muted mb-2">@Model.Brand</p>
             <partial name="_StarRating" model="((double)Model.Rating, Model.ReviewCount)" />
         </div>
 
-        <div class="mt-auto">
+        <div class="mt-auto position-relative" style="z-index: 2;">
             <div class="d-flex align-items-baseline mb-2">
                 <span class="fw-bold mb-0" style="font-size: 1.1rem;">@Model.Price.ToString("C")</span>
                 @if (Model.OriginalPrice.HasValue)
@@ -36,7 +35,7 @@
                     <span class="small text-muted text-decoration-line-through ms-2">@Model.OriginalPrice.Value.ToString("C")</span>
                 }
             </div>
-            <button class="btn btn-dark w-100 btn-sm" onclick="event.stopPropagation(); addToCart('@Model.Id')">Add to Cart</button>
+            <button class="btn btn-dark w-100 btn-sm" onclick="addToCart('@Model.Id')">Add to Cart</button>
         </div>
     </div>
 </div>

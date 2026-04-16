@@ -34,10 +34,22 @@
             </a>
         </div>
         <div class="row g-4">
-            @foreach (var category in Model.Categories.Take(8))
+            @if (Model.Categories?.Any() == true)
             {
-                <div class="col-6 col-md-3">
-                    <partial name="_CategoryTile" model="category" />
+                @foreach (var category in Model.Categories.Take(8))
+                {
+                    <div class="col-6 col-md-3">
+                        <partial name="_CategoryTile" model="category" />
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="text-center py-5 bg-light rounded-3 text-muted">
+                        <i class="fas fa-folder-open fa-2x mb-2"></i>
+                        <p class="mb-0">Categories will be available soon.</p>
+                    </div>
                 </div>
             }
         </div>
@@ -57,10 +69,22 @@
         </div>
 
         <div class="row g-4">
-            @foreach (var product in Model.FeaturedProducts)
+            @if (Model.FeaturedProducts?.Any() == true)
             {
-                <div class="col-12 col-sm-6 col-lg-4">
-                    <partial name="_ProductCard" model="product" view-data='new ViewDataDictionary(ViewData) { { "ImageClass", "product-card-image product-card-image--large" } }' />
+                @foreach (var product in Model.FeaturedProducts)
+                {
+                    <div class="col-12 col-sm-6 col-lg-4">
+                        <partial name="_ProductCard" model="product" view-data='new ViewDataDictionary(ViewData) { { "ImageClass", "product-card-image product-card-image--large" } }' />
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="text-center py-5 bg-light rounded-3 text-muted">
+                        <i class="fas fa-star fa-2x mb-2"></i>
+                        <p class="mb-0">Featured products are currently unavailable. Please check back later.</p>
+                    </div>
                 </div>
             }
         </div>
@@ -80,10 +104,22 @@
         </div>
 
         <div class="row g-4">
-            @foreach (var product in Model.BestSellers)
+            @if (Model.BestSellers?.Any() == true)
             {
-                <div class="col-6 col-lg-2">
-                    <partial name="_ProductCard" model="product" view-data='new ViewDataDictionary(ViewData) { { "ImageClass", "product-card-image" } }' />
+                @foreach (var product in Model.BestSellers)
+                {
+                    <div class="col-6 col-lg-2">
+                        <partial name="_ProductCard" model="product" view-data='new ViewDataDictionary(ViewData) { { "ImageClass", "product-card-image" } }' />
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="text-center py-5 bg-light rounded-3 text-muted">
+                        <i class="fas fa-box-open fa-2x mb-2"></i>
+                        <p class="mb-0">Check back later for our best-selling items.</p>
+                    </div>
                 </div>
             }
         </div>

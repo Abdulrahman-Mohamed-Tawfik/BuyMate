@@ -20,9 +20,8 @@
             <table class="table align-middle mb-0">
                 <thead class="table-light">
                     <tr>
-                        <th scope="col">Name</th>
-                        <th scope="col">Image</th>
-                        <th scope="col">Action</th>
+                        <th scope="col">Category</th>
+                        <th scope="col" style="width: 150px;">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,23 +30,27 @@
                         foreach (var item in Model)
                         {
                             <tr>
-                                <td class="small fw-semibold">@item.Name</td>
                                 <td>
-                                    @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
-                                    {
-                                        <img src="/@item.ImageUrl" alt="@item.Name" class="border rounded" style="width:48px;height:48px;object-fit:contain;" />
-                                    }
-                                    else
-                                    {
-                                        <span class="small text-muted">No image</span>
-                                    }
+                                    <div class="d-flex align-items-center gap-3">
+                                        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                        {
+                                            <img src="/@item.ImageUrl" alt="@item.Name" class="border rounded" style="width:48px;height:48px;object-fit:contain;" />
+                                        }
+                                        else
+                                        {
+                                            <div class="border rounded d-flex align-items-center justify-content-center bg-light text-muted" style="width:48px;height:48px;">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                        }
+                                        <span class="small fw-semibold">@item.Name</span>
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="d-flex align-items-center gap-2">
                                         <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
                                         <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="swal-delete d-inline" data-confirm="Delete this category?">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
                                         </form>
                                     </div>
                                 </td>
@@ -57,7 +60,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="3" class="text-center small text-muted py-4">No categories found.</td>
+                            <td colspan="2" class="text-center small text-muted py-4">No categories found.</td>
                         </tr>
                     }
                 </tbody>

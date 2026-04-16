@@ -5,10 +5,11 @@
     var SelectedCategoryId = Model.SelectedCategoryId;
 }
 
-<div class="container mb-5">
-    <div class="text-center mb-4">
-        <h1 class="h3 fw-bold mb-2">Shop All Products</h1>
-        <p class="text-muted mb-0">Discover our wide range of quality products</p>
+<div class="container mb-5 mt-4">
+    <div class="text-center mb-5 position-relative">
+        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 mb-3 fw-semibold" style="letter-spacing: 1px;"><i class="fas fa-gem me-2"></i>PREMIUM QUALITY</span>
+        <h1 class="display-3 fw-bolder mb-3 text-dark" style="letter-spacing: -1px;">Explore Our Collection</h1>
+        <p class="text-secondary fs-5 mx-auto" style="max-width: 650px;">Discover curated premium products designed just for you. Find exactly what you've been looking for with our extensive catalog.</p>
     </div>
 
     <div class="row g-4">
@@ -20,7 +21,7 @@
                 <div class="row g-4">
                     @foreach (var product in Model.Products)
                     {
-                        <div class="col-12 col-sm-6 col-lg-6">
+                        <div class="col-12 col-sm-6 col-md-4 col-xl-3">
                             <partial name="_ProductCard" model="product" view-data='new ViewDataDictionary(ViewData) { { "ImageClass", "product-card-image product-card-image--shop" } }' />
                         </div>
                     }
@@ -30,14 +31,31 @@
             }
             else
             {
-                <div class="text-center py-5">
-                    <h3 class="h5 fw-semibold mb-2">No products found</h3>
-                    <p class="text-muted mb-3">Try adjusting your filters or browse all products.</p>
+                <div class="text-center py-5 bg-light rounded-5 border border-dashed mt-2" style="border-width: 2px !important; border-color: #dee2e6 !important;">
+                    <div class="d-inline-flex justify-content-center align-items-center bg-white rounded-circle shadow-sm mb-4" style="width: 100px; height: 100px;">
+                        <i class="fas fa-search fa-3x text-muted" style="opacity: 0.5;"></i>
+                    </div>
+                    <h3 class="h4 fw-bold mb-3 text-dark">No products found</h3>
+                    <p class="text-muted fs-5 mb-4 max-w-md mx-auto" style="max-width: 400px;">We couldn't find anything matching your current filters. Try adjusting them or browse all products.</p>
+                    <a asp-controller="Shop" asp-action="Index" class="btn btn-dark btn-lg rounded-pill px-5 fw-bold shadow-sm hover-lift"><i class="fas fa-undo me-2"></i>Reset All Filters</a>
                 </div>
             }
         </section>
     </div>
 </div>
+
+<style>
+    .border-dashed {
+        border-style: dashed !important;
+    }
+    .hover-lift {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+    }
+</style>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="~/js/cart.js"></script>

@@ -17,25 +17,48 @@
 
 <aside class="col-12 col-lg-3">
     <div class="d-flex justify-content-between align-items-center mb-3 d-lg-none">
-        <button id="filterToggle" class="btn btn-outline-secondary btn-sm">Filters</button>
+        <button id="filterToggle" class="btn btn-dark rounded-pill px-4 fw-bold shadow-sm"><i class="fas fa-sliders-h me-2"></i>Filters</button>
     </div>
 
-    <div id="filterSidebar" class="card p-3" style="max-height:60vh;overflow:auto;">
-        <h3 class="h6 fw-semibold mb-3">Filters</h3>
+    <div id="filterSidebar" class="card p-4 border-0 shadow-sm rounded-4" style="position: sticky; top: 1.5rem; max-height: calc(100vh - 3rem); overflow-y: auto;">
 
-        <form method="get" asp-controller="Shop" asp-action="Index" class="mb-3">
+        <h3 class="h5 fw-bold mb-3 text-dark border-bottom pb-3"><i class="fas fa-sitemap me-2 text-primary"></i>Categories</h3>
+        <div class="d-flex flex-column gap-2 mb-4">
+            @{
+                var allProductsRouteData = new Dictionary<string, string>(routeData);
+                allProductsRouteData.Remove("categoryId");
+            }
+            <a asp-controller="Shop" asp-action="Index" class="text-decoration-none rounded-3 px-3 py-2 transition-all hover-bg-light @(Model.SelectedCategoryId == null ? "bg-light fw-bold text-dark border-start border-3 border-primary shadow-sm" : "text-secondary fw-medium")"
+               asp-all-route-data="allProductsRouteData">All Products</a>
+
+            @foreach (var category in Model.Categories)
+            {
+                <a asp-controller="Shop" asp-action="Index" class="text-decoration-none rounded-3 px-3 py-2 transition-all hover-bg-light @(Model.SelectedCategoryId == category.Id ? "bg-light fw-bold text-dark border-start border-3 border-primary shadow-sm" : "text-secondary fw-medium") d-flex justify-content-between align-items-center"
+                   asp-all-route-data="routeData" asp-route-categoryId="@category.Id">
+                   <span>@category.Name</span>
+                   <span class="badge bg-white text-dark border rounded-pill shadow-sm">@category.ProductCount</span>
+                </a>
+            }
+        </div>
+
+        <h3 class="h5 fw-bold mb-3 text-dark border-bottom pb-3 mt-2"><i class="fas fa-filter me-2 text-primary"></i>Filters</h3>
+
+        <form method="get" asp-controller="Shop" asp-action="Index" class="mb-2">
             @if (Model.SelectedCategoryId.HasValue)
             {
                 <input type="hidden" name="categoryId" value="@Model.SelectedCategoryId" />
             }
-            <div class="mb-3">
-                <label class="form-label small">Search</label>
-                <input type="text" name="search" value="@Model.Search" class="form-control form-control-sm" placeholder="Search products..." />
+            <div class="mb-4">
+                <label class="form-label small fw-bold text-uppercase text-secondary mb-2" style="letter-spacing: 0.5px;">Search</label>
+                <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                    <span class="input-group-text bg-light border-0 text-muted px-3"><i class="fas fa-search"></i></span>
+                    <input type="text" name="search" value="@Model.Search" class="form-control bg-light border-0 ps-0 fs-6" placeholder="Search..." />
+                </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label small">Brand</label>
-                <select name="brand" class="form-select form-select-sm">
+            <div class="mb-4">
+                <label class="form-label small fw-bold text-uppercase text-secondary mb-2" style="letter-spacing: 0.5px;">Brand</label>
+                <select name="brand" class="form-select bg-light border-0 shadow-sm rounded-3 py-2">
                     <option value="" selected="@string.IsNullOrEmpty(Model.SelectedBrand)">All brands</option>
                     @foreach (var b in Model.Brands)
                     {
@@ -44,75 +67,67 @@
                 </select>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label small">Price range</label>
+            <div class="mb-4">
+                <label class="form-label small fw-bold text-uppercase text-secondary mb-2" style="letter-spacing: 0.5px;">Price range</label>
                 <div class="row g-2">
                     <div class="col-6">
-                        <input type="number" name="minPrice" step="0.01" placeholder="Min" value="@(Model.SelectedMinPrice?.ToString() ?? "")" class="form-control form-control-sm" />
+                        <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                            <span class="input-group-text bg-light border-0 text-muted px-2">$</span>
+                            <input type="number" name="minPrice" step="0.01" placeholder="Min" value="@(Model.SelectedMinPrice?.ToString() ?? "")" class="form-control bg-light border-0 px-2 py-2" />
+                        </div>
                     </div>
                     <div class="col-6">
-                        <input type="number" name="maxPrice" step="0.01" placeholder="Max" value="@(Model.SelectedMaxPrice?.ToString() ?? "")" class="form-control form-control-sm" />
+                        <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                            <span class="input-group-text bg-light border-0 text-muted px-2">$</span>
+                            <input type="number" name="maxPrice" step="0.01" placeholder="Max" value="@(Model.SelectedMaxPrice?.ToString() ?? "")" class="form-control bg-light border-0 px-2 py-2" />
+                        </div>
                     </div>
                 </div>
                 @if (Model.MinPrice.HasValue || Model.MaxPrice.HasValue)
                 {
-                    <p class="small text-muted mt-1">Price range: $@Model.MinPrice - $@Model.MaxPrice</p>
+                    <div class="small fw-bold text-primary mt-2 bg-primary bg-opacity-10 px-3 py-2 rounded-3 text-center">Range: $@Model.MinPrice - $@Model.MaxPrice</div>
                 }
             </div>
 
-            <div class="mb-3">
-                <div class="form-check form-check-sm">
+            <div class="mb-4 bg-light p-3 rounded-4 shadow-sm">
+                <div class="form-check form-switch mb-3">
                     <input type="checkbox" name="hasDiscount" value="true" @(Model.HasDiscount == true ? "checked" : "") class="form-check-input" id="hasDiscountChk" />
-                    <label class="form-check-label small" for="hasDiscountChk">Has discount</label>
+                    <label class="form-check-label fw-bold text-dark small ms-1" for="hasDiscountChk">Has Discount Only</label>
                 </div>
-                <div class="form-check form-check-sm">
+                <div class="form-check form-switch m-0">
                     <input type="checkbox" name="isFeatured" value="true" @(Model.IsFeatured == true ? "checked" : "") class="form-check-input" id="isFeaturedChk" />
-                    <label class="form-check-label small" for="isFeaturedChk">Featured</label>
+                    <label class="form-check-label fw-bold text-dark small ms-1" for="isFeaturedChk">Featured Only</label>
                 </div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label small">Sort by</label>
-                <div class="row g-2">
-                    <div class="col-8">
-                        <select name="orderBy" class="form-select form-select-sm">
-                            <option value="" selected="@string.IsNullOrEmpty(Model.OrderBy)">Default</option>
-                            <option value="price" selected="@(Model.OrderBy == "price")">Price</option>
-                            <option value="name" selected="@(Model.OrderBy == "name")">Name</option>
-                            <option value="rating" selected="@(Model.OrderBy == "rating")">Rating</option>
-                        </select>
-                    </div>
-                    <div class="col-4">
-                        <select name="asc" class="form-select form-select-sm">
-                            <option value="true" selected="@(Model.Asc)">Asc</option>
-                            <option value="false" selected="@(!Model.Asc)">Desc</option>
-                        </select>
-                    </div>
+            <div class="mb-4">
+                <label class="form-label small fw-bold text-uppercase text-secondary mb-2" style="letter-spacing: 0.5px;">Sort by</label>
+                <div class="d-flex flex-column gap-2">
+                    <select name="orderBy" class="form-select bg-light border-0 shadow-sm rounded-3 py-2">
+                        <option value="" selected="@string.IsNullOrEmpty(Model.OrderBy)">Default sorting</option>
+                        <option value="price" selected="@(Model.OrderBy == "price")">Sort by Price</option>
+                        <option value="name" selected="@(Model.OrderBy == "name")">Sort by Name</option>
+                        <option value="rating" selected="@(Model.OrderBy == "rating")">Sort by Rating</option>
+                    </select>
+                    <select name="asc" class="form-select bg-light border-0 shadow-sm rounded-3 py-2">
+                        <option value="true" selected="@(Model.Asc)">Ascending (Low-High)</option>
+                        <option value="false" selected="@(!Model.Asc)">Descending (High-Low)</option>
+                    </select>
                 </div>
             </div>
 
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-dark btn-sm">Apply</button>
-                <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-secondary btn-sm">Clear</a>
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-dark btn-lg rounded-pill fw-bold shadow"><i class="fas fa-check me-2"></i>Apply Filters</button>
+                <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-secondary rounded-pill fw-bold py-2"><i class="fas fa-times me-2"></i>Clear Filters</a>
             </div>
         </form>
 
-        <hr />
-
-        <h3 class="h6 fw-semibold mb-2">Categories</h3>
-        <div class="d-flex flex-column gap-1">
-            @{
-                var allProductsRouteData = new Dictionary<string, string>(routeData);
-                allProductsRouteData.Remove("categoryId");
-            }
-            <a asp-controller="Shop" asp-action="Index" class="small @(Model.SelectedCategoryId == null ? "text-dark" : "text-muted") text-decoration-none"
-               asp-all-route-data="allProductsRouteData">All Products</a>
-
-            @foreach (var category in Model.Categories)
-            {
-                <a asp-controller="Shop" asp-action="Index" class="small @(Model.SelectedCategoryId == category.Id ? "text-dark fw-semibold" : "text-muted") text-decoration-none"
-                   asp-all-route-data="routeData" asp-route-categoryId="@category.Id">@category.Name (@category.ProductCount)</a>
-            }
-        </div>
     </div>
 </aside>
+
+<style>
+    .hover-bg-light:hover {
+        background-color: #f8f9fa !important;
+        color: #212529 !important;
+    }
+</style>

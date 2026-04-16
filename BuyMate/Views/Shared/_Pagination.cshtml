@@ -19,14 +19,52 @@
     };
 }
 
-<div class="mt-4 d-flex justify-content-center">
-    <div class="btn-group" role="group">
-        <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-secondary btn-sm"
-           asp-all-route-data="routeData" asp-route-pageNumber="@Math.Max(1, prev)">Prev</a>
-           
-        <span class="btn btn-outline-secondary btn-sm disabled">Page @Model.PageNumber of @totalPages</span>
-        
-        <a asp-controller="Shop" asp-action="Index" class="btn btn-outline-secondary btn-sm"
-           asp-all-route-data="routeData" asp-route-pageNumber="@(next <= totalPages ? next : totalPages)">Next</a>
+<nav aria-label="Product pagination" class="mt-5 d-flex flex-column align-items-center">
+    <ul class="pagination pagination-lg border-0 gap-3 mb-2">
+        <li class="page-item @(Model.PageNumber <= 1 ? "disabled" : "")">
+            <a class="page-link rounded-circle border-0 shadow-sm text-dark d-flex align-items-center justify-content-center hover-scale" 
+               style="width: 50px; height: 50px; transition: all 0.2s;"
+               asp-controller="Shop" asp-action="Index"
+               asp-all-route-data="routeData" asp-route-pageNumber="@Math.Max(1, prev)"
+               aria-label="Previous page">
+               <i class="fas fa-chevron-left fs-5"></i>
+            </a>
+        </li>
+
+        <li class="page-item active" aria-current="page">
+            <span class="page-link rounded-circle border-0 bg-dark text-white shadow d-flex align-items-center justify-content-center fw-bold fs-5" 
+                  style="width: 50px; height: 50px;">
+                @Model.PageNumber
+            </span>
+        </li>
+
+        <li class="page-item @(Model.PageNumber >= totalPages ? "disabled" : "")">
+            <a class="page-link rounded-circle border-0 shadow-sm text-dark d-flex align-items-center justify-content-center hover-scale" 
+               style="width: 50px; height: 50px; transition: all 0.2s;"
+               asp-controller="Shop" asp-action="Index"
+               asp-all-route-data="routeData" asp-route-pageNumber="@(next <= totalPages ? next : totalPages)"
+               aria-label="Next page">
+               <i class="fas fa-chevron-right fs-5"></i>
+            </a>
+        </li>
+    </ul>
+    <div class="text-muted small fw-medium mt-1">
+        Page @Model.PageNumber of @(totalPages > 0 ? totalPages : 1)
     </div>
-</div>
+</nav>
+
+<style>
+    .page-item.disabled .page-link {
+        opacity: 0.5;
+        background-color: #f8f9fa !important;
+        pointer-events: none;
+    }
+    .page-link.hover-scale:hover {
+        transform: scale(1.1);
+        background-color: #212529 !important;
+        color: #fff !important;
+    }
+    .page-link {
+        cursor: pointer;
+    }
+</style>

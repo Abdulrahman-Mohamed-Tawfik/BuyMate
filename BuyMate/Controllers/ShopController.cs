@@ -46,7 +46,7 @@ namespace BuyMate.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(ProductFilter? filter = null)
         {
-
+            
             // Paginated query with filters
             var paged = await _productService.GetAllPaginatedAsync(filter);
             var products = paged.Data ?? new List<ProductViewModel>();

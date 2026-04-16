@@ -2,32 +2,58 @@
 @model MiniCartViewModel
 
 <div class="position-relative cart-container" onmouseenter="showMiniCart()" onmouseleave="hideMiniCart()">
-    <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-secondary btn-sm position-relative cart-icon" aria-label="Shopping cart">
-        <i class="fas fa-shopping-cart"></i>
-        <span class="cart-badge badge bg-danger text-white position-absolute" id="cartBadge" style="top:-0.4rem;right:-0.4rem;display:@(Model.TotalItems > 0 ? "inline-flex" : "none")">@Model.TotalItems</span>
-    </a>
+    <!-- Use a button instead of a link to prevent accidental navigation when toggling the mini cart click -->
+    <button type="button" class="btn btn-light rounded-circle shadow-sm position-relative d-flex align-items-center justify-content-center p-0 border cart-icon" style="width: 45px; height: 45px; transition: all 0.2s ease;" aria-label="Shopping cart">
+        <i class="fas fa-shopping-cart fs-5 text-secondary"></i>
+        <span class="cart-badge badge bg-danger text-white position-absolute top-0 start-100 translate-middle rounded-pill border border-2 border-white shadow-sm" id="cartBadge" style="font-size: 0.65rem; display:@(Model.TotalItems > 0 ? "inline-block" : "none")">@Model.TotalItems</span>
+    </button>
 
-    <div id="miniCart" class="mini-cart position-absolute end-0 mt-2" style="top:100%;width:20rem;display:none;z-index:1050;">
-        <div class="card shadow">
-            <div class="card-header py-2 px-3 d-flex justify-content-between align-items-center">
-                <h3 class="h6 mb-0">Shopping Cart</h3>
-                <span class="badge bg-secondary" id="num-count">@(Model.TotalItems) items</span>
+    <div id="miniCart" class="mini-cart position-absolute end-0 mt-2" style="top:100%;width:24rem;display:none;z-index:1050; animation: fade-in-up 0.2s ease-out forwards;">
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+            <div class="card-header bg-white border-bottom py-3 px-4 d-flex justify-content-between align-items-center">
+                <h3 class="h6 mb-0 fw-bold"><i class="fas fa-shopping-bag me-2 text-primary"></i>Shopping Cart</h3>
+                <span class="badge bg-dark rounded-pill shadow-sm" id="num-count">@(Model.TotalItems) items</span>
             </div>
 
-            <div id="miniCartContent" class="max-h-64 overflow-y-auto"></div>
+            <div id="miniCartContent" class="max-h-64 overflow-y-auto p-2 custom-scrollbar"></div>
 
-            <div id="miniCartFooter" class="card-footer py-2 px-3">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <span class="fw-semibold">Total:</span>
-                    <span id="miniCartTotal" class="fw-semibold">$@Model.TotalPrice</span>
+            <div id="miniCartFooter" class="card-footer bg-light border-top py-3 px-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <span class="fw-bold text-secondary text-uppercase small" style="letter-spacing: 1px;">Subtotal:</span>
+                    <span id="miniCartTotal" class="fw-bold fs-5 text-dark">$@Model.TotalPrice</span>
                 </div>
                 <div class="d-flex flex-column gap-2">
-                    <a asp-controller="Cart" asp-action="Index" class="btn btn-dark btn-sm w-100">View Cart</a>
-                    <a asp-controller="Order" asp-action="Checkout" class="btn btn-outline-secondary btn-sm w-100">Checkout</a>
+                    <a asp-controller="Order" asp-action="Checkout" class="btn btn-dark fw-bold rounded-pill shadow-sm py-2">Checkout Details</a>
+                    <a asp-controller="Cart" asp-action="Index" class="btn btn-outline-secondary fw-bold rounded-pill py-2 border-2 text-dark bg-white" style="border-width: 2px !important;">View Full Cart</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .cart-icon:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1) !important;
+        background-color: #fff !important;
+    }
+    @@keyframes fade-in-up {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #888;
+    }
+</style>
 
 <script src="~/js/Default.js"></script>

@@ -4,13 +4,11 @@
     ViewData["Title"] = "Home";
     var requestToken = Antiforgery.GetAndStoreTokens(Context).RequestToken;
 }
-<link rel="stylesheet" href="~/css/home.css" />
-
 <div class="container mb-5">
     <input type="hidden" id="__RequestVerificationToken" value="@requestToken" />
 
-    <section class="hero-section text-white p-5 mb-5 text-center">
-        <div class="mx-auto hero-content">
+    <section class="text-white p-5 mb-5 text-center position-relative d-flex align-items-center justify-content-center" style="min-height: 420px; background-image: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.45)), url('/images/o3.jpg'); background-size: cover; background-position: center; border-radius: 0.9375rem;">
+        <div class="mx-auto position-relative" style="z-index: 2; max-width: 48rem;">
             <h1 class="display-4 fw-bold mb-3">Welcome to BUYMATE</h1>
             <p class="fs-5 mb-4 text-light">
                 Discover amazing products at unbeatable prices

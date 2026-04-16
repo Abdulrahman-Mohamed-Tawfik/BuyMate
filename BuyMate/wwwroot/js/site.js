@@ -3,97 +3,80 @@
 
 // Write your JavaScript code.
 
+(function () {
+    'use strict';
 
-
-const errorAlert = document.getElementById('errorAlert');
-if (errorAlert)
-{
-    setTimeout(() => errorAlert.remove(), 5000);
-}
-
-
-alertBox = document.getElementById('successAlert');
-progress = document.getElementById('progressBar');
-
-if (alertBox)
-{
-    let width = 0;
-    const interval = setInterval(() =>
-    {
-        width += 1; // 1% per tick
-        progress.style.width = width + "%";
-        if (width >= 100)
-        {
-            clearInterval(interval);
-            alertBox.style.transition = "opacity 0.5s";
-            alertBox.style.opacity = 0;
-            setTimeout(() => alertBox.remove(), 500); // remove from DOM
+    document.addEventListener('DOMContentLoaded', function () {
+        // 1. Alert handling
+        const errorAlert = document.getElementById('errorAlert');
+        if (errorAlert) {
+            setTimeout(() => errorAlert.remove(), 5000);
         }
-    }, 30); // 30ms per tick = ~3 seconds total
-}
 
+        const alertBox = document.getElementById('successAlert');
+        const progress = document.getElementById('progressBar');
 
-document.addEventListener('DOMContentLoaded', function ()
-{
-    const dropdowns = document.querySelectorAll('.dropdown');
+        if (alertBox && progress) {
+            let width = 0;
+            const interval = setInterval(() => {
+                width += 1; // 1% per tick
+                progress.style.width = width + "%";
+                if (width >= 100) {
+                    clearInterval(interval);
+                    alertBox.style.transition = "opacity 0.5s";
+                    alertBox.style.opacity = 0;
+                    setTimeout(() => alertBox.remove(), 500); // remove from DOM
+                }
+            }, 30); // 30ms per tick = ~3 seconds total
+        }
 
-    dropdowns.forEach(dropdown =>
-    {
-        const label = dropdown.querySelector('label');
+        // 2. Dropdown handling
+        const dropdowns = document.querySelectorAll('.dropdown');
+        dropdowns.forEach(dropdown => {
+            const label = dropdown.querySelector('label');
+            if (!label) return;
 
-        label.addEventListener('click', function (e)
-        {
-            e.stopPropagation(); // prevent closing immediately
-            dropdown.classList.toggle('open');
+            label.addEventListener('click', function (e) {
+                e.stopPropagation();
+                dropdown.classList.toggle('open');
+            });
         });
-    });
 
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function ()
-    {
-        dropdowns.forEach(dropdown => dropdown.classList.remove('open'));
-    });
-});
+        document.addEventListener('click', function () {
+            dropdowns.forEach(dropdown => dropdown.classList.remove('open'));
+        });
 
-// Accessible mobile menu toggle
-window.addEventListener('DOMContentLoaded', function ()
-{
-    var toggleBtn = document.querySelector('.mobile-menu-toggle');
-    var mobileMenu = document.getElementById('mobileMenu');
-    if (!toggleBtn || !mobileMenu) return;
+        // 3. Accessible mobile menu toggle
+        const toggleBtn = document.querySelector('.mobile-menu-toggle');
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (toggleBtn && mobileMenu) {
+            function hide() {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    toggleBtn.setAttribute('aria-expanded', 'false');
+                }
+            }
 
-    function hide()
-    {
-        if (!mobileMenu.classList.contains('hidden'))
-        {
-            mobileMenu.classList.add('hidden');
-            toggleBtn.setAttribute('aria-expanded', 'false');
-        }
-    }
+            function toggle() {
+                const isHidden = mobileMenu.classList.contains('hidden');
+                mobileMenu.classList.toggle('hidden');
+                toggleBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+            }
 
-    function toggle()
-    {
-        var isHidden = mobileMenu.classList.contains('hidden');
-        mobileMenu.classList.toggle('hidden');
-        toggleBtn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
-    }
+            toggleBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                toggle();
+            });
 
-    toggleBtn.addEventListener('click', function (e)
-    {
-        e.stopPropagation();
-        toggle();
-    });
+            document.addEventListener('click', function (e) {
+                if (!mobileMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+                    hide();
+                }
+            });
 
-    document.addEventListener('click', function (e)
-    {
-        if (!mobileMenu.contains(e.target) && !toggleBtn.contains(e.target))
-        {
-            hide();
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape') hide();
+            });
         }
     });
-
-    document.addEventListener('keydown', function (e)
-    {
-        if (e.key === 'Escape') hide();
-    });
-});
+})();

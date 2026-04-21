@@ -161,28 +161,43 @@
     <main class="flex-grow-1 container my-4">
         @if (TempData["Success"] != null)
         {
-            <div id="successAlert" class="alert alert-success position-relative mx-auto" style="max-width: 480px;" role="alert">
-                <span class="d-block text-center fw-medium">@TempData["Success"]</span>
-                <div id="progressBar" class="position-absolute bottom-0 start-0 bg-success" style="height:4px;width:0%"></div>
+            <div id="successAlert" class="alert alert-success bg-white border-0 border-start border-5 border-success shadow-sm rounded-4 position-relative mx-auto overflow-hidden d-flex align-items-center p-3 mb-4" style="max-width: 500px;" role="alert">
+                <div class="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">
+                    <i class="fas fa-check fs-5"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="d-block fw-bold text-dark">Success</span>
+                    <span class="d-block text-secondary small fw-medium mt-1">@TempData["Success"]</span>
+                </div>
+                <button type="button" class="btn-close shadow-none ms-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div id="progressBar" class="position-absolute bottom-0 start-0 bg-success" style="height:4px;width:0%; transition: width 0.1s linear;"></div>
             </div>
         }
 
         @if (TempData["Error"] != null || ViewData.ModelState.ErrorCount > 0)
         {
-            <div id="errorAlert" class="alert alert-danger position-relative mx-auto" style="max-width: 480px;" role="alert">
-                <ul class="mb-0 text-center list-unstyled">
-                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            <div id="errorAlert" class="alert alert-danger bg-white border-0 border-start border-5 border-danger shadow-sm rounded-4 position-relative mx-auto overflow-hidden d-flex align-items-center p-3 mb-4" style="max-width: 500px;" role="alert">
+                <div class="bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; flex-shrink: 0;">
+                    <i class="fas fa-exclamation-triangle fs-5"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <span class="d-block fw-bold text-dark mb-1">Error</span>
+                    @if (ViewData.ModelState.ErrorCount > 0)
                     {
-                        <li>@error.ErrorMessage</li>
+                        <ul class="mb-0 ps-3 text-secondary small fw-medium">
+                            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                            {
+                                <li>@error.ErrorMessage</li>
+                            }
+                        </ul>
                     }
-                </ul>
-
-                @if (TempData["Error"] != null)
-                {
-                    <div class="mt-2 text-center">@TempData["Error"]</div>
-                }
-
-                <div id="errorProgressBar" class="position-absolute bottom-0 start-0 bg-danger" style="height:4px;width:0%"></div>
+                    @if (TempData["Error"] != null)
+                    {
+                        <span class="d-block text-secondary small fw-medium">@TempData["Error"]</span>
+                    }
+                </div>
+                <button type="button" class="btn-close shadow-none ms-2" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div id="errorProgressBar" class="position-absolute bottom-0 start-0 bg-danger" style="height:4px;width:0%; transition: width 0.1s linear;"></div>
             </div>
         }
 

@@ -129,31 +129,34 @@
 
                 <hr class="my-4" />
 
-                <div class="row g-3 mb-4 mt-2 align-items-end">
-                    <div class="col-auto">
-                        <label for="quantity" class="form-label small fw-bold text-uppercase text-secondary">Quantity</label>
-                        <div class="input-group input-group-lg shadow-sm" style="width: 150px;">
-                            <button class="btn btn-outline-secondary px-3 border-secondary bg-light" type="button" onclick="decrementQty()" @(Model.StockQuantity <= 0 ? "disabled" : "")><i class="fas fa-minus fs-6"></i></button>
-                            <input type="number" id="quantity" class="form-control text-center px-2 border-secondary border-start-0 border-end-0 fw-bold hide-spinners" value="@(Model.StockQuantity > 0 ? 1 : 0)" min="@(Model.StockQuantity > 0 ? 1 : 0)" max="@Model.StockQuantity" aria-label="Quantity" @(Model.StockQuantity <= 0 ? "disabled" : "") oninput="if(this.value > @Model.StockQuantity) this.value = @Model.StockQuantity;" onblur="if(!this.value || this.value < 1) this.value = @(Model.StockQuantity > 0 ? 1 : 0);">
-                            <button class="btn btn-outline-secondary px-3 border-secondary bg-light" type="button" onclick="incrementQty()" @(Model.StockQuantity <= 0 ? "disabled" : "")><i class="fas fa-plus fs-6"></i></button>
+                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                    <input type="hidden" name="productId" value="@Model.Id" />
+                    <div class="row g-3 mb-4 mt-2 align-items-end">
+                        <div class="col-auto">
+                            <label for="quantity" class="form-label small fw-bold text-uppercase text-secondary">Quantity</label>
+                            <div class="input-group input-group-lg shadow-sm" style="width: 150px;">
+                                <button class="btn btn-outline-secondary px-3 border-secondary bg-light" type="button" onclick="decrementQty()" @(Model.StockQuantity <= 0 ? "disabled" : "")><i class="fas fa-minus fs-6"></i></button>
+                                <input type="number" id="quantity" name="quantity" class="form-control text-center px-2 border-secondary border-start-0 border-end-0 fw-bold hide-spinners" value="@(Model.StockQuantity > 0 ? 1 : 0)" min="@(Model.StockQuantity > 0 ? 1 : 0)" max="@Model.StockQuantity" aria-label="Quantity" @(Model.StockQuantity <= 0 ? "disabled" : "") oninput="if(this.value > @Model.StockQuantity) this.value = @Model.StockQuantity;" onblur="if(!this.value || this.value < 1) this.value = @(Model.StockQuantity > 0 ? 1 : 0);">
+                                <button class="btn btn-outline-secondary px-3 border-secondary bg-light" type="button" onclick="incrementQty()" @(Model.StockQuantity <= 0 ? "disabled" : "")><i class="fas fa-plus fs-6"></i></button>
+                            </div>
+                        </div>
+                        <div class="col mb-2 d-flex">
+                            <span class="badge @(Model.StockQuantity > 0 ? "bg-success" : "bg-danger") px-3 py-2 rounded-pill fw-medium fs-6 shadow-sm d-flex align-items-center">
+                                <i class="fas @(Model.StockQuantity > 0 ? "fa-check-circle" : "fa-times-circle") me-2"></i>
+                                @((Model.StockQuantity > 0) ? $"{Model.StockQuantity} in stock" : "Out of stock")
+                            </span>
                         </div>
                     </div>
-                    <div class="col mb-2 d-flex">
-                        <span class="badge @(Model.StockQuantity > 0 ? "bg-success" : "bg-danger") px-3 py-2 rounded-pill fw-medium fs-6 shadow-sm d-flex align-items-center">
-                            <i class="fas @(Model.StockQuantity > 0 ? "fa-check-circle" : "fa-times-circle") me-2"></i>
-                            @((Model.StockQuantity > 0) ? $"{Model.StockQuantity} in stock" : "Out of stock")
-                        </span>
-                    </div>
-                </div>
 
-                <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
-                    <button id="addToCartBtn" class="btn btn-dark btn-lg flex-grow-1 py-3 fw-bold shadow" style="transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'" type="button" onclick="addToCart('@Model.Id', event)" @(Model.StockQuantity <= 0 ? "disabled" : "")>
-                        <i class="fas fa-shopping-cart me-2"></i> @(Model.StockQuantity > 0 ? "Add to Cart" : "Notify Me")
-                    </button>
-                    <button class="btn btn-outline-dark btn-lg py-3 px-4 fw-bold shadow-sm" type="button" aria-label="Add to Wishlist" title="Save to Wishlist" style="transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-                        <i class="far fa-heart fs-5"></i>
-                    </button>
-                </div>
+                    <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
+                        <button id="addToCartBtn" class="btn btn-dark btn-lg flex-grow-1 py-3 fw-bold shadow" style="transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'" type="submit" @(Model.StockQuantity <= 0 ? "disabled" : "")>
+                            <i class="fas fa-shopping-cart me-2"></i> @(Model.StockQuantity > 0 ? "Add to Cart" : "Notify Me")
+                        </button>
+                        <button class="btn btn-outline-dark btn-lg py-3 px-4 fw-bold shadow-sm" type="button" aria-label="Add to Wishlist" title="Save to Wishlist" style="transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                            <i class="far fa-heart fs-5"></i>
+                        </button>
+                    </div>
+                </form>
 
                 <div class="card bg-light border-0 mt-4 rounded-4">
                     <div class="card-body">

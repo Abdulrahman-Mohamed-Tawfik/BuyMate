@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BuyMate.Controllers
 {
     [Authorize(Roles = "admin")]
-    public class ProductController : Controller
+    public class ProductController : BaseController
     {
         private readonly IProductService _productService;
         private readonly IFileService _fileService;

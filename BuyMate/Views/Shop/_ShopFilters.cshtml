@@ -3,11 +3,11 @@
 @{
     var routeData = new Dictionary<string, string>
     {
-        { "search", Model.Search },
-        { "brand", Model.SelectedBrand },
-        { "minPrice", Model.SelectedMinPrice?.ToString() },
-        { "maxPrice", Model.SelectedMaxPrice?.ToString() },
-        { "hasDiscount", Model.HasDiscount.HasValue ? Model.HasDiscount.ToString() : null },
+        { "search", Model.Search?? "" },
+        { "brand", Model.SelectedBrand ?? "" },
+        { "minPrice", Model.SelectedMinPrice?.ToString() ?? "" },
+        { "maxPrice", Model.SelectedMaxPrice?.ToString() ?? ""},
+        { "hasDiscount", Model.HasDiscount.HasValue ? Model.HasDiscount.ToString() : null  },
         { "isFeatured", Model.IsFeatured.HasValue ? Model.IsFeatured.ToString() : null },
         { "orderBy", Model.OrderBy },
         { "asc", Model.Asc.ToString() },

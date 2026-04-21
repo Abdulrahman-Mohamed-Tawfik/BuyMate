@@ -47,9 +47,12 @@
                 }
             </div>
 
-            <button class="btn btn-outline-dark w-100 rounded-pill fw-bold hover-bg-dark" style="transition: all 0.2s;" onclick="addToCart('@Model.Id', event)">
-                <i class="fas fa-cart-plus me-2"></i>Add to Cart
-            </button>
+            <form asp-controller="Cart" asp-action="AddToCart" method="post" onclick="event.stopPropagation()">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <button type="submit" class="btn btn-outline-dark w-100 rounded-pill fw-bold hover-bg-dark" style="transition: all 0.2s;">
+                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                </button>
+            </form>
         </div>
     </div>
 </div>

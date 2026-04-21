@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace BuyMate.Controllers
 {
     [Authorize(Roles = "admin")]
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         private readonly ICategoryService _categoryService;
 
@@ -22,7 +22,7 @@ namespace BuyMate.Controllers
             var result = await _categoryService.GetAllAsync();
             if (!result.Status)
             {
-                TempData["Error"] = result.Message ?? "Failed to load categories.";
+                SetErrorMessage(result.Message ?? "Failed to load categories.");
                 return View(new List<CategoryViewModel>());
             }
 
@@ -45,7 +45,7 @@ namespace BuyMate.Controllers
             var result = await _categoryService.CreateAsync(dto, imageFile);
             if (result.Status)
             {
-                TempData["Success"] = result.Message;
+                SetSuccessMessage(result.Message);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -78,7 +78,7 @@ namespace BuyMate.Controllers
             var result = await _categoryService.UpdateAsync(id, dto, imageFile);
             if (result.Status)
             {
-                TempData["Success"] = result.Message;
+                SetSuccessMessage(result.Message);
                 return RedirectToAction(nameof(Index));
             }
 
@@ -96,11 +96,11 @@ namespace BuyMate.Controllers
             var result = await _categoryService.DeletePhysicalAsync(id);
             if (result.Status)
             {
-                TempData["Success"] = result.Message;
+                SetSuccessMessage(result.Message);
             }
             else
             {
-                TempData["Error"] = result.Message ?? "Delete failed.";
+                SetErrorMessage(result.Message ?? "Delete failed.");
             }
 
             return RedirectToAction(nameof(Index));

@@ -27,15 +27,15 @@
                                         <div class="d-flex align-items-center gap-2">
                                             <span class="small">Quantity:</span>
                                             <div class="input-group input-group-sm" style="width:auto;">
-                                                <button type="button" class="btn btn-outline-secondary" onclick="changeItemQuantity('@item.ItemId', -1)">-</button>
-                                                <input id="qty-@item.ItemId" type="text" class="form-control text-center" style="max-width:3rem;" value="@item.Quantity" readonly />
-                                                <button type="button" class="btn btn-outline-secondary" onclick="changeItemQuantity('@item.ItemId',1)">+</button>
+                                                <button type="button" class="btn btn-outline-secondary" onclick="changeItemQuantity('@item.ItemId', -1)" @(item.Quantity <= 1 ? "disabled" : "")>-</button>
+                                                <input id="qty-@item.ItemId" type="text" class="form-control text-center" style="max-width:3rem;" value="@item.Quantity" readonly data-stock="@item.StockQuantity" />
+                                                <button type="button" class="btn btn-outline-secondary" onclick="changeItemQuantity('@item.ItemId', 1)" @(item.Quantity >= item.StockQuantity ? "disabled" : "")>+</button>
                                             </div>
                                         </div>
-                                        <span class="fw-bold">$@item.TotalPrice</span>
+                                        <span class="fw-bold" id="item-total-@item.ItemId">$@item.TotalPrice</span>
                                     </div>
                                 </div>
-                                <button class="btn btn-outline-danger btn-sm" onclick="removeFromCart('@item.ItemId')">
+                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="removeFromCart('@item.ItemId')">
                                     <i class="fa-solid fa-trash"></i>
                                 </button>
                             </div>
@@ -45,28 +45,25 @@
             </div>
 
             <div class="col-12 col-lg-4">
-                <div class="card p-3 shadow-sm border-0 sticky-top" style="top: 2rem;">
+                <div class="card p-3 shadow-sm border-0 sticky-top" style="top: 6rem; z-index: 1020;">
                     <h2 class="h5 fw-bold mb-3">Order Summary</h2>
                     <div class="d-flex flex-column gap-2 mb-2">
-                        @{
-                            var summaryItems = new[]
-                            {
-                                new { Label = "Subtotal", Value = $"${Model.Subtotal}" },
-                                new { Label = "Shipping", Value = "Free" },
-                                new { Label = "Tax", Value = "$0.00" }
-                            };
-                        }
-                        @foreach (var detail in summaryItems)
-                        {
-                            <div class="d-flex justify-content-between">
-                                <span class="text-muted">@detail.Label</span>
-                                <span class="fw-medium">@detail.Value</span>
-                            </div>
-                        }
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Subtotal</span>
+                            <span class="fw-medium" id="cart-subtotal">$@Model.Subtotal</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Shipping</span>
+                            <span class="fw-medium">Free</span>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span class="text-muted">Tax</span>
+                            <span class="fw-medium">$0.00</span>
+                        </div>
                         <hr class="my-3" />
                         <div class="d-flex justify-content-between fw-bold fs-5">
                             <span>Total</span>
-                            <span>$@Model.Total</span>
+                            <span id="cart-total">$@Model.Total</span>
                         </div>
                     </div>
                     <div class="mt-4 d-flex flex-column gap-2">

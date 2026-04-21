@@ -56,6 +56,19 @@ builder.Services
                     context.Token = token;
                 }
                 return Task.CompletedTask;
+            },
+            OnChallenge = context =>
+            {
+                var isAjax = context.Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
+                             context.Request.Headers.Accept.ToString().Contains("application/json") || 
+                             context.Request.Path.StartsWithSegments("/api");
+
+                if (!isAjax)
+                {
+                    context.HandleResponse(); // Suppress default 401
+                    context.Response.Redirect("/User/Login");
+                }
+                return Task.CompletedTask;
             }
         };
     });

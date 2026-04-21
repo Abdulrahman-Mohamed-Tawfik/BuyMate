@@ -34,6 +34,7 @@ public class CartService : ICartService
                 ProductId = item.ProductId,
                 ProductName = item.Product.Name,
                 Quantity = item.Quantity,
+                StockQuantity = item.Product.StockQuantity,
                 PriceAtAddition = item.PriceAtAddition,
                 ImageUrl = item.Product.Images.Where(p => p.IsMain == true).Select(p => p.ImageUrl).FirstOrDefault()
             }).ToList()

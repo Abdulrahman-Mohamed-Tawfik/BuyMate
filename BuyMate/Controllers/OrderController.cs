@@ -8,45 +8,31 @@ using Microsoft.AspNetCore.Mvc;
 namespace BuyMate.Controllers
 {
     [Authorize]
-    public class OrderController : Controller
+    public class OrderController : BaseController
     {
-        public IUserProfileService _userProfileService { get; }
         public ICheckoutService _checkoutService { get; }
         public IOrderService _orderservice { get; }
 
-        public OrderController(IUserProfileService userProfileService, ICheckoutService checkoutService, IOrderService orderService)
+        public OrderController(ICheckoutService checkoutService, IOrderService orderService)
         {
-            _userProfileService = userProfileService;
             _checkoutService = checkoutService;
             _orderservice = orderService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var profile = await _userProfileService.GetProfileAsync(User);
-            if (profile.Status is false || profile.Data is null)
-            {
-                return RedirectToAction("Login", "User");
-            }
-
-            var model = await _orderservice.GetUserOrdersAsync(profile.Data.Id);
+            var model = await _orderservice.GetUserOrdersAsync(UserId);
             var orderData = model.Data ?? new List<OrderViewModel>();
             return View(orderData);
         }
 
         public async Task<IActionResult> Get(Guid orderid)
         {
-            var profile = await _userProfileService.GetProfileAsync(User);
-            if (profile.Status is false || profile.Data is null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var result = await _orderservice.GetUserOrderByIDForUserAsync(orderid, profile.Data.Id);
+            var result = await _orderservice.GetUserOrderByIDForUserAsync(orderid, UserId);
 
             if (result.Status is false)
             {
-                TempData["Error"] = result.Message;
+                SetErrorMessage(result.Message);
                 return RedirectToAction("Index");
             }
 
@@ -58,19 +44,12 @@ namespace BuyMate.Controllers
         public async Task<IActionResult> Create(CheckoutViewModel model)
         {
 
-            var profile = await _userProfileService.GetProfileAsync(User);
-            if (profile.Status is false || profile.Data is null)
-            {
-                return RedirectToAction("Login");
-            }
-
-
             if (!ModelState.IsValid)
             {
-                var checkoutVmResult = await _checkoutService.GetCheckoutViewModelAsync(profile.Data!.Id);
+                var checkoutVmResult = await _checkoutService.GetCheckoutViewModelAsync(UserId);
                 if (checkoutVmResult.Status is false)
                 {
-                    TempData["Error"] = checkoutVmResult.Message;
+                    SetErrorMessage(checkoutVmResult.Message);
                     return RedirectToAction("Index");
                 }
                 model.CartVm = checkoutVmResult.Data.CartVm;
@@ -79,15 +58,15 @@ namespace BuyMate.Controllers
 
 
 
-            var result = await _orderservice.CreateOrderAsync(model, profile.Data.Id);
+            var result = await _orderservice.CreateOrderAsync(model, UserId);
 
             if (result.Status is false)
             {
-                TempData["Error"] = result.Message;
+                SetErrorMessage(result.Message);
                 return RedirectToAction("Index", "Cart");
             }
 
-            TempData["Success"] = "Order placed successfully!";
+            SetSuccessMessage("Order placed successfully!");
 
             return RedirectToAction("Index", "Home");
         }
@@ -95,21 +74,15 @@ namespace BuyMate.Controllers
         [HttpPost]
         public async Task<IActionResult> Cancel(Guid id)
         {
-            var profile = await _userProfileService.GetProfileAsync(User);
-            if (profile.Status is false || profile.Data is null)
-            {
-                return RedirectToAction("Login");
-            }
-
-            var result = await _orderservice.CancelOrderAsync(id, profile.Data.Id.ToString());
+            var result = await _orderservice.CancelOrderAsync(id, UserId);
 
             if (result.Status is false)
             {
-                TempData["Error"] = result.Message;
+                SetErrorMessage(result.Message);
             }
             else
             {
-                TempData["Success"] = "Order cancelled successfully.";
+                SetSuccessMessage("Order cancelled successfully.");
             }
             return RedirectToAction("Index");
 
@@ -118,15 +91,10 @@ namespace BuyMate.Controllers
         [HttpGet]
         public async Task<IActionResult> Checkout()
         {
-            var profile = await _userProfileService.GetProfileAsync(User);
-            if (profile.Status is false)
-            {
-                return RedirectToAction("Login", "User");
-            }
-            var checkoutVmResult = await _checkoutService.GetCheckoutViewModelAsync(profile.Data!.Id);
+            var checkoutVmResult = await _checkoutService.GetCheckoutViewModelAsync(UserId);
             if (checkoutVmResult.Status is false)
             {
-                TempData["Error"] = checkoutVmResult.Message;
+                SetErrorMessage(checkoutVmResult.Message);
                 return RedirectToAction("Index");
             }
             return View(checkoutVmResult.Data);
@@ -151,7 +119,7 @@ namespace BuyMate.Controllers
             var result = await _orderservice.GetUserOrderByIDForAdminAsync(orderid);
             if (result.Status is false)
             {
-                TempData["Error"] = result.Message;
+                SetErrorMessage(result.Message);
                 return RedirectToAction("GetAll");
             }
             return View("AdminOrderDetail", result.Data);
@@ -163,7 +131,7 @@ namespace BuyMate.Controllers
             var result = await _orderservice.GetUserOrderByIDForAdminAsync(id);
             if (result.Status is false)
             {
-                TempData["Error"] = result.Message;
+                SetErrorMessage(result.Message);
                 return RedirectToAction("GetAll");
             }
             return View("EditOrder", result.Data);
@@ -175,11 +143,11 @@ namespace BuyMate.Controllers
             var result = await _orderservice.UpdateOrderStatusByAdminAsync(id, orderstatus);
             if (result.Status is false)
             {
-                TempData["Error"] = result.Message;
+                SetErrorMessage(result.Message);
             }
             else
             {
-                TempData["Success"] = "Order status updated successfully.";
+                SetSuccessMessage("Order status updated successfully.");
             }
             return RedirectToAction("GetAll");
         }
@@ -190,11 +158,11 @@ namespace BuyMate.Controllers
             var result = await _orderservice.DeleteOrderByAdminAsync(id);
             if (result.Status is false)
             {
-                TempData["Error"] = result.Message;
+                SetErrorMessage(result.Message);
             }
             else
             {
-                TempData["Success"] = "Order deleted successfully.";
+                SetSuccessMessage("Order deleted successfully.");
             }
             return RedirectToAction("GetAll");
         }

@@ -8,6 +8,7 @@ public class CartItemViewModel
     public string? ImageUrl { get; set; }
     public int Quantity { get; set; } = 1;
     public decimal PriceAtAddition { get; set; }
+    public int StockQuantity { get; set; }
 
     public decimal TotalPrice => PriceAtAddition * Quantity;
 }

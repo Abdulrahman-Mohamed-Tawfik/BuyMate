@@ -6,7 +6,7 @@ using BuyMate.DTO.ViewModels.User;
 
 namespace BuyMate.Controllers
 {
-    public class UserController : Controller
+    public class UserController : BaseController
     {
         private readonly IAuthService _authService;
         private readonly IUserProfileService _userProfileService;
@@ -24,7 +24,7 @@ namespace BuyMate.Controllers
             var result = await _userProfileService.GetProfileAsync(User);
             if (result.Status == false)
             {
-                return RedirectToAction("Login");
+                return RedirectToLogin();
             }
 
             return View(result.Data);
@@ -55,14 +55,12 @@ namespace BuyMate.Controllers
 
             if (result.Status == true)
             {
-                TempData["Success"] = "Account created successfully. Please sign in.";
+                SetSuccessMessage("Account created successfully. Please sign in.");
 
                 return RedirectToAction(nameof(Login));
             }
 
-
             ModelState.AddModelError(string.Empty, result.Message);
-
 
             return View(model);
         }
@@ -108,23 +106,22 @@ namespace BuyMate.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
-            if (User.Identity != null && !User.Identity.IsAuthenticated)
+            if (!IsAuthenticated)
             {
-                TempData["Error"] = "You are not logged in.";
-                return RedirectToAction("Login");
+                SetErrorMessage("You are not logged in.");
+                return RedirectToLogin();
             }
 
             var result = await _authService.LogoutAsync();
 
             if (result.Status == true)
             {
-                // Remove JWT cookie on logout
                 Response.Cookies.Delete("AuthToken");
-
+                SetSuccessMessage("You have been signed out.");
                 return RedirectToAction("Index", "Home");
             }
 
-            TempData["Error"] = "Logout failed.";
+            SetErrorMessage("Logout failed.");
             return RedirectToAction("Profile");
         }
 
@@ -135,9 +132,8 @@ namespace BuyMate.Controllers
             var result = await _userProfileService.GetProfileAsync(User);
             if (result.Status != true || result.Data == null)
             {
-                return RedirectToAction("Login");
+                return RedirectToLogin();
             }
-
 
             return View(result.Data);
         }
@@ -157,7 +153,7 @@ namespace BuyMate.Controllers
                 return View(model);
             }
 
-            TempData["Success"] = "Profile updated successfully.";
+            SetSuccessMessage("Profile updated successfully.");
             return RedirectToAction("Profile");
         }
 

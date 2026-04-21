@@ -5,84 +5,86 @@ using Microsoft.AspNetCore.Mvc;
 namespace BuyMate.Controllers;
 
 [Authorize]
-public class CartController : Controller
+public class CartController : BaseController
 {
     private readonly ICartService _cartService;
-    private readonly IUserProfileService _userProfileService;
-    public CartController(ICartService cartService , IUserProfileService userProfileService)
+
+    public CartController(ICartService cartService)
     {
         _cartService = cartService;
-        _userProfileService = userProfileService;
     }
 
     [HttpGet]
     public async Task<IActionResult> Index()
     {
-        var profile = await _userProfileService.GetProfileAsync(User);
-        if (profile.Status is false || profile.Data is null)
-            return RedirectToAction("Login", "User");
-
-        var cartVm = await _cartService.GetCartAsync(profile.Data.Id);
+        var cartVm = await _cartService.GetCartAsync(UserId);
         return View(cartVm.Data);
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> AddToCart(Guid productId, int quantity =1)
+    public async Task<IActionResult> AddToCart(Guid productId, int quantity = 1)
     {
-        var profile = await _userProfileService.GetProfileAsync(User);
-        if (profile.Status is false)
-        {
-            return Unauthorized(profile.Message);
-        }
-        var result = await _cartService.AddToCartAsync(profile.Data!.Id, productId, quantity);
-        if (result.Status is false)
-        {
-            return BadRequest(new { success = false, message = result.Message });
-        }
-        var cartResult = await _cartService.GetCartAsync(profile.Data!.Id);
-        var newCount = cartResult.Data?.Items.Sum(i => i.Quantity) ??0;
-        var totalPrice = cartResult.Data?.Total ??0;
+        var result = await _cartService.AddToCartAsync(UserId, productId, quantity);
 
-        return Ok(new { success = true, message = result.Message, newCount, totalPrice });
+        if (IsAjaxRequest())
+        {
+            if (!result.Status) return BadRequest(new { success = false, message = result.Message });
+
+            var cartResult = await _cartService.GetCartAsync(UserId);
+            var newCount = cartResult.Data?.Items.Sum(i => i.Quantity) ?? 0;
+            var totalPrice = cartResult.Data?.Total ?? 0;
+
+            return Ok(new { success = true, message = result.Message, newCount, totalPrice });
+        }
+
+        if (!result.Status)
+        {
+            SetErrorMessage(result.Message);
+        }
+        else
+        {
+            SetSuccessMessage(result.Message ?? "Item added to cart.");
+        }
+
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UpdateQuantity(Guid itemId, int quantity)
     {
-        var profile = await _userProfileService.GetProfileAsync(User);
-        // If user not authenticated
-        if (profile.Status is false)
+        var response = await _cartService.UpdateItemQuantityAsync(UserId, itemId, quantity);
+
+        if (IsAjaxRequest())
         {
-            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json"))
-                return Unauthorized(new { success = false, message = "Unauthorized" });
+            if (!response.Status) return BadRequest(new { success = false, message = response.Message });
 
-            return RedirectToAction("Login", "User");
+            var cartResult = await _cartService.GetCartAsync(UserId);
+            var updatedItem = cartResult.Data?.Items.FirstOrDefault(i => i.ItemId == itemId);
+            var newCount = cartResult.Data?.Items.Sum(i => i.Quantity) ?? 0;
+
+            return Ok(new { 
+                success = true, 
+                message = "Cart updated.",
+                itemTotal = updatedItem?.TotalPrice ?? 0,
+                subtotal = cartResult.Data?.Subtotal ?? 0,
+                total = cartResult.Data?.Total ?? 0,
+                newCount
+            });
         }
-
-        var response = await _cartService.UpdateItemQuantityAsync(profile.Data!.Id, itemId, quantity);
-
-        var isAjax = Request.Headers["X-Requested-With"] == "XMLHttpRequest" || Request.Headers["Accept"].ToString().Contains("application/json");
 
         if (!response.Status)
         {
-            if (isAjax)
-                return BadRequest(new { success = false, message = response.Message });
-
-            TempData["Error"] = response.Message;
+            SetErrorMessage(response.Message);
         }
         else
         {
-            if (isAjax)
-                return Ok(new { success = true, message = "Cart updated." });
-
-            TempData["Success"] = "Cart updated.";
+            SetSuccessMessage("Cart updated.");
         }
 
-        return RedirectToAction("Index");
+        return RedirectToAction(nameof(Index));
     }
-
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -90,18 +92,27 @@ public class CartController : Controller
     {
         var response = await _cartService.RemoveFromCartAsync(itemId);
 
-        if (response.Status)
+        if (IsAjaxRequest())
         {
-            TempData["Success"] = response.Message;
+            if (!response.Status) return BadRequest(new { success = false, message = response.Message });
+            return Ok(new { success = true, message = response.Message });
+        }
+
+        if (!response.Status)
+        {
+            SetErrorMessage(response.Message);
         }
         else
         {
-            TempData["Error"] = response.Message;
+            SetSuccessMessage(response.Message);
         }
 
-        return RedirectToAction("Index");
+        return RedirectToAction(nameof(Index));
     }
 
-   
-
+    private bool IsAjaxRequest()
+    {
+        return Request.Headers["X-Requested-With"] == "XMLHttpRequest" || 
+               Request.Headers["Accept"].ToString().Contains("application/json");
+    }
 }

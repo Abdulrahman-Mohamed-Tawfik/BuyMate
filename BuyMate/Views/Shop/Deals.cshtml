@@ -1,71 +1,43 @@
-@using BuyMate.DTO.ViewModels
 @using BuyMate.DTO.ViewModels.Product
 @model List<ProductViewModel>
 @{
     ViewData["Title"] = "Flash Deals";
 }
 
-<div class="container mb-5" style="max-width: 72rem;">
-    <div class="text-center mb-3">
-        <h1 class="h4 fw-bold mb-1">Flash Deals</h1>
-        <p class="text-muted mb-0">Limited time offers - Don't miss out!</p>
+<div class="container mb-5 mt-4" style="max-width: 80rem;">
+    <div class="text-center mb-5 position-relative">
+        <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-2 mb-3 fw-semibold" style="letter-spacing: 1px;"><i class="fas fa-bolt me-2"></i>LIMITED TIME</span>
+        <h1 class="display-4 fw-bolder mb-3 text-dark" style="letter-spacing: -1px;">Flash Deals</h1>
+        <p class="text-secondary fs-5 mx-auto" style="max-width: 600px;">Incredible limited-time offers you don't want to miss. Grab them before they're gone!</p>
     </div>
 
     @if (Model != null && Model.Any())
     {
-        <div class="row g-3 small">
+        <div class="row g-4">
             @foreach (var product in Model)
             {
-                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
-                    <div class="card h-100" style="cursor:pointer;" onclick="location.href='@Url.Action("Product", "Product", new { id = product?.Id })'">
-                        <div class="position-relative">
-                            <img src="@($"/images/{product?.ImageUrl}" ?? "/images/placeholder.png")" alt="@(product?.Name ?? "Product")" class="card-img-top p-2" style="height:12rem;object-fit:contain;" />
-                            <span class="badge bg-danger position-absolute" style="top:0.5rem;left:0.5rem;">Flash Deal</span>
-                            @if (product?.Discount.HasValue == true)
-                            {
-                                <span class="badge bg-secondary position-absolute" style="top:0.5rem;right:0.5rem;">-@product!.Discount%</span>
-                            }
-                        </div>
-                        <div class="card-body p-2 d-flex flex-column">
-                            <h3 class="fw-semibold mb-1" style="font-size:0.95rem;">@(product?.Name ?? "")</h3>
-                            <p class="text-muted mb-1">@(product?.Brand ?? "")</p>
-                            <div class="d-flex align-items-center mb-1">
-                                <div class="text-warning me-1">
-                                    @{
-                                        var rating = product?.Rating ?? 0;
-                                    }
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        <i class="fas fa-star @(i <= rating ? string.Empty : "text-secondary")" style="font-size:0.75rem;"></i>
-                                    }
-                                </div>
-                                <span class="text-muted">(@(product?.ReviewCount ?? 0))</span>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-between mt-auto">
-                                <div>
-                                    <span class="fw-bold text-dark">$@(product?.Price ?? 0)</span>
-                                    @if (product?.OriginalPrice.HasValue == true)
-                                    {
-                                        <span class="text-muted text-decoration-line-through ms-1">$@product!.OriginalPrice</span>
-                                    }
-                                </div>
-                                <button class="btn btn-dark btn-sm" onclick="event.stopPropagation(); addToCart('@(product?.Id ?? Guid.Empty)')">
-                                    Add to Cart
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-12 col-sm-6 col-md-4 col-xl-3 hover-lift">
+                    <partial name="_ProductCard" model="product" view-data='new ViewDataDictionary(ViewData) { { "ImageClass", "product-card-image product-card-image--large" } }' />
                 </div>
             }
         </div>
     }
     else
     {
-        <div class="text-center py-5">
-            <h3 class="h6 fw-bold mb-1">No flash deals available</h3>
-            <p class="text-muted mb-0">Check back later for amazing deals!</p>
+        <div class="text-center py-5 bg-light rounded-5 border border-dashed mt-4 mx-auto" style="border-width: 2px !important; border-color: #dee2e6 !important; max-width: 50rem;">
+            <div class="d-inline-flex justify-content-center align-items-center bg-white rounded-circle shadow-sm mb-4" style="width: 100px; height: 100px;">
+                <i class="fas fa-history fa-3x text-muted" style="opacity: 0.5;"></i>
+            </div>
+            <h3 class="h4 fw-bold mb-3 text-dark">No flash deals right now</h3>
+            <p class="text-muted fs-5 mb-4 max-w-md mx-auto" style="max-width: 400px;">Our flash deals have ended. Check back later for more amazing offers!</p>
+            <a asp-controller="Shop" asp-action="Index" class="btn btn-dark btn-lg rounded-pill px-5 fw-bold shadow-sm hover-lift"><i class="fas fa-store me-2"></i>Continue Shopping</a>
         </div>
     }
 </div>
+<style>
+    .border-dashed {
+        border-style: dashed !important;
+    }
+</style>
 
 <script src="~/js/shop-deals.js"></script>

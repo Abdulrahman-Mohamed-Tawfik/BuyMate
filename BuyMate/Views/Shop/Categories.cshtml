@@ -5,27 +5,41 @@
     var search = Context.Request.Query["q"].ToString();
 }
 
-<div class="container mb-5" style="max-width: 72rem;">
-    <h1 class="h4 fw-bold mb-3">All Categories</h1>
+<div class="container mb-5 mt-4" style="max-width: 80rem;">
+    <div class="text-center mb-5 position-relative">
+        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 mb-3 fw-semibold" style="letter-spacing: 1px;"><i class="fas fa-sitemap me-2"></i>OUR DEPARTMENTS</span>
+        <h1 class="display-4 fw-bolder mb-3 text-dark" style="letter-spacing: -1px;">Explore Categories</h1>
+        <p class="text-secondary fs-5 mx-auto" style="max-width: 600px;">Browse our extensive range of categories and find exactly what you are looking for.</p>
+    </div>
 
-    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-sm-between gap-2 mb-3">
-        <form method="get" asp-action="Categories" class="d-flex w-100 w-sm-auto gap-2">
-            <input name="q"
-                   value="@search"
-                   placeholder="Search categories..."
-                   class="form-control" />
-            <button type="submit" class="btn btn-dark">Search</button>
-            @if (!string.IsNullOrWhiteSpace(search))
-            {
-                <a asp-action="Categories" class="btn btn-outline-secondary">Clear</a>
-            }
+    <div class="card bg-white border-0 shadow-sm rounded-4 p-4 mb-5 mx-auto" style="max-width: 50rem;">
+        <form method="get" asp-action="Categories" class="d-flex flex-column flex-md-row gap-3 w-100">
+            <div class="input-group input-group-lg flex-grow-1 shadow-sm rounded-pill overflow-hidden border">
+                <span class="input-group-text bg-light border-0 ps-4 text-muted"><i class="fas fa-search"></i></span>
+                <input name="q"
+                       value="@search"
+                       placeholder="Search through categories..."
+                       class="form-control bg-light border-0 shadow-none ps-2 fs-6" style="box-shadow: none !important; outline: none;" />
+            </div>
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-dark btn-lg rounded-pill px-4 fw-bold shadow-sm flex-grow-1 flex-md-grow-0">Search</button>
+                @if (!string.IsNullOrWhiteSpace(search))
+                {
+                    <a asp-action="Categories" class="btn btn-light btn-lg border rounded-pill px-4 fw-bold shadow-sm text-secondary">Clear</a>
+                }
+            </div>
         </form>
     </div>
 
     @if (!Model.Any())
     {
-        <div class="card p-4 text-center text-muted mb-3">
-            <p class="small mb-0">No categories found.</p>
+        <div class="text-center py-5 bg-light rounded-5 border border-dashed mt-4 mx-auto" style="border-width: 2px !important; border-color: #dee2e6 !important; max-width: 50rem;">
+            <div class="d-inline-flex justify-content-center align-items-center bg-white rounded-circle shadow-sm mb-4" style="width: 100px; height: 100px;">
+                <i class="fas fa-folder-open fa-3x text-muted" style="opacity: 0.5;"></i>
+            </div>
+            <h3 class="h4 fw-bold mb-3 text-dark">No categories found</h3>
+            <p class="text-muted fs-5 mb-4 max-w-md mx-auto" style="max-width: 400px;">We couldn't find any categories matching "@search". Try a different search term.</p>
+            <a asp-action="Categories" class="btn btn-dark btn-lg rounded-pill px-5 fw-bold shadow-sm hover-lift"><i class="fas fa-undo me-2"></i>Reset Search</a>
         </div>
     }
     else
@@ -33,10 +47,16 @@
         <div class="row g-4">
             @foreach (var category in Model)
             {
-                <div class="col-6 col-md-4 col-lg-3">
+                <div class="col-6 col-md-4 col-lg-3 col-xl-2 hover-lift">
                     <partial name="_CategoryTile" model="category" />
                 </div>
             }
         </div>
     }
 </div>
+
+<style>
+    .border-dashed {
+        border-style: dashed !important;
+    }
+</style>

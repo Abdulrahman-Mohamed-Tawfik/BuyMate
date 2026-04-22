@@ -2,85 +2,90 @@
     ViewData["Title"] = "Contact Us";
 }
 
-<div class="container mb-5" style="max-width: 64rem;">
-    <h1 class="h4 fw-bold mb-3">Contact Us</h1>
+<div class="container mb-5 mt-4" style="max-width: 64rem;">
+    <div class="text-center mb-5 position-relative">
+        <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3 py-2 mb-3 fw-semibold" style="letter-spacing: 1px;"><i class="fas fa-headset me-2"></i>SUPPORT</span>
+        <h1 class="display-4 fw-bolder mb-3 text-dark" style="letter-spacing: -1px;">Contact Us</h1>
+        <p class="text-secondary fs-5 mx-auto" style="max-width: 600px;">We're here to answer any questions you may have. Drop us a message.</p>
+    </div>
 
     <div class="row g-4">
-        <div class="col-12 col-lg-6">
-            <div class="card p-3">
-                <h2 class="h5 fw-bold mb-3">Get in Touch</h2>
+        <!-- Contact Form -->
+        <div class="col-12 col-lg-7">
+            <div class="card p-4 p-md-5 border-0 shadow-sm rounded-4 h-100 mx-auto">
+                <h2 class="h4 fw-bold mb-4 text-dark"><i class="fas fa-paper-plane text-primary me-2"></i>Send a Message</h2>
                 <form>
-                    <div class="mb-2">
-                        <label class="form-label small">Name</label>
-                        <input type="text" class="form-control" placeholder="Your name" />
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label small">Email</label>
-                        <input type="email" class="form-control" placeholder="your.email@example.com" />
-                    </div>
-                    <div class="mb-2">
-                        <label class="form-label small">Subject</label>
-                        <input type="text" class="form-control" placeholder="What's this about?" />
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase text-secondary" style="letter-spacing: 0.5px;">Name</label>
+                        <input type="text" class="form-control bg-light border-0 px-3 py-2 rounded-3 shadow-none" placeholder="Your name" />
                     </div>
                     <div class="mb-3">
-                        <label class="form-label small">Message</label>
-                        <textarea class="form-control" rows="5" placeholder="Tell us how we can help..."></textarea>
+                        <label class="form-label small fw-bold text-uppercase text-secondary" style="letter-spacing: 0.5px;">Email</label>
+                        <input type="email" class="form-control bg-light border-0 px-3 py-2 rounded-3 shadow-none" placeholder="your.email@example.com" />
                     </div>
-                    <button type="submit" class="btn btn-dark w-100">Send Message</button>
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-uppercase text-secondary" style="letter-spacing: 0.5px;">Subject</label>
+                        <input type="text" class="form-control bg-light border-0 px-3 py-2 rounded-3 shadow-none" placeholder="What is this regarding?" />
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-uppercase text-secondary" style="letter-spacing: 0.5px;">Message</label>
+                        <textarea class="form-control bg-light border-0 px-3 py-2 rounded-3 shadow-none" rows="5" placeholder="Tell us how we can help..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-dark btn-lg rounded-pill w-100 fw-bold shadow-sm hover-lift">Send Message</button>
                 </form>
             </div>
         </div>
 
-        <div class="col-12 col-lg-6 d-flex flex-column gap-3">
-            <div class="card p-3 small">
-                <h3 class="fw-bold mb-2">Contact Information</h3>
-                <div class="d-flex flex-column gap-2">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="rounded-circle bg-dark bg-opacity-10 d-flex align-items-center justify-content-center" style="width:2.5rem;height:2.5rem;">
+        <!-- Contact Info & Extra details -->
+        <div class="col-12 col-lg-5 d-flex flex-column gap-4">
+            <div class="card p-4 border-0 shadow-sm rounded-4 hover-lift">
+                <h3 class="h5 fw-bold mb-3 d-flex align-items-center"><i class="fas fa-map-marker-alt text-primary me-2"></i>Contact Info</h3>
+                <div class="d-flex flex-column gap-3 mt-2">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center border" style="width:3rem;height:3rem;">
                             <i class="fas fa-phone text-dark"></i>
                         </div>
                         <div>
-                            <p class="fw-semibold mb-0">Phone</p>
-                            <p class="text-muted mb-0">+1 (555) 123-4567</p>
+                            <p class="fw-bold mb-0 text-dark">Phone</p>
+                            <p class="text-secondary mb-0">+1 (555) 123-4567</p>
                         </div>
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="rounded-circle bg-dark bg-opacity-10 d-flex align-items-center justify-content-center" style="width:2.5rem;height:2.5rem;">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center border" style="width:3rem;height:3rem;">
                             <i class="fas fa-envelope text-dark"></i>
                         </div>
                         <div>
-                            <p class="fw-semibold mb-0">Email</p>
-                            <p class="text-muted mb-0">support@buymate.com</p>
+                            <p class="fw-bold mb-0 text-dark">Email</p>
+                            <p class="text-secondary mb-0"><a href="mailto:support@buymate.com" class="text-decoration-none text-secondary">support@buymate.com</a></p>
                         </div>
                     </div>
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="rounded-circle bg-dark bg-opacity-10 d-flex align-items-center justify-content-center" style="width:2.5rem;height:2.5rem;">
-                            <i class="fas fa-location-dot text-dark"></i>
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center border" style="width:3rem;height:3rem;">
+                            <i class="fas fa-map-pin text-dark"></i>
                         </div>
                         <div>
-                            <p class="fw-semibold mb-0">Address</p>
-                            <p class="text-muted mb-0">123 Shopping Street<br />E-commerce City, EC 12345</p>
+                            <p class="fw-bold mb-0 text-dark">Address</p>
+                            <p class="text-secondary mb-0">123 Shopping Street<br />E-commerce City, EC 12345</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card p-3 small">
-                <h3 class="fw-bold mb-2">Business Hours</h3>
-                <div class="d-flex flex-column gap-1">
-                    <div class="d-flex justify-content-between"><span class="text-muted">Monday - Friday</span><span class="fw-semibold">9:00 AM - 6:00 PM</span></div>
-                    <div class="d-flex justify-content-between"><span class="text-muted">Saturday</span><span class="fw-semibold">10:00 AM - 4:00 PM</span></div>
-                    <div class="d-flex justify-content-between"><span class="text-muted">Sunday</span><span class="fw-semibold">Closed</span></div>
-                </div>
-            </div>
-
-            <div class="card p-3 small">
-                <h3 class="fw-bold mb-2">Quick Links</h3>
-                <div class="d-flex flex-column gap-1">
-                    <a href="#" class="text-dark text-decoration-none">FAQ</a>
-                    <a href="#" class="text-dark text-decoration-none">Shipping Information</a>
-                    <a href="#" class="text-dark text-decoration-none">Returns &amp; Exchanges</a>
-                    <a href="#" class="text-dark text-decoration-none">Track Your Order</a>
+            <div class="card p-4 border-0 shadow-sm rounded-4 hover-lift">
+                <h3 class="h5 fw-bold mb-3 d-flex align-items-center"><i class="fas fa-clock text-primary me-2"></i>Business Hours</h3>
+                <div class="d-flex flex-column gap-3 mt-2">
+                    <div class="d-flex justify-content-between p-2 rounded-3 bg-light">
+                        <span class="text-secondary fw-semibold">Mon - Fri</span>
+                        <span class="fw-bold text-dark">9:00 AM - 6:00 PM</span>
+                    </div>
+                    <div class="d-flex justify-content-between p-2 rounded-3 bg-light">
+                        <span class="text-secondary fw-semibold">Saturday</span>
+                        <span class="fw-bold text-dark">10:00 AM - 4:00 PM</span>
+                    </div>
+                    <div class="d-flex justify-content-between p-2 rounded-3 bg-light">
+                        <span class="text-secondary fw-semibold">Sunday</span>
+                        <span class="fw-bold text-danger">Closed</span>
+                    </div>
                 </div>
             </div>
         </div>

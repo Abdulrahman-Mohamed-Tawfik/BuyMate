@@ -4,84 +4,103 @@
     ViewData["Title"] = "Edit Profile";
 }
 
-<div class="container mb-5" style="max-width: 40rem;">
-    <h1 class="h4 fw-bold mb-3">Edit Profile</h1>
+<div class="container mb-5 mt-4" style="max-width: 48rem;">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 fw-bold mb-0 text-dark"><i class="fas fa-user-edit text-primary me-2"></i>Edit Profile</h1>
+    </div>
 
-    <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-3">
-        <div class="card p-3 small">
-            <h2 class="h6 fw-bold mb-2">Personal Information</h2>
+    <form asp-action="EditProfile" method="post" enctype="multipart/form-data" class="d-flex flex-column gap-4">
+        <div class="card p-4 p-md-5 rounded-4 shadow-sm border-0 transition-all hover-lift">
+            <h2 class="h5 fw-bold mb-4 text-dark border-bottom pb-2"><i class="fas fa-info-circle text-primary me-2"></i>Personal Information</h2>
 
-            <div class="row g-2 mb-2">
-                <div class="col-12 col-md-6">
-                    <label asp-for="FirstName" class="form-label small">First Name</label>
-                    <input asp-for="FirstName" class="form-control" />
-                    <span asp-validation-for="FirstName" class="text-danger small"></span>
+            <!-- Avatar Upload Section -->
+            <div class="d-flex flex-column flex-sm-row align-items-center gap-4 mb-4 pb-4 border-bottom">
+                <div class="position-relative">
+                    <img id="profilePreview" src="/images/@(Model.Avatar ?? "UserProfileImages/Default.webp")"
+                         alt="Profile"
+                         class="rounded-circle border shadow-sm" style="width: 120px; height: 120px; object-fit: cover;" />
                 </div>
-                <div class="col-12 col-md-6">
-                    <label asp-for="LastName" class="form-label small">Last Name</label>
-                    <input asp-for="LastName" class="form-control" />
-                    <span asp-validation-for="LastName" class="text-danger small"></span>
-                </div>
-            </div>
-
-            <div class="mb-2">
-                <label asp-for="Email" class="form-label small">Email Address</label>
-                <input asp-for="Email" type="email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger small"></span>
-            </div>
-
-            <div class="row g-2 mb-2">
-                <div class="col-12 col-md-6">
-                    <label asp-for="Phone" class="form-label small">Phone Number</label>
-                    <input asp-for="Phone" type="tel" class="form-control" />
-                    <span asp-validation-for="Phone" class="text-danger small"></span>
-                </div>
-                <div class="col-12 col-md-6">
-                    <label asp-for="BirthDate" class="form-label small">Birth Date</label>
-                    <input asp-for="BirthDate" type="date" class="form-control" />
-                </div>
-            </div>
-
-            <div class="mb-2">
-                <label asp-for="Gender" class="form-label small">Gender</label>
-                <select asp-for="Gender" class="form-select" style="max-width:12rem;">
-                    <option value="0">Unspecified</option>
-                    <option value="1">Male</option>
-                    <option value="2">Female</option>
-                </select>
-            </div>
-
-            <div class="mb-2">
-                <label asp-for="Address" class="form-label small">Address</label>
-                <input asp-for="Address" class="form-control" />
-            </div>
-
-            <div class="mb-0">
-                <label class="form-label small">Profile Picture</label>
-                <div class="d-flex align-items-center gap-3">
-                    <div class="d-flex flex-column align-items-center">
-                        <img id="profilePreview" src="/images/@(@User.FindFirst("avatar")?.Value ?? "UserProfileImages/Default.webp")"
-                             alt="Profile"
-                             class="rounded-circle border" style="width:64px;height:64px;object-fit:contain;" />
-                        <span id="fileNameDisplay" class="small text-muted mt-1"></span>
-                    </div>
-
-                    <label class="btn btn-dark btn-sm mb-0">
-                        Upload New Image
-                        <input id="avatarFileInput" name="avatarFile"
-                               type="file"
-                               accept="image/*"
-                               class="d-none" />
+                <div class="text-center text-sm-start flex-grow-1">
+                    <h3 class="h6 fw-bold mb-2">Profile Photo</h3>
+                    <p class="small text-muted mb-3">Upload a new photo. Recommended size is 256x256px.</p>
+                    <label class="btn btn-outline-dark rounded-pill px-4 fw-bold shadow-sm mb-0 hover-bg-dark cursor-pointer">
+                        <i class="fas fa-upload me-2"></i> Upload Image
+                        <input id="avatarFileInput" name="avatarFile" type="file" accept="image/*" class="d-none" />
                     </label>
+                    <div id="fileNameDisplay" class="small text-primary fw-medium mt-2"></div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-md-6">
+                    <label asp-for="FirstName" class="form-label small fw-bold text-secondary text-uppercase" style="letter-spacing: 1px;">First Name</label>
+                    <input asp-for="FirstName" class="form-control form-control-lg bg-light border-0" placeholder="John" />
+                    <span asp-validation-for="FirstName" class="text-danger small fw-medium mt-1 d-block"></span>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label asp-for="LastName" class="form-label small fw-bold text-secondary text-uppercase" style="letter-spacing: 1px;">Last Name</label>
+                    <input asp-for="LastName" class="form-control form-control-lg bg-light border-0" placeholder="Doe" />
+                    <span asp-validation-for="LastName" class="text-danger small fw-medium mt-1 d-block"></span>
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Email" class="form-label small fw-bold text-secondary text-uppercase" style="letter-spacing: 1px;">Email Address</label>
+                <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden border">
+                    <span class="input-group-text bg-white border-0 text-muted"><i class="fas fa-envelope"></i></span>
+                    <input asp-for="Email" type="email" class="form-control border-0 bg-white" placeholder="john.doe@example.com" />
+                </div>
+                <span asp-validation-for="Email" class="text-danger small fw-medium mt-1 d-block"></span>
+            </div>
+
+            <div class="row g-4 mb-4">
+                <div class="col-12 col-md-6">
+                    <label asp-for="Phone" class="form-label small fw-bold text-secondary text-uppercase" style="letter-spacing: 1px;">Phone Number</label>
+                    <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden border">
+                        <span class="input-group-text bg-white border-0 text-muted"><i class="fas fa-phone-alt"></i></span>
+                        <input asp-for="Phone" type="tel" class="form-control border-0 bg-white" placeholder="+1 (555) 000-0000" />
+                    </div>
+                    <span asp-validation-for="Phone" class="text-danger small fw-medium mt-1 d-block"></span>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label asp-for="BirthDate" class="form-label small fw-bold text-secondary text-uppercase" style="letter-spacing: 1px;">Birth Date</label>
+                    <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden border">
+                        <span class="input-group-text bg-white border-0 text-muted"><i class="fas fa-calendar-alt"></i></span>
+                        <input asp-for="BirthDate" type="date" class="form-control border-0 bg-white" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4 mb-2">
+                <div class="col-12 col-md-6">
+                    <label asp-for="Gender" class="form-label small fw-bold text-secondary text-uppercase" style="letter-spacing: 1px;">Gender</label>
+                    <select asp-for="Gender" class="form-select form-select-lg bg-light border-0 shadow-sm rounded-3">
+                        <option value="0">Unspecified</option>
+                        <option value="1">Male</option>
+                        <option value="2">Female</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-6">
+                    <label asp-for="Address" class="form-label small fw-bold text-secondary text-uppercase" style="letter-spacing: 1px;">Address</label>
+                    <input asp-for="Address" class="form-control form-control-lg bg-light border-0 shadow-sm rounded-3" placeholder="123 Main St, City, Country" />
                 </div>
             </div>
         </div>
 
-        <div class="d-flex gap-2">
-            <button type="submit" class="btn btn-dark btn-sm">Save Changes</button>
-            <a asp-action="Profile" class="btn btn-outline-secondary btn-sm">Cancel</a>
+        <div class="d-flex gap-3 justify-content-end mt-2">
+            <a asp-action="Profile" class="btn btn-light btn-lg rounded-pill px-4 fw-bold border shadow-sm hover-bg-light">Cancel</a>
+            <button type="submit" class="btn btn-dark btn-lg rounded-pill px-5 fw-bold shadow-sm hover-scale">
+                <i class="fas fa-save me-2"></i> Save Changes
+            </button>
         </div>
     </form>
 </div>
+
+<style>
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
+    .transition-all { transition: all 0.3s ease; }
+    .hover-scale:hover { transform: scale(1.05); }
+    .cursor-pointer { cursor: pointer; }
+</style>
 
 <script src="~/js/user-editprofile.js"></script>

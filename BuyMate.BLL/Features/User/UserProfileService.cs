@@ -1,4 +1,4 @@
-﻿using BuyMate.BLL.Constants;
+﻿ using BuyMate.BLL.Constants;
 using BuyMate.BLL.Contracts;
 using BuyMate.BLL.Contracts.Helpers;
 using BuyMate.DTO.Common;
@@ -134,11 +134,14 @@ namespace BuyMate.BLL.Features.User
             }
 
             // Update avatar claim
-            var oldClaim = (await _userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == "avatar");
-            if (oldClaim != null)
-                await _userManager.RemoveClaimAsync(user, oldClaim);
+            var oldClaims = await _userManager.GetClaimsAsync(user);
+            var avatarClaims = oldClaims.Where(c => c.Type == "avatar").ToList();
+            if (avatarClaims.Any())
+            {
+                await _userManager.RemoveClaimsAsync(user, avatarClaims);
+            }
 
-            var avatarUrl = user.ProfileImageUrl ?? string.Empty;
+            var avatarUrl = user.ProfileImageUrl ?? "UserProfileImages/Default.webp";
             await _userManager.AddClaimAsync(user, new Claim("avatar", avatarUrl));
 
             // Refresh sign-in so new claims are applied to the authenticated principal

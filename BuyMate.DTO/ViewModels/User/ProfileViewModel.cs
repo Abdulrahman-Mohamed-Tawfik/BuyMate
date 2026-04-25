@@ -28,7 +28,6 @@ namespace BuyMate.DTO.ViewModels.User
         [EmailAddress(ErrorMessage = "Enter a valid email address.")]
         public string Email { get; set; } = string.Empty;
 
-
         [Required(ErrorMessage = "Phone number is required.")]
         [RegularExpression(@"^(01)[0-9]{9}$",
             ErrorMessage = "Phone must be an Egyptian number starting with 01 and containing 11 digits.")]

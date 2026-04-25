@@ -185,11 +185,12 @@ namespace BuyMate.BLL.Features.User
 
         private async Task UpdateAvatarClaimAsync(Model.Entities.User user)
         {
-            // Remove existing avatar claim if present
-            var existingClaim = (await _userManager.GetClaimsAsync(user)).FirstOrDefault(c => c.Type == "avatar");
-            if (existingClaim != null)
+            // Remove existing avatar claims if present
+            var oldClaims = await _userManager.GetClaimsAsync(user);
+            var avatarClaims = oldClaims.Where(c => c.Type == "avatar").ToList();
+            if (avatarClaims.Any())
             {
-                await _userManager.RemoveClaimAsync(user, existingClaim);
+                await _userManager.RemoveClaimsAsync(user, avatarClaims);
             }
 
             // Add current profile image url (may be empty)

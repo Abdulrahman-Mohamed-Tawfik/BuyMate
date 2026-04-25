@@ -4,71 +4,88 @@
     ViewData["Title"] = "All Orders";
 }
 
-<div class="container mb-5" style="max-width: 72rem;">
-    <h1 class="h4 fw-bold mb-2">All Orders</h1>
-    <a asp-controller="Admin" asp-action="Index" class="small text-muted text-decoration-none d-inline-flex align-items-center mb-3">
-        <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
-    </a>
+<div class="container mb-5 mt-4" style="max-width: 72rem;">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+            <h1 class="h3 fw-bold text-dark mb-1"><i class="fas fa-boxes text-primary me-2"></i>All Orders</h1>
+            <a asp-controller="Admin" asp-action="Index" class="small text-muted text-decoration-none d-inline-flex align-items-center hover-primary transition-all">
+                <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+            </a>
+        </div>
+    </div>
 
     @if (Model != null && Model.Any())
     {
-        <div class="d-flex flex-column gap-3">
+        <div class="d-flex flex-column gap-4">
             @foreach (var order in Model)
             {
-                <div class="card p-3">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
-                        <div>
-                            <h3 class="small fw-semibold mb-1">Order #@order.Id</h3>
-                            <p class="small text-muted mb-0">Placed on @order.OrderDate.ToString("MMM dd, yyyy")</p>
-                            <p class="small text-muted mb-0">User: @order.UserId</p>
+                <div class="card p-4 rounded-4 shadow-sm border-0 transition-all hover-lift">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 border-bottom pb-3">
+                        <div class="mb-3 mb-md-0">
+                            <h3 class="h6 fw-bold mb-1 text-dark">Order #@order.TrackingNumber</h3>
+                            <p class="small text-muted mb-1"><i class="far fa-calendar-alt me-1"></i> Placed on @order.OrderDate.ToString("MMM dd, yyyy")</p>
+                            <p class="small text-muted mb-0"><i class="far fa-user me-1"></i> User ID: <span class="font-monospace ms-1 bg-light px-2 py-1 rounded">@order.UserId</span></p>
                         </div>
-                        <div class="text-end">
-                            <p class="fw-bold text-dark mb-1">$@order.Total</p>
-                            <span class="badge rounded-pill @(
+                        <div class="text-md-end">
+                            <p class="fs-5 fw-bold text-dark mb-2">@order.Total.ToString("C")</p>
+                            <span class="badge rounded-pill px-3 py-2 fw-medium shadow-sm @(
                                 order.Status == OrderStatusViewModel.Delivered ? "bg-success" :
-                                order.Status == OrderStatusViewModel.Shipped ? "bg-dark" :
+                                order.Status == OrderStatusViewModel.Shipped ? "bg-primary" :
                                 order.Status == OrderStatusViewModel.Cancelled ? "bg-danger" : "bg-warning text-dark")">
+                                <i class="fas @(
+                                    order.Status == OrderStatusViewModel.Delivered ? "fa-check-circle" :
+                                    order.Status == OrderStatusViewModel.Shipped ? "fa-truck" :
+                                    order.Status == OrderStatusViewModel.Cancelled ? "fa-times-circle" : "fa-clock"
+                                ) me-1"></i>
                                 @order.Status
                             </span>
                         </div>
                     </div>
 
-                    <div class="d-flex flex-column gap-2 small">
+                    <div class="d-flex flex-column gap-3 mb-3">
                         @foreach (var item in order.Items.Take(3))
                         {
-                            <div class="d-flex align-items-center gap-3">
-                                <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="rounded" style="width:64px;height:64px;object-fit:contain;" />
-                                <div class="flex-grow-1">
-                                    <h4 class="fw-semibold mb-0">@item.ProductName</h4>
-                                    <p class="text-muted mb-0">Qty: @item.Quantity</p>
+                            <div class="d-flex align-items-center gap-3 bg-light p-2 rounded-3 border">
+                                <div class="bg-white rounded-2 p-1 border shadow-sm d-flex align-items-center justify-content-center" style="width: 64px; height: 64px; flex-shrink: 0;">
+                                    <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="img-fluid" style="max-height: 100%; object-fit: contain;" />
                                 </div>
-                                <span class="fw-semibold">$@item.TotalPrice</span>
+                                <div class="flex-grow-1 min-vw-0">
+                                    <h4 class="h6 fw-semibold mb-1 text-truncate" title="@item.ProductName">@item.ProductName</h4>
+                                    <p class="small text-muted mb-0">Qty: @item.Quantity</p>
+                                </div>
+                                <span class="fw-bold text-dark me-2 pe-2 d-none d-sm-block">@item.TotalPrice.ToString("C")</span>
                             </div>
                         }
 
                         @if (order.Items.Count > 3)
                         {
-                            <p class="text-muted mb-0">and @((order.Items.Count) - 3) more items...</p>
+                            <p class="text-muted small fw-medium mt-1 mb-0"><i class="fas fa-plus-circle me-1"></i>and @((order.Items.Count) - 3) more items...</p>
                         }
                     </div>
 
-                    <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top small">
-                        <div class="text-muted">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center bg-light rounded-3 p-3 mt-3">
+                        <div class="small fw-medium text-secondary mb-3 mb-sm-0">
                             @if (!string.IsNullOrEmpty(order.TrackingId))
                             {
-                                <p class="mb-0">Tracking: @order.TrackingId</p>
+                                <p class="mb-1"><i class="fas fa-barcode me-1 text-dark"></i> Tracking: <span class="bg-white border rounded px-2 py-1 ms-1 font-monospace">@order.TrackingId</span></p>
                             }
                             @if (order.EstimatedDelivery.HasValue)
                             {
-                                <p class="mb-0">Estimated delivery: @order.EstimatedDelivery.Value.ToString("MMM dd, yyyy")</p>
+                                <p class="mb-0"><i class="fas fa-shipping-fast text-primary me-1"></i> <span class="d-none d-md-inline">Estimated delivery:</span> <span class="text-dark fw-bold">@order.EstimatedDelivery.Value.ToString("MMM dd, yyyy")</span></p>
                             }
                         </div>
-                        <div class="d-flex gap-2">
-                            <a asp-controller="Order" asp-action="GetById" asp-route-orderid="@order.Id" class="btn btn-outline-secondary btn-sm">View</a>
-                            <a asp-controller="Order" asp-action="Edit" asp-route-id="@order.Id" class="btn btn-warning btn-sm">Edit Status</a>
+                        <div class="d-flex flex-wrap gap-2 justify-content-end">
+                            <a asp-controller="Order" asp-action="GetById" asp-route-orderid="@order.Id" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold shadow-sm hover-bg-dark">
+                                View
+                            </a>
+                            <a asp-controller="Order" asp-action="Edit" asp-route-id="@order.Id" class="btn btn-warning btn-sm rounded-pill px-3 fw-bold shadow-sm">
+                                <i class="fas fa-edit"></i> Edit Status
+                            </a>
                             <form asp-controller="Order" asp-action="Delete" method="post" class="delete-order-form">
                                 <input type="hidden" name="id" value="@order.Id" />
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                <button type="submit" class="btn btn-danger btn-sm rounded-pill px-3 fw-bold shadow-sm">
+                                    <i class="fas fa-trash-alt"></i> Delete
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -78,12 +95,22 @@
     }
     else
     {
-        <div class="text-center py-5">
-            <h2 class="h5 fw-bold mb-1">No orders found</h2>
-            <p class="small text-muted mb-0">There are no orders in the system yet.</p>
+        <div class="text-center py-5 bg-light rounded-4 text-muted border border-dashed p-4 p-md-5 my-2 shadow-sm">
+            <div class="d-inline-flex justify-content-center align-items-center bg-white rounded-circle shadow-sm mb-4" style="width: 100px; height: 100px;">
+                <i class="fas fa-box-open fa-3x text-secondary" style="opacity: 0.5;"></i>
+            </div>
+            <h2 class="h4 fw-bold mb-2 text-dark">No orders found</h2>
+            <p class="text-muted fs-5 mb-0">There are no orders in the system yet.</p>
         </div>
     }
 </div>
+
+<style>
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
+    .transition-all { transition: all 0.2s ease; }
+    .border-dashed { border-style: dashed !important; border-width: 2px !important; border-color: #dee2e6 !important; }
+    .hover-bg-dark:hover { background-color: #212529 !important; color: white !important; }
+</style>
 
 @section Scripts {
     <script>

@@ -14,147 +14,174 @@
     }
 }
 
-<div class="container mb-5" style="max-width: 64rem;">
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <h1 class="h4 fw-bold mb-0">My Profile</h1>
-        <a asp-controller="User" asp-action="EditProfile" class="btn btn-dark">Edit Profile</a>
+<div class="container mb-5 mt-4" style="max-width: 64rem;">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 fw-bold mb-0 text-dark"><i class="far fa-id-badge text-primary me-2"></i>My Profile</h1>
+        <a asp-controller="User" asp-action="EditProfile" class="btn btn-dark rounded-pill px-4 fw-bold shadow-sm hover-scale d-inline-flex align-items-center py-2">
+            <i class="fas fa-user-edit me-2"></i> Edit Profile
+        </a>
     </div>
 
-    <div class="d-flex flex-column gap-4">
-        <div class="card p-4">
-            <h2 class="h5 fw-bold mb-3">Personal Information</h2>
-            <form>
-                <div class="row g-3 mb-2">
-                    <div class="col-12 col-md-6">
-                        <label class="form-label small">First Name</label>
-                        <input type="text" class="form-control" value="@Model.FirstName" readonly />
-                    </div>
-                    <div class="col-12 col-md-6">
-                        <label class="form-label small">Last Name</label>
-                        <input type="text" class="form-control" value="@Model.LastName" readonly />
-                    </div>
+    <div class="row g-4">
+        <div class="col-12 col-lg-4 order-lg-2">
+            <!-- Profile Summary Card -->
+            <div class="card p-4 text-center rounded-4 shadow-sm border-0 sticky-lg-top" style="top: 6rem; z-index: 1020;">
+                <div class="position-relative d-inline-block mx-auto mb-3">
+                    @if (!string.IsNullOrEmpty(Model.Avatar))
+                    {
+                        <img src="/images/@Model.Avatar" alt="Avatar" class="rounded-circle shadow-sm border" style="width: 140px; height: 140px; object-fit: cover;" />
+                    }
+                    else
+                    {
+                        <div class="rounded-circle bg-light d-flex align-items-center justify-content-center border shadow-sm mx-auto" style="width: 140px; height: 140px;">
+                            <i class="fas fa-user text-muted" style="font-size: 4rem;"></i>
+                        </div>
+                    }
+                    <a asp-action="EditProfile" class="btn btn-primary rounded-circle shadow position-absolute bottom-0 end-0 d-flex align-items-center justify-content-center p-0 border border-3 border-white hover-scale" style="width: 40px; height: 40px;" title="Change Photo">
+                        <i class="fas fa-camera"></i>
+                    </a>
                 </div>
-                <div class="mb-2">
-                    <label class="form-label small">Email Address</label>
-                    <input type="email" class="form-control" value="@Model.Email" readonly />
+                <h2 class="h5 fw-bold mb-1 text-dark">@Model.FirstName @Model.LastName</h2>
+                <p class="text-muted mb-3"><i class="fas fa-map-marker-alt me-1 text-secondary"></i> @(!string.IsNullOrEmpty(Model.Address) ? Model.Address : "No address provided")</p>
+                <hr class="my-3 opacity-25" />
+                <div class="d-flex justify-content-center gap-3">
+                    <a asp-controller="Order" asp-action="Index" class="btn btn-light rounded-pill px-3 fw-bold text-dark border hover-bg-light shadow-sm w-100 flex-grow-1">
+                        <i class="fas fa-box-open me-2 text-primary"></i> Orders
+                    </a>
                 </div>
-                <div class="mb-2">
-                    <label class="form-label small">Phone Number</label>
-                    <input type="tel" class="form-control" value="@Model.Phone" readonly />
-                </div>
-                <div class="mb-2">
-                    <label class="form-label small">Address</label>
-                    <input type="text" class="form-control" value="@(!string.IsNullOrEmpty(Model.Address) ? Model.Address : "No address added")" readonly />
-                </div>
-                <div class="mb-2">
-                    <label class="form-label small">Gender</label>
-                    <input type="text" class="form-control" value="@gender" readonly />
-                </div>
-                <div class="mb-2">
-                    <label class="form-label small">Date of Birth</label>
-                    <input type="date" class="form-control" value="@(Model.BirthDate.HasValue? Model.BirthDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
-                </div>
-                <div class="mb-2">
-                    <label class="form-label small">Profile Picture</label>
-                    <div class="d-flex align-items-center gap-3 mt-1">
-                        @if (!string.IsNullOrEmpty(Model.Avatar))
-                        {
-                            <img src="/images/@Model.Avatar" alt="Avatar" class="rounded-circle" style="width:80px;height:80px;object-fit:contain;" />
-                        }
-                        else
-                        {
-                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center" style="width:80px;height:80px;">
-                                <i class="fas fa-user text-muted fa-2x"></i>
+            </div>
+        </div>
+
+        <div class="col-12 col-lg-8 order-lg-1">
+            <div class="d-flex flex-column gap-4">
+                <!-- Personal Info Card -->
+                <div class="card p-4 rounded-4 shadow-sm border-0 transition-all hover-lift">
+                    <h2 class="h5 fw-bold mb-4 text-dark border-bottom pb-2"><i class="fas fa-info-circle text-primary me-2"></i>Personal Information</h2>
+                    <form readonly class="row g-3">
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing: 1px;">First Name</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0 fw-medium" value="@Model.FirstName" readonly />
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing: 1px;">Last Name</label>
+                            <input type="text" class="form-control form-control-lg bg-light border-0 fw-medium" value="@Model.LastName" readonly />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing: 1px;">Email Address</label>
+                            <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden border">
+                                <span class="input-group-text bg-white border-0 text-secondary"><i class="fas fa-envelope"></i></span>
+                                <input type="email" class="form-control bg-light border-0 fw-medium" value="@Model.Email" readonly />
                             </div>
-                        }
-
-                        <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary">Change Photo / Edit</a>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-        <div class="card p-4">
-            <h2 class="h5 fw-bold mb-3">Account Settings</h2>
-            <div class="d-flex flex-column gap-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3 class="small fw-bold mb-1">Email Notifications</h3>
-                        <p class="small text-muted mb-0">Receive updates about your orders and promotions</p>
-                    </div>
-                    <div class="form-check form-switch mb-0">
-                        <input class="form-check-input" type="checkbox" id="emailNotif" checked>
-                    </div>
-                </div>
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3 class="small fw-bold mb-1">SMS Notifications</h3>
-                        <p class="small text-muted mb-0">Receive text messages about your orders</p>
-                    </div>
-                    <div class="form-check form-switch mb-0">
-                        <input class="form-check-input" type="checkbox" id="smsNotif">
-                    </div>
-                </div>
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3 class="small fw-bold mb-1">Marketing Emails</h3>
-                        <p class="small text-muted mb-0">Receive promotional offers and product updates</p>
-                    </div>
-                    <div class="form-check form-switch mb-0">
-                        <input class="form-check-input" type="checkbox" id="marketingNotif" checked>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card p-4">
-            <h2 class="h5 fw-bold mb-3">Security</h2>
-            <div class="d-flex flex-column gap-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3 class="small fw-bold mb-1">Change Password</h3>
-                        <p class="small text-muted mb-0">Update your account password</p>
-                    </div>
-                    <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary btn-sm">Change</a>
-                </div>
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3 class="small fw-bold mb-1">Two-Factor Authentication</h3>
-                        <p class="small text-muted mb-0">Add an extra layer of security to your account</p>
-                    </div>
-                    <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary btn-sm">Enable</a>
-                </div>
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3 class="small fw-bold mb-1">Login Activity</h3>
-                        <p class="small text-muted mb-0">View recent login attempts and sessions</p>
-                    </div>
-                    <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary btn-sm">View</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="card p-4">
-            <h2 class="h5 fw-bold mb-3">Account Actions</h2>
-            <div class="d-flex flex-column gap-3">
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3 class="small fw-bold mb-1">Download Data</h3>
-                        <p class="small text-muted mb-0">Download a copy of your personal data</p>
-                    </div>
-                    <a asp-controller="User" asp-action="EditProfile" class="btn btn-outline-secondary btn-sm">Download</a>
-                </div>
-                <div class="d-flex align-items-center justify-content-between">
-                    <div>
-                        <h3 class="small fw-bold mb-1">Delete Account</h3>
-                        <p class="small text-muted mb-0">Permanently delete your account and all data</p>
-                    </div>
-                    <form asp-controller="User" asp-action="Delete" method="post" onsubmit="return confirm('Are you sure you want to delete your account?');">
-                        <button type="button" class="btn btn-danger btn-sm" disabled>Delete</button>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing: 1px;">Phone Number</label>
+                            <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden border">
+                                <span class="input-group-text bg-white border-0 text-secondary"><i class="fas fa-phone-alt"></i></span>
+                                <input type="tel" class="form-control bg-light border-0 fw-medium" value="@Model.Phone" readonly />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing: 1px;">Date of Birth</label>
+                            <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden border">
+                                <span class="input-group-text bg-white border-0 text-secondary"><i class="fas fa-birthday-cake"></i></span>
+                                <input type="date" class="form-control bg-light border-0 fw-medium" value="@(Model.BirthDate.HasValue? Model.BirthDate.Value.ToString("yyyy-MM-dd") : string.Empty)" readonly />
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing: 1px;">Address</label>
+                            <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden border">
+                                <span class="input-group-text bg-white border-0 text-secondary"><i class="fas fa-home"></i></span>
+                                <input type="text" class="form-control bg-light border-0 fw-medium" value="@(!string.IsNullOrEmpty(Model.Address) ? Model.Address : "No address added")" readonly />
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label small text-muted fw-bold text-uppercase" style="letter-spacing: 1px;">Gender</label>
+                            <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden border w-50">
+                                <span class="input-group-text bg-white border-0 text-secondary"><i class="fas @(Model.Gender == 1 ? "fa-mars" : (Model.Gender == 2 ? "fa-venus" : "fa-genderless"))"></i></span>
+                                <input type="text" class="form-control bg-light border-0 fw-medium" value="@gender" readonly />
+                            </div>
+                        </div>
                     </form>
+                </div>
+
+                <!-- Account Settings Card -->
+                <div class="card p-4 rounded-4 shadow-sm border-0 transition-all hover-lift">
+                    <h2 class="h5 fw-bold mb-4 text-dark border-bottom pb-2"><i class="fas fa-sliders-h text-primary me-2"></i>Preferences</h2>
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center justify-content-between p-3 border rounded-3 bg-light transition-all hover-bg-white cursor-pointer shadow-sm">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 45px; height: 45px;">
+                                    <i class="fas fa-envelope-open-text"></i>
+                                </div>
+                                <div>
+                                    <h3 class="h6 fw-bold mb-1 text-dark">Email Notifications</h3>
+                                    <p class="small text-muted mb-0 d-none d-sm-block">Receive updates about your orders and promotions</p>
+                                </div>
+                            </div>
+                            <div class="form-check form-switch fs-4 mb-0 pe-2">
+                                <input class="form-check-input shadow-none cursor-pointer" type="checkbox" id="emailNotif" checked>
+                            </div>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between p-3 border rounded-3 bg-light transition-all hover-bg-white cursor-pointer shadow-sm">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="bg-primary bg-opacity-25 text-primary rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 45px; height: 45px;">
+                                    <i class="fas fa-sms"></i>
+                                </div>
+                                <div>
+                                    <h3 class="h6 fw-bold mb-1 text-dark">SMS Notifications</h3>
+                                    <p class="small text-muted mb-0 d-none d-sm-block">Receive text messages about your orders status</p>
+                                </div>
+                            </div>
+                            <div class="form-check form-switch fs-4 mb-0 pe-2">
+                                <input class="form-check-input shadow-none cursor-pointer" type="checkbox" id="smsNotif">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Card -->
+                <div class="card p-4 rounded-4 shadow-sm border-0 transition-all hover-lift">
+                    <h2 class="h5 fw-bold mb-4 text-dark border-bottom pb-2"><i class="fas fa-shield-alt text-primary me-2"></i>Security</h2>
+                    <div class="d-flex flex-column gap-3">
+                        <div class="d-flex align-items-center justify-content-between p-3 border rounded-3 bg-light transition-all hover-bg-white shadow-sm">
+                            <div>
+                                <h3 class="h6 fw-bold mb-1 text-dark"><i class="fas fa-key text-secondary me-2"></i>Change Password</h3>
+                                <p class="small text-muted mb-0 d-none d-sm-block">Update your account password to stay secure</p>
+                            </div>
+                            <button type="button" class="btn btn-outline-dark btn-sm rounded-pill fw-bold px-3">Update</button>
+                        </div>
+                        <div class="d-flex align-items-center justify-content-between p-3 border rounded-3 bg-light transition-all hover-bg-white shadow-sm">
+                            <div>
+                                <h3 class="h6 fw-bold mb-1 text-dark"><i class="fas fa-lock text-secondary me-2"></i>Two-Factor Auth</h3>
+                                <p class="small text-muted mb-0 d-none d-sm-block">Add an extra layer of security</p>
+                            </div>
+                            <button type="button" class="btn btn-outline-dark btn-sm rounded-pill fw-bold px-3">Enable</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-4 rounded-4 shadow-sm border border-danger border-opacity-25 bg-danger bg-opacity-10 transition-all">
+                    <h2 class="h5 fw-bold mb-3 text-danger"><i class="fas fa-exclamation-triangle me-2"></i>Danger Zone</h2>
+                    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+                        <div>
+                            <h3 class="h6 fw-bold mb-1 text-dark">Delete Account</h3>
+                            <p class="small text-muted mb-0">Permanently delete your account and all data</p>
+                        </div>
+                        <button type="button" class="btn btn-danger rounded-pill fw-bold px-4 shadow-sm" disabled>
+                            Delete Account
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.08) !important; }
+    .transition-all { transition: all 0.3s ease; }
+    .hover-scale:hover { transform: scale(1.05); }
+    .cursor-pointer { cursor: pointer; }
+    .hover-bg-white:hover { background-color: #fff !important; }
+</style>
 

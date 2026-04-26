@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuyMate.DAL.Repositories;
 
-public class CartItemRepositoy : CommonRepository<CartItem>, ICartItemRepository
+public class CartItemRepository : CommonRepository<CartItem>, ICartItemRepository
 {
-    public CartItemRepositoy(BuyMateDbContext context) : base(context)
+    public CartItemRepository(BuyMateDbContext context) : base(context)
     {
     }
 

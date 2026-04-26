@@ -4,104 +4,164 @@
     ViewData["Title"] = "Order Details";
 }
 
-<div class="container mb-5" style="max-width: 48rem;">
-    <div class="mb-3">
-        <a asp-controller="Account" asp-action="Orders" class="btn btn-outline-secondary btn-sm mb-2">
-            <i class="fas fa-arrow-left me-1"></i> Back to Orders
-        </a>
-        <h1 class="h4 fw-bold mb-1">Order #@Model.Id</h1>
-        <p class="small text-muted mb-0">Placed on @Model.OrderDate.ToString("MMM dd, yyyy 'at' h:mm tt")</p>
+<div class="container mb-5 mt-4" style="max-width: 64rem;">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+        <div>
+            <a asp-controller="Order" asp-action="Index" class="btn btn-light btn-sm rounded-pill px-3 shadow-sm mb-3 hover-scale">
+                <i class="fas fa-arrow-left me-1"></i> Back to Orders
+            </a>
+            <h1 class="h3 fw-bold mb-1 text-dark d-flex align-items-center">
+                <i class="fas fa-box-open text-primary me-2"></i> Order #@Model.Id
+                @if (Model.Status == OrderStatusViewModel.Delivered)
+                {
+                    <span class="badge bg-success bg-opacity-10 text-success border border-success ms-3 px-2 py-1 fs-6 rounded-pill">Delivered</span>
+                }
+                elseif (Model.Status == OrderStatusViewModel.Shipped)
+                {
+                    <span class="badge bg-primary bg-opacity-10 text-primary border border-primary ms-3 px-2 py-1 fs-6 rounded-pill">Shipped</span>
+                }
+                elseif (Model.Status == OrderStatusViewModel.Cancelled)
+                {
+                    <span class="badge bg-danger bg-opacity-10 text-danger border border-danger ms-3 px-2 py-1 fs-6 rounded-pill">Cancelled</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary ms-3 px-2 py-1 fs-6 rounded-pill">@Model.Status</span>
+                }
+            </h1>
+            <p class="text-secondary fw-medium mb-0">Placed on @Model.OrderDate.ToString("MMMM dd, yyyy 'at' h:mm tt")</p>
+        </div>
     </div>
 
-    <div class="row g-3 small">
-        <div class="col-12 col-lg-8 d-flex flex-column gap-3">
-            <div class="card p-3">
-                <h2 class="h6 fw-bold mb-2">Order Items</h2>
-                <div class="d-flex flex-column gap-2">
+    <div class="row g-4">
+        <div class="col-12 col-lg-8 d-flex flex-column gap-4">
+            <!-- Order Items -->
+            <div class="card p-4 border-0 shadow-sm rounded-4 bg-white hover-lift transition-all">
+                <h2 class="h5 fw-bold mb-4 border-bottom pb-3"><i class="fas fa-shopping-bag text-primary me-2"></i>Order Items</h2>
+                <div class="d-flex flex-column gap-3">
                     @foreach (var item in Model.Items)
                     {
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="rounded" style="width:80px;height:80px;object-fit:contain;" />
+                        <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-3 p-3 bg-light rounded-4">
+                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/placeholder.png" : (item.ImageUrl.StartsWith("/") ? item.ImageUrl : "/images/" + item.ImageUrl))" alt="@item.ProductName" class="rounded-3 bg-white shadow-sm object-fit-contain p-2" style="width:90px;height:90px;" />
                             <div class="flex-grow-1">
-                                <h3 class="fw-semibold mb-0">@item.ProductName</h3>
-                                <p class="text-muted mb-0">@item.Brand</p>
-                                <p class="text-muted mb-0">Quantity: @item.Quantity</p>
+                                <h3 class="fw-bold mb-1 fs-6 text-dark"><a asp-controller="Shop" asp-action="Product" asp-route-id="@item.ProductId" class="text-decoration-none text-dark">@item.ProductName</a></h3>
+                                @if(!string.IsNullOrEmpty(item.Brand)) {
+                                    <p class="text-secondary small fw-medium mb-1 text-uppercase" style="letter-spacing: 0.5px;">@item.Brand</p>
+                                }
+                                <div class="d-flex align-items-center text-secondary small fw-medium mt-2">
+                                    <span class="bg-white px-2 py-1 rounded-2 shadow-sm border">Qty: @item.Quantity</span>
+                                </div>
                             </div>
-                            <div class="text-end">
-                                <p class="fw-semibold mb-0">$@item.UnitPrice</p>
-                                <p class="text-muted mb-0">Total: $@item.TotalPrice</p>
+                            <div class="text-sm-end mt-2 mt-sm-0">
+                                <p class="fw-bold fs-5 text-dark mb-0">$@item.UnitPrice</p>
+                                <p class="text-primary small fw-bold mb-0">Total: $@item.TotalPrice</p>
                             </div>
                         </div>
                     }
                 </div>
             </div>
 
-            <div class="card p-3">
-                <h2 class="h6 fw-bold mb-2">Shipping Address</h2>
-                <p class="text-muted mb-0">@Model.Address.Street</p>
-                <p class="text-muted mb-0">@Model.Address.City, @Model.Address.State @Model.Address.ZipCode</p>
+            <!-- Shipping Information -->
+            <div class="card p-4 border-0 shadow-sm rounded-4 bg-white hover-lift transition-all">
+                <h2 class="h5 fw-bold mb-4 border-bottom pb-3"><i class="fas fa-shipping-fast text-primary me-2"></i>Shipping Information</h2>
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <div class="bg-light p-3 rounded-4 h-100">
+                            <p class="small fw-bold text-uppercase text-secondary mb-2" style="letter-spacing: 0.5px;"><i class="fas fa-map-marker-alt me-1"></i> Delivery Address</p>
+                            <p class="fw-medium text-dark mb-0">@Model.Address.Street</p>
+                            <p class="text-secondary mb-0">@Model.Address.City, @Model.Address.State @Model.Address.ZipCode</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-12 col-lg-4 d-flex flex-column gap-3">
-            <div class="card p-3">
-                <h2 class="h6 fw-bold mb-2">Order Summary</h2>
-                <div class="d-flex flex-column gap-1">
-                    <div class="d-flex justify-content-between"><span>Subtotal</span><span>$@Model.Items.Sum(item => item.TotalPrice)</span></div>
-                    <div class="d-flex justify-content-between"><span>Shipping</span><span>Free</span></div>
-                    <div class="d-flex justify-content-between"><span>Tax</span><span>$0.00</span></div>
-                    <hr class="my-2" />
-                    <div class="d-flex justify-content-between fw-bold"><span>Total</span><span>$@Model.Total</span></div>
+        <!-- Sidebar Summary -->
+        <div class="col-12 col-lg-4 d-flex flex-column gap-4">
+            
+            <div class="card p-4 border-0 shadow-sm rounded-4 bg-dark text-white hover-lift transition-all position-relative overflow-hidden">
+                <div class="position-absolute top-0 end-0 opacity-10" style="transform: translate(20%, -20%); background: radial-gradient(circle, #fff 0%, transparent 70%); width: 200px; height: 200px; border-radius: 50%;"></div>
+                <h2 class="h5 fw-bold mb-4 text-white position-relative z-index-1"><i class="fas fa-receipt text-primary me-2"></i>Order Summary</h2>
+                <div class="d-flex flex-column gap-2 position-relative z-index-1">
+                    <div class="d-flex justify-content-between text-light"><span>Subtotal (@Model.Items.Sum(x => x.Quantity) items)</span><span class="fw-medium">$@Model.Items.Sum(item => item.TotalPrice)</span></div>
+                    <div class="d-flex justify-content-between text-light"><span>Shipping</span><span class="fw-medium text-success">Free</span></div>
+                    <div class="d-flex justify-content-between text-light"><span>Tax</span><span class="fw-medium">.00</span></div>
+                    <hr class="my-3 border-secondary opacity-50" />
+                    <div class="d-flex justify-content-between text-white fs-5 fw-bold"><span>Total</span><span>$@Model.Total</span></div>
                 </div>
             </div>
 
-            <div class="card p-3">
-                <h2 class="h6 fw-bold mb-2">Order Status</h2>
-                <div class="d-flex flex-column gap-2">
-                    <div class="d-flex align-items-center">
-                        <span class="rounded-circle bg-success me-2" style="width:0.75rem;height:0.75rem;"></span>
-                        <span>Order Placed</span>
-                        <span class="text-muted ms-auto">@Model.OrderDate.ToString("MMM dd")</span>
+            <div class="card p-4 border-0 shadow-sm rounded-4 bg-white hover-lift transition-all">
+                <h2 class="h5 fw-bold mb-4 border-bottom pb-3"><i class="fas fa-tasks text-primary me-2"></i>Order Status</h2>
+                
+                <div class="d-flex flex-column gap-4 position-relative">
+                    <!-- Progress Line -->
+                    <div class="position-absolute bg-light" style="width: 2px; top: 12px; bottom: 12px; left: 11px; z-index: 0;"></div>
+
+                    <div class="d-flex align-items-start position-relative z-index-1">
+                        <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3 shadow-sm" style="width:24px;height:24px; min-width: 24px;">
+                            <i class="fas fa-check" style="font-size: 10px;"></i>
+                        </div>
+                        <div class="d-flex flex-column">
+                            <span class="fw-bold text-dark lh-1 mb-1">Order Placed</span>
+                            <span class="small text-secondary fw-medium">@Model.OrderDate.ToString("MMM dd, yyyy")</span>
+                        </div>
                     </div>
 
                     @if (Model.Status == OrderStatusViewModel.Confirmed || Model.Status == OrderStatusViewModel.Shipped || Model.Status == OrderStatusViewModel.Delivered)
                     {
-                        <div class="d-flex align-items-center">
-                            <span class="rounded-circle bg-success me-2" style="width:0.75rem;height:0.75rem;"></span>
-                            <span>Order Confirmed</span>
+                        <div class="d-flex align-items-start position-relative z-index-1">
+                            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3 shadow-sm" style="width:24px;height:24px; min-width: 24px;">
+                                <i class="fas fa-check" style="font-size: 10px;"></i>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <span class="fw-bold text-dark lh-1 mb-1">Order Confirmed</span>
+                                <span class="small text-secondary fw-medium">Processing your order</span>
+                            </div>
                         </div>
                     }
 
                     @if (Model.Status == OrderStatusViewModel.Shipped || Model.Status == OrderStatusViewModel.Delivered)
                     {
-                        <div class="d-flex align-items-center">
-                            <span class="rounded-circle bg-success me-2" style="width:0.75rem;height:0.75rem;"></span>
-                            <span>Shipped</span>
-                            @if (!string.IsNullOrEmpty(Model.TrackingId))
-                            {
-                                <span class="text-muted ms-auto">@Model.TrackingId</span>
-                            }
+                        <div class="d-flex align-items-start position-relative z-index-1">
+                            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3 shadow-sm" style="width:24px;height:24px; min-width: 24px;">
+                                <i class="fas fa-check" style="font-size: 10px;"></i>
+                            </div>
+                            <div class="d-flex flex-column w-100">
+                                <span class="fw-bold text-dark lh-1 mb-1">Shipped</span>
+                                @if (!string.IsNullOrEmpty(Model.TrackingId))
+                                {
+                                    <span class="small text-secondary fw-medium">On the way</span>
+                                }
+                            </div>
                         </div>
                     }
 
                     @if (Model.Status == OrderStatusViewModel.Delivered)
                     {
-                        <div class="d-flex align-items-center">
-                            <span class="rounded-circle bg-success me-2" style="width:0.75rem;height:0.75rem;"></span>
-                            <span>Delivered</span>
-                            @if (Model.ActualDelivery.HasValue)
-                            {
-                                <span class="text-muted ms-auto">@Model.ActualDelivery.Value.ToString("MMM dd")</span>
-                            }
+                        <div class="d-flex align-items-start position-relative z-index-1">
+                            <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3 shadow-sm" style="width:24px;height:24px; min-width: 24px;">
+                                <i class="fas fa-check" style="font-size: 10px;"></i>
+                            </div>
+                            <div class="d-flex flex-column">
+                                <span class="fw-bold text-dark lh-1 mb-1">Delivered</span>
+                                @if (Model.ActualDelivery.HasValue)
+                                {
+                                    <span class="small text-secondary fw-medium">@Model.ActualDelivery.Value.ToString("MMM dd, yyyy")</span>
+                                }
+                            </div>
                         </div>
                     }
                 </div>
 
                 @if (!string.IsNullOrEmpty(Model.TrackingId))
                 {
-                    <div class="mt-2 pt-2 border-top">
-                        <p class="text-muted mb-1">Tracking Number</p>
-                        <p class="font-monospace mb-0">@Model.TrackingId</p>
+                    <div class="mt-4 pt-3 border-top bg-light rounded-3 p-3">
+                        <p class="small fw-bold text-uppercase text-secondary mb-1" style="letter-spacing: 0.5px;"><i class="fas fa-route me-1"></i> Tracking Number</p>
+                        <div class="d-flex align-items-center justify-content-between">
+                            <p class="font-monospace fs-6 fw-bold text-dark mb-0">@Model.TrackingId</p>
+                            <button class="btn btn-sm btn-outline-secondary rounded-pill py-1"><i class="fas fa-copy"></i></button>
+                        </div>
                     </div>
                 }
             </div>

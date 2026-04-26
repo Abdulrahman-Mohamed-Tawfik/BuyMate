@@ -67,7 +67,7 @@ namespace BuyMate.DAL
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<ICartRepository, CartRepository>();
-            services.AddScoped<ICartItemRepository, CartItemRepositoy>();
+            services.AddScoped<ICartItemRepository, CartItemRepository>();
             services.AddScoped<ICartService, CartService>();
             services.AddScoped<ICheckoutService, CheckoutService>();
             services.AddScoped<IOrderService, OrderService>();

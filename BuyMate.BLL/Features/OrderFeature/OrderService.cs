@@ -166,8 +166,8 @@ namespace BuyMate.BLL.Features.OrderFeature
                 {
                     Id = item.Id,
                     ProductId = item.ProductId,
-                    ProductName = item.Product.Name,
-                    Brand = item.Product.Brand,
+                    ProductName = item.Product?.Name,
+                    Brand = item.Product?.Brand,
                     Quantity = item.Quantity,
                     UnitPrice = item.UnitPrice,
                     TotalPrice = item.TotalPrice,

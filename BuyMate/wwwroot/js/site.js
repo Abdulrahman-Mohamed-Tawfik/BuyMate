@@ -80,3 +80,111 @@
         }
     });
 })();
+
+window.toggleWishlist = function (btn, productId) {
+    if (!productId) return;
+
+    const inWishlist = btn.getAttribute('data-in-wishlist') === 'true';
+    const icon = btn.querySelector('i');
+
+    // Helper to show modern toast notification
+    const showToast = (message, type = 'success') => {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                toast: true,
+                position: 'bottom-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                icon: type,
+                title: message,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+        }
+    };
+
+    // Optimistic UI update
+    if (inWishlist) {
+        // Was in wishlist, remove it
+        btn.classList.remove('text-danger', 'border-danger');
+        btn.classList.add('text-secondary');
+        if (icon) {
+            icon.classList.remove('fas', 'text-danger');
+            icon.classList.add('far');
+        }
+        btn.setAttribute('data-in-wishlist', 'false');
+
+        fetch('/Wishlist/RemoveFromWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `itemId=${productId}`
+        }).then(res => {
+            if (!res.ok) throw new Error('Failed');
+            return res.json();
+        }).then(data => {
+            if (data.success) {
+                showToast('Removed from wishlist!', 'info');
+            } else {
+                throw new Error('Failed');
+            }
+        }).catch(err => {
+            // Revert UI
+            btn.classList.remove('text-secondary');
+            btn.classList.add('text-danger', btn.classList.contains('btn-outline-dark') ? 'border-danger' : 'text-danger');
+            if (icon) {
+                icon.classList.remove('far');
+                icon.classList.add('fas', 'text-danger');
+            }
+            btn.setAttribute('data-in-wishlist', 'true');
+            showToast('Failed to remove from wishlist.', 'error');
+        });
+    } else {
+        // Was not in wishlist, add it
+        btn.classList.remove('text-secondary');
+        const isOutline = btn.classList.contains('btn-outline-dark');
+        btn.classList.add('text-danger');
+        if (isOutline) btn.classList.add('border-danger');
+
+        if (icon) {
+            icon.classList.remove('far');
+            icon.classList.add('fas', 'text-danger');
+        }
+        btn.setAttribute('data-in-wishlist', 'true');
+
+        fetch('/Wishlist/AddtoWishlist', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `productId=${productId}`
+        }).then(res => res.json()).then(data => {
+            if (!data.success) {
+                if (data.message === "Invalid user id.") { // Likely unauthenticated
+                    window.location.href = '/Account/Login?returnUrl=' + encodeURIComponent(window.location.pathname);
+                } else {
+                    throw new Error('Failed');
+                }
+            } else {
+                showToast('Added to wishlist!', 'success');
+            }
+        }).catch(err => {
+            // Revert UI
+            btn.classList.remove('text-danger', 'border-danger');
+            btn.classList.add('text-secondary');
+            if (icon) {
+                icon.classList.remove('fas', 'text-danger');
+                icon.classList.add('far');
+            }
+            btn.setAttribute('data-in-wishlist', 'false');
+            if (err.message && err.message !== '') {
+                console.error("Failed to update wishlist", err);
+                showToast('Failed to add to wishlist.', 'error');
+            }
+        });
+    }
+};

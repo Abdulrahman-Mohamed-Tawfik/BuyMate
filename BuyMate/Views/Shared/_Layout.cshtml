@@ -8,6 +8,7 @@
     <link rel="icon" type="image/png" href="~/images/buymate-icon.webp" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-background text-foreground d-flex flex-column min-vh-100">
     <header class="sticky-top" style="z-index: 1030;">
@@ -30,7 +31,7 @@
                 </form>
 
                 <div class="d-flex align-items-center gap-2 gap-md-3 ms-auto">
-                    <a asp-controller="Account" asp-action="Wishlist" class="btn btn-light rounded-circle shadow-sm position-relative d-flex align-items-center justify-content-center p-0 border" style="width: 45px; height: 45px;" aria-label="Wishlist">
+                    <a asp-controller="Wishlist" asp-action="Index" class="btn btn-light rounded-circle shadow-sm position-relative d-flex align-items-center justify-content-center p-0 border" style="width: 45px; height: 45px;" aria-label="Wishlist">
                         <i class="far fa-heart fs-5 text-secondary"></i>
                         <span class="wishlist-badge badge bg-danger position-absolute top-0 start-100 translate-middle rounded-pill border border-2 border-white" style="display:none; font-size: 0.65rem;">0</span>
                     </a>

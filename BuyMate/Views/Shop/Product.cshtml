@@ -1,7 +1,36 @@
 @using BuyMate.DTO.ViewModels.Product
+@using System.Security.Claims
+@inject BuyMate.BLL.Contracts.IWishlistService WishlistService
 @model ProductViewModel
 @{
     ViewData["Title"] = Model.Name;
+
+    bool isInWishlist = Model.IsInWishlist;
+    if (!isInWishlist && User.Identity?.IsAuthenticated == true)
+    {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (!string.IsNullOrEmpty(userId))
+        {
+            var httpContext = ViewContext.HttpContext;
+            BuyMate.DTO.ViewModels.Wishlist.WishlistViewModel? wishlist = null;
+            if (httpContext.Items.TryGetValue("UserWishlist", out var cachedObj))
+            {
+                wishlist = cachedObj as BuyMate.DTO.ViewModels.Wishlist.WishlistViewModel;
+            }
+            else if (!httpContext.Items.ContainsKey("UserWishlistQueried"))
+            {
+                var response = await WishlistService.GetWishlistAsync(userId);
+                wishlist = response.Data;
+                httpContext.Items["UserWishlist"] = wishlist;
+                httpContext.Items["UserWishlistQueried"] = true;
+            }
+
+            if (wishlist != null)
+            {
+                isInWishlist = wishlist.Items.Any(i => i.ProductId == Model.Id);
+            }
+        }
+    }
 
     string ResolveImage(string? img)
     {
@@ -152,8 +181,16 @@
                         <button id="addToCartBtn" class="btn btn-dark btn-lg flex-grow-1 py-3 fw-bold shadow" style="transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'" type="submit" @(Model.StockQuantity <= 0 ? "disabled" : "")>
                             <i class="fas fa-shopping-cart me-2"></i> @(Model.StockQuantity > 0 ? "Add to Cart" : "Notify Me")
                         </button>
-                        <button class="btn btn-outline-dark btn-lg py-3 px-4 fw-bold shadow-sm" type="button" aria-label="Add to Wishlist" title="Save to Wishlist" style="transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-                            <i class="far fa-heart fs-5"></i>
+                        <button class="btn btn-outline-dark btn-lg py-3 px-4 fw-bold shadow-sm wishlist-btn @(isInWishlist ? "text-danger border-danger" : "text-secondary")" 
+                                type="button" 
+                                aria-label="Add to Wishlist" 
+                                title="Save to Wishlist" 
+                                data-in-wishlist="@isInWishlist.ToString().ToLower()"
+                                onclick="event.stopPropagation(); toggleWishlist(this, '@Model.Id')"
+                                style="transition: transform 0.2s;" 
+                                onmouseover="this.style.transform='translateY(-2px)'" 
+                                onmouseout="this.style.transform='translateY(0)'">
+                            <i class="@(isInWishlist ? "fas text-danger" : "far") fa-heart fs-5"></i>
                         </button>
                     </div>
                 </form>

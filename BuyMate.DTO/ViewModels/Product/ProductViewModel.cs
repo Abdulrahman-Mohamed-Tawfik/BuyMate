@@ -48,6 +48,7 @@ namespace BuyMate.DTO.ViewModels.Product
 
         public bool IsFeatured { get; set; }
         public bool IsBestSeller { get; set; }
+        public bool IsInWishlist { get; set; }
 
 
     }

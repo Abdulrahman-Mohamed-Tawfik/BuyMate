@@ -1,0 +1,104 @@
+@using BuyMate.DTO.ViewModels.Wishlist
+@model WishlistViewModel
+@{
+    ViewData["Title"] = "Wishlist";
+}
+
+<div class="container mb-5 mt-4" style="max-width: 72rem;">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3 fw-bold mb-0">My Wishlist</h1>
+        @if (Model is not null && Model.Items.Any())
+        {
+            <span class="text-muted">@Model.Items.Count items</span>
+        }
+    </div>
+
+    @if (Model is not null && Model.Items.Any())
+    {
+        <div class="row g-4">
+            @foreach (var item in Model.Items)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-xl-3">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 position-relative overflow-hidden product-card-modern" style="transition: all 0.3s ease; cursor:pointer;" onclick="location.href='@Url.Action("Product", "Shop", new { id = item.ProductId })'">
+                        <!-- Image Wrapper inside card -->
+                        <div class="position-relative text-center p-4 bg-light d-flex align-items-center justify-content-center" style="height: 220px;">
+                            <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "/images/placeholder.png" : (item.ImageUrl.StartsWith("/") ? item.ImageUrl : "/images/" + item.ImageUrl))" alt="@item.ProductName" class="img-fluid hover-zoom" style="max-height: 160px; object-fit: contain; transition: transform 0.4s ease;" />
+                            
+                            <!-- Remove from wishlist button -->
+                            <button class="btn btn-light text-danger rounded-circle shadow-sm position-absolute top-0 end-0 m-2 p-0 d-flex align-items-center justify-content-center border hover-bg-danger" style="width: 36px; height: 36px; z-index: 3;" aria-label="Remove from Wishlist" onclick="event.stopPropagation(); removeFromWishlist('@item.ProductId')">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="card-body p-4 d-flex flex-column bg-white">
+                            <div class="mb-3">
+                                @if(!string.IsNullOrEmpty(item.Brand)) {
+                                    <span class="text-uppercase small fw-bold text-primary mb-1 d-block" style="font-size: 0.70rem; letter-spacing: 1px;">@item.Brand</span>
+                                }
+                                <h3 class="h6 fw-bold mb-2 text-truncate" title="@item.ProductName" style="line-height: 1.4;">
+                                    <a asp-controller="Shop" asp-action="Product" asp-route-id="@item.ProductId" class="text-dark text-decoration-none stretched-link">@item.ProductName</a>
+                                </h3>
+
+                                <div class="d-flex align-items-center mb-1">
+                                    <partial name="_StarRating" model="((double)item.Rating, item.ReviewCount)" />
+                                </div>
+                            </div>
+                            
+                            <div class="mt-auto position-relative" style="z-index: 2;">
+                                <div class="d-flex align-items-baseline mb-3 flex-wrap">
+                                    <span class="fw-bold text-dark fs-5 mb-0">@item.Price.ToString("C")</span>
+                                    
+                                </div>
+
+                                <button class="btn btn-outline-dark w-100 rounded-pill fw-bold hover-bg-dark" style="transition: all 0.2s;" onclick="event.stopPropagation(); addToCart('@item.ProductId')">
+                                    <i class="fas fa-cart-plus me-2"></i>Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="text-center py-5 bg-light rounded-5 border border-dashed mt-2" style="border-width: 2px !important; border-color: #dee2e6 !important;">
+            <div class="d-inline-flex justify-content-center align-items-center bg-white rounded-circle shadow-sm mb-4" style="width: 100px; height: 100px;">
+                <i class="far fa-heart fa-3x text-muted" style="opacity: 0.5;"></i>
+            </div>
+            <h2 class="h4 fw-bold mb-2 text-dark">Your wishlist is empty</h2>
+            <p class="text-muted fs-5 mb-4 mx-auto" style="max-width: 400px;">Save items you love for later by adding them to your wishlist.</p>
+            <a asp-controller="Shop" asp-action="Index" class="btn btn-dark btn-lg rounded-pill px-5 fw-bold shadow-sm hover-lift" style="transition: transform 0.2s ease, box-shadow 0.2s ease;">
+                <i class="fas fa-shopping-bag me-2"></i>Start Shopping
+            </a>
+        </div>
+    }
+</div>
+
+<style>
+.product-card-modern:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08) !important;
+}
+.product-card-modern:hover .hover-zoom {
+    transform: scale(1.08);
+}
+.hover-bg-dark:hover {
+    background-color: #212529 !important;
+    color: white !important;
+}
+.hover-bg-danger:hover {
+    background-color: #dc3545 !important;
+    color: white !important;
+    border-color: #dc3545 !important;
+}
+.border-dashed {
+    border-style: dashed !important;
+}
+.hover-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}
+</style>
+
+<script src="~/js/user-wishlist.js"></script>

@@ -13,6 +13,7 @@ using BuyMate.BLL.Features.OrderFeature;
 using BuyMate.BLL.Contracts.Helpers;
 using BuyMate.BLL.Features.Helpers;
 using BuyMate.BLL.Features.Product;
+using BuyMate.BLL.Features.WishList;
 
 namespace BuyMate.DAL
 {
@@ -73,6 +74,10 @@ namespace BuyMate.DAL
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
+            services.AddScoped<IWishlistService, WishlistService>();
+            services.AddScoped<IWishlistRepository, WishlistRepository>();
+
+
 
 
             //Roles

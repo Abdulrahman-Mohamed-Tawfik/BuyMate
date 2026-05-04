@@ -2,88 +2,277 @@
 @using BuyMate.DTO.ViewModels.Product
 @model ProductUpdateViewModel
 @{
-    ViewData["Title"] = "Edit Product"; var productId = ViewBag.ProductId;
+    ViewData["Title"] = "Edit Product"; 
+    var productId = ViewBag.ProductId;
 }
-<div class="container mb-5" style="max-width: 48rem;">
-    <div class="card p-4 mt-4">
-        <a asp-controller="Admin" asp-action="Index" class="small text-muted text-decoration-none d-inline-flex align-items-center mb-2">
-            <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
+<div class="container mb-5" style="max-width: 64rem;">
+    <div class="d-flex align-items-center mb-4 mt-4">
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-light rounded-circle shadow-sm border p-0 d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            <i class="fas fa-arrow-left text-dark"></i>
         </a>
-        <h1 class="h5 fw-bold mb-3">Edit Product</h1>
-        @if (ViewBag.Error != null)
-        {
-            <div class="alert alert-danger py-2 mb-2">@ViewBag.Error</div>
-        }
-        <form method="post" asp-controller="Product"
-              asp-action="Edit" asp-route-id="@productId" id="editForm" enctype="multipart/form-data">
-            @Html.AntiForgeryToken()
-            <div class="mb-2"><label class="form-label small">Name</label><input asp-for="Name" class="form-control" /></div>
-            <div class="mb-2"><label class="form-label small">Brand</label><input asp-for="Brand" class="form-control" /></div>
-            <div class="mb-2"><label class="form-label small">Description</label><textarea asp-for="Description" class="form-control"></textarea></div>
-            <div class="row g-2 mb-2">
-                <div class="col-12 col-md-4"><label class="form-label small">Price</label><input asp-for="Price" type="number" step="0.01" class="form-control" /></div>
-                <div class="col-12 col-md-4"><label class="form-label small">Stock Quantity</label><input asp-for="StockQuantity" type="number" class="form-control" /></div>
-                <div class="col-12 col-md-4"><label class="form-label small">Discount % <span class="text-muted">(optional)</span></label><input asp-for="DiscountPercentage" type="number" min="0" max="100" step="0.01" class="form-control" /></div>
-            </div>
+        <h1 class="h3 fw-bold mb-0">Edit Product</h1>
+    </div>
 
-            <div class="mb-2">
-                <label class="form-label small">Category <span class="text-muted">(optional)</span></label>
-                <select id="categorySelect" name="CategoryIds" class="form-select" multiple>
-                    @if (ViewBag.Categories != null)
-                    {
-                        foreach (var c in (ViewBag.Categories as List<CategoryViewModel>))
-                        {
-                            if (Model.CategoryIds.Contains(c.Id))
-                            {
-                                <option value="@c.Id" selected>@c.Name (@c.ProductCount)</option>
-                            }
-                            else
-                            {
-                                <option value="@c.Id">@c.Name (@c.ProductCount)</option>
-                            }
-                        }
-                    }
-                    else
-                    {
-                        <option disabled>No categories available</option>
-                    }
-                </select>
-                <small class="text-muted">Hold Ctrl/Cmd to select multiple.</small>
-            </div>
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger py-3 px-4 rounded-4 shadow-sm mb-4 fw-medium border-0"><i class="fas fa-exclamation-circle me-2"></i>@ViewBag.Error</div>
+    }
 
-            <div class="mb-3">
-                <label class="form-label small">Specifications</label>
-                <div id="specificationContainer" class="d-flex flex-column gap-2">
-                    @if (Model.Specifications != null && Model.Specifications.Any())
-                    {
-                        for (int i = 0; i < Model.Specifications.Count; i++)
-                        {
-                            <div class="d-flex gap-2 align-items-center">
-                                <input name="Specifications[@i].Key" value="@Model.Specifications[i].Key" class="form-control" style="max-width:50%;" />
-                                <input name="Specifications[@i].Value" value="@Model.Specifications[i].Value" class="form-control" style="max-width:50%;" />
-                                <button type="button" onclick="removeImage(this)" class="btn btn-danger btn-sm removeSpecBtn">X</button>
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-dark text-white p-4">
+            <h2 class="h5 mb-0 fw-semibold"><i class="fas fa-pen-square me-2"></i>Update Product Information</h2>
+        </div>
+        <div class="card-body p-4 p-md-5">
+            <form method="post" asp-controller="Product" asp-action="Edit" asp-route-id="@productId" id="editForm" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+
+                <div class="row g-4">
+                    <!-- Left Column: Basic Info -->
+                    <div class="col-12 col-lg-8">
+                        <div class="bg-light p-4 rounded-4 border mb-4">
+                            <h3 class="h6 fw-bold mb-3 text-dark border-bottom pb-2">Basic Details</h3>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary small text-uppercase" style="letter-spacing: 1px;">Product Name</label>
+                                <input asp-for="Name" class="form-control form-control-lg border-0 shadow-sm" placeholder="Enter product name..." required />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
                             </div>
+
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold text-secondary small text-uppercase" style="letter-spacing: 1px;">Brand</label>
+                                <input asp-for="Brand" class="form-control form-control-lg border-0 shadow-sm" placeholder="e.g. Sony, Apple, Nike..." />
+                                <span asp-validation-for="Brand" class="text-danger small"></span>
+                            </div>
+
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold text-secondary small text-uppercase" style="letter-spacing: 1px;">Description</label>
+                                <textarea asp-for="Description" class="form-control border-0 shadow-sm" rows="5" placeholder="Detailed product description..." required></textarea>
+                                <span asp-validation-for="Description" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="bg-light p-4 rounded-4 border mb-4">
+                            <h3 class="h6 fw-bold mb-3 text-dark border-bottom pb-2">Pricing & Inventory</h3>
+                            <div class="row g-3">
+                                <div class="col-12 col-md-4">
+                                    <label class="form-label fw-semibold text-secondary small text-uppercase" style="letter-spacing: 1px;">Price ($)</label>
+                                    <div class="input-group input-group-lg shadow-sm border-0">
+                                        <span class="input-group-text bg-white border-0"><i class="fas fa-dollar-sign text-muted"></i></span>
+                                        <input asp-for="Price" type="number" step="0.01" class="form-control border-0 px-2" placeholder="0.00" required />
+                                    </div>
+                                    <span asp-validation-for="Price" class="text-danger small"></span>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <label class="form-label fw-semibold text-secondary small text-uppercase" style="letter-spacing: 1px;">Stock</label>
+                                    <div class="input-group input-group-lg shadow-sm border-0">
+                                        <span class="input-group-text bg-white border-0"><i class="fas fa-boxes text-muted"></i></span>
+                                        <input asp-for="StockQuantity" type="number" class="form-control border-0 px-2" placeholder="0" required />
+                                    </div>
+                                    <span asp-validation-for="StockQuantity" class="text-danger small"></span>
+                                </div>
+                                <div class="col-12 col-md-4">
+                                    <label class="form-label fw-semibold text-secondary small text-uppercase" style="letter-spacing: 1px;">Discount % <span class="fw-normal text-muted fs-7">(opt)</span></label>
+                                    <div class="input-group input-group-lg shadow-sm border-0">
+                                        <span class="input-group-text bg-white border-0"><i class="fas fa-tags text-muted"></i></span>
+                                        <input asp-for="DiscountPercentage" type="number" min="0" max="100" step="0.01" class="form-control border-0 px-2" placeholder="0%" />
+                                    </div>
+                                    <span asp-validation-for="DiscountPercentage" class="text-danger small"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-light rounded-4 border mb-4 overflow-hidden">
+                            <div class="p-4 border-bottom d-flex justify-content-between align-items-center bg-white cursor-pointer" data-bs-toggle="collapse" data-bs-target="#specsCollapse" aria-expanded="true">
+                                <h3 class="h6 fw-bold mb-0 text-dark"><i class="fas fa-list-ul me-2 text-primary"></i>Technical Specifications</h3>
+                                <i class="fas fa-chevron-down text-muted transition-transform"></i>
+                            </div>
+                            <div id="specsCollapse" class="collapse show p-4">
+                                <div id="specificationContainer" class="d-flex flex-column gap-3 mb-3">
+                                    @if (Model.Specifications != null && Model.Specifications.Any())
+                                    {
+                                        for (int i = 0; i < Model.Specifications.Count; i++)
+                                        {
+                                            <div class="d-flex gap-2 align-items-center spec-row">
+                                                <input name="Specifications[@i].Key" value="@Model.Specifications[i].Key" class="form-control border-0 shadow-sm" style="width:45%;" placeholder="Key" />
+                                                <input name="Specifications[@i].Value" value="@Model.Specifications[i].Value" class="form-control border-0 shadow-sm" style="width:45%;" placeholder="Value" />
+                                                <button type="button" onclick="this.parentElement.remove()" class="btn btn-danger text-white rounded-circle p-0 shadow-sm d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; flex-shrink:0;" title="Remove">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                                <button type="button" id="addSpecBtn" class="btn btn-outline-dark btn-sm fw-bold rounded-pill px-3 shadow-sm hover-lift">
+                                    <i class="fas fa-plus me-1"></i> Add Specification
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Categories & Images -->
+                    <div class="col-12 col-lg-4">
+                        <div class="bg-light p-4 rounded-4 border mb-4">
+                            <h3 class="h6 fw-bold mb-3 text-dark border-bottom pb-2">Categories <span class="fw-normal text-danger">*</span></h3>
+                            <select id="categorySelect" name="CategoryIds" class="form-control" multiple placeholder="Search categories..." autocomplete="off">
+                                @if (ViewBag.Categories != null)
+                                {
+                                    foreach (var c in (ViewBag.Categories as List<CategoryViewModel>))
+                                    {
+                                        if (Model.CategoryIds.Contains(c.Id))
+                                        {
+                                            <option value="@c.Id" selected>@c.Name (@c.ProductCount)</option>
+                                        }
+                                        else
+                                        {
+                                            <option value="@c.Id">@c.Name (@c.ProductCount)</option>
+                                        }
+                                    }
+                                }
+                            </select>
+                            <small class="text-muted d-block mt-2"><i class="fas fa-info-circle me-1"></i> Start typing or click to select categories.</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Full Width Column: Update Images -->
+                <div class="col-12 mt-4">
+                    <div class="bg-light p-4 p-md-5 rounded-4 border mb-4">
+                        <div class="text-center mb-4">
+                            <h3 class="h5 fw-bold text-dark">Product Images</h3>
+                            <p class="text-muted">Manage your product gallery. Upload new high-quality images or remove existing ones.</p>
+                        </div>
+
+                        <div class="text-center p-5 border border-2 border-dashed rounded-4 bg-white hover-bg-light transition-all cursor-pointer mb-4" onclick="document.getElementById('files').click()" style="border-style: dashed !important; border-color: #ced4da !important;">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                <i class="fas fa-images fa-3x text-primary opacity-75"></i>
+                            </div>
+                            <h4 class="h5 fw-bold mb-2">Drag & drop files or click to add new images</h4>
+                            <p class="text-muted mb-0">Supported formats: JPEG, PNG, WEBP, GIF (Max 4MB each)</p>
+                            <span id="selectedFiles" class="badge bg-secondary mt-3 fs-6 px-3 py-2 rounded-pill">No files chosen</span>
+                        </div>
+
+                        <input type="file" name="files" id="files" class="d-none" accept="image/*" multiple />
+
+                        <div id="imagePreview" class="row g-3 justify-content-center mb-5"></div>
+
+                        @if(Model.ImageUrls != null && Model.ImageUrls.Any())
+                        {
+                            <hr class="my-4" />
+                            <h4 class="h5 text-dark fw-bold mb-4 text-center"><i class="far fa-images me-2 text-primary"></i>Current Gallery</h4>
+                            <div id="currentImagesContainer" class="row g-3 justify-content-center">
+                                @for(int i = 0; i < Model.ImageUrls.Count; i++)
+                                {
+                                    <div class="col-6 col-md-4 col-lg-3 position-relative current-image-wrapper">
+                                        <div class="bg-white p-2 rounded-4 shadow-sm border h-100">
+                                            <img src="@(Model.ImageUrls[i].StartsWith("/") || Model.ImageUrls[i].StartsWith("http") ? Model.ImageUrls[i] : "/images/" + Model.ImageUrls[i])" class="w-100 rounded-3 object-fit-cover" style="height: 120px;" />
+                                            <button type="button" class="btn btn-sm btn-danger position-absolute top-0 end-0 m-3 rounded-circle p-0 shadow fw-bold hover-lift" style="width: 32px; height: 32px;" onclick="removeCurrentImage(this, '@Model.ImageUrls[i]')" title="Remove Image">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div id="hiddenImageInputsContainer">
+                    @if(Model.ImageUrls != null && Model.ImageUrls.Any())
+                    {
+                        @for(int i = 0; i < Model.ImageUrls.Count; i++)
+                        {
+                            <input type="hidden" name="ImageUrls" value="@Model.ImageUrls[i]" class="existing-image-input" />
                         }
                     }
                 </div>
-                <button type="button" id="addSpecBtn" class="btn btn-outline-secondary btn-sm mt-1">Add Specification</button>
-            </div>
 
-            <div class="mb-3">
-                <label class="form-label small">Upload New Image(s)</label>
-                <div class="d-flex align-items-center gap-2 mb-1"><label for="files" class="btn btn-outline-secondary btn-sm mb-0">Select images</label><span id="selectedFiles" class="small text-muted">No files chosen</span></div>
-                <input type="file" name="files" id="files" class="d-none" accept="image/*" multiple />
-                <small class="text-muted d-block">You can select multiple images. Max each 4MB. Allowed: jpg, jpeg, png, gif, webp.</small>
-            </div>
-
-            <div id="imagePreview" class="row g-2 mb-3"></div>
-            <input id="imgUrls" type="hidden" />
-            <button type="submit" class="btn btn-dark w-100">Save Changes</button>
-        </form>
+                <div class="border-top pt-4 mt-2 d-flex justify-content-end gap-3">
+                    <a asp-controller="Admin" asp-action="Index" class="btn btn-outline-secondary btn-lg rounded-pill px-4 fw-bold shadow-sm">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow-sm hover-lift">
+                        <i class="fas fa-save me-2"></i> Save Changes
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+<style>
+    .border-dashed { border-style: dashed !important; border-color: #dee2e6 !important; }
+    .cursor-pointer { cursor: pointer; }
+    .hover-bg-light:hover { background-color: #f8f9fa !important; }
+    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+    .fs-7 { font-size: 0.85rem; }
+    .spec-row .form-control { box-shadow: 0 .125rem .25rem rgba(0,0,0,.04); }
+
+    .transition-transform { transition: transform 0.3s ease; }
+    [data-bs-toggle="collapse"][aria-expanded="true"] .fa-chevron-down { transform: rotate(180deg); }
+</style>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="~/js/product-edit.js"></script>
+    <script>
+        // Custom Specification Add row logic for modern UI
+        document.addEventListener('DOMContentLoaded', () => {
+            new TomSelect("#categorySelect",{
+                plugins: ['remove_button'],
+                create: false,
+                sortField: {
+                    field: "text",
+                    direction: "asc"
+                }
+            });
+
+            const addSpecBtn = document.getElementById('addSpecBtn');
+            const container = document.getElementById('specificationContainer');
+
+            if (addSpecBtn && container) {
+                // Ensure no double bind
+                const newBtn = addSpecBtn.cloneNode(true);
+                addSpecBtn.parentNode.replaceChild(newBtn, addSpecBtn);
+
+                newBtn.addEventListener('click', () => {
+                    const idx = container.querySelectorAll('.spec-row').length;
+                    const row = document.createElement('div');
+                    row.className = 'd-flex gap-2 align-items-center spec-row fade-in';
+                    row.innerHTML = `
+                        <input name="Specifications[${idx}].Key" placeholder="e.g. Material" class="form-control border-0 shadow-sm" style="width: 45%;" required />
+                        <input name="Specifications[${idx}].Value" placeholder="e.g. Cotton" class="form-control border-0 shadow-sm" style="width: 45%;" required />
+                        <button type="button" class="btn btn-danger text-white rounded-circle p-0 shadow-sm d-flex align-items-center justify-content-center" style="width: 32px; height: 32px; flex-shrink:0;" onclick="this.parentElement.remove()" title="Remove">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+        });
+
+        // Helper to remove existing images cleanly from the form submission
+        function removeCurrentImage(btn, url) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "This image will be removed from the product.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                confirmButtonText: 'Yes, remove it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    btn.closest('.current-image-wrapper').remove();
+                    // Remove corresponding hidden input
+                    const inputs = document.querySelectorAll('.existing-image-input');
+                    inputs.forEach(input => {
+                        if (input.value === url) {
+                            input.remove();
+                        }
+                    });
+                }
+            });
+        }
+    </script>
 }

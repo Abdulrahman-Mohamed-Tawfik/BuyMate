@@ -1,36 +1,9 @@
 @using BuyMate.DTO.ViewModels.Product
 @using System.Security.Claims
-@inject BuyMate.BLL.Contracts.IWishlistService WishlistService
 @model ProductViewModel
 @{
     var imageClass = ViewData["ImageClass"]?.ToString() ?? "product-card-image";
-
     bool isInWishlist = Model.IsInWishlist;
-    if (!isInWishlist && User.Identity?.IsAuthenticated == true)
-    {
-        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        if (!string.IsNullOrEmpty(userId))
-        {
-            var httpContext = ViewContext.HttpContext;
-            BuyMate.DTO.ViewModels.Wishlist.WishlistViewModel? wishlist = null;
-            if (httpContext.Items.TryGetValue("UserWishlist", out var cachedObj))
-            {
-                wishlist = cachedObj as BuyMate.DTO.ViewModels.Wishlist.WishlistViewModel;
-            }
-            else if (!httpContext.Items.ContainsKey("UserWishlistQueried"))
-            {
-                var response = await WishlistService.GetWishlistAsync(userId);
-                wishlist = response.Data;
-                httpContext.Items["UserWishlist"] = wishlist;
-                httpContext.Items["UserWishlistQueried"] = true;
-            }
-
-            if (wishlist != null)
-            {
-                isInWishlist = wishlist.Items.Any(i => i.ProductId == Model.Id);
-            }
-        }
-    }
 }
 
 <div class="card h-100 border-0 shadow-sm rounded-4 position-relative overflow-hidden product-card-modern" style="transition: all 0.3s ease;">

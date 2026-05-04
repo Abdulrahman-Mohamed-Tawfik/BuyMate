@@ -4,19 +4,24 @@ using BuyMate.DTO.ViewModels.Category;
 using BuyMate.DTO.ViewModels.Product;
 using BuyMate.DTO.ViewModels.Shop;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace BuyMate.Controllers
 {
-    public class ShopController : Controller
+    public class ShopController : BaseController
     {
         private readonly ICategoryService _categoryService;
         private readonly IProductService _productService;
+        private readonly IProductEnricher _productEnricher;
 
-        public ShopController(ICategoryService categoryService, IProductService productService)
+        public ShopController(ICategoryService categoryService, IProductService productService, IProductEnricher productEnricher)
         {
             _categoryService = categoryService;
             _productService = productService;
+            _productEnricher = productEnricher;
         }
+
+        
 
         public IActionResult Index()
         {
@@ -47,11 +52,10 @@ namespace BuyMate.Controllers
         public async Task<IActionResult> Index(ProductFilter? filter = null)
         {
             
-            // Paginated query with filters
             var paged = await _productService.GetAllPaginatedAsync(filter);
             var products = paged.Data ?? new List<ProductViewModel>();
 
-
+            await _productEnricher.EnrichAsync(products, User);
 
             //get all categories
             var categoriesResponse = await _categoryService.GetAllAsync();
@@ -94,6 +98,9 @@ namespace BuyMate.Controllers
         {
             var result = await _productService.GetByIdAsync(id);
             if (!result.Status || result.Data == null) return NotFound();
+
+            await _productEnricher.EnrichAsync(new[] { result.Data }, User);
+
             return View(result.Data); // resolves Views/Product/Product.cshtml
         }
 
@@ -110,6 +117,7 @@ namespace BuyMate.Controllers
             });
 
             var products = paged.Data ?? new List<ProductViewModel>();
+            await _productEnricher.EnrichAsync(products, User);
             return View(products); // resolves Views/Shop/Deals.cshtml expecting List<ProductViewModel>
         }
     }

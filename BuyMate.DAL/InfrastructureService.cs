@@ -76,6 +76,7 @@ namespace BuyMate.DAL
             services.AddScoped<IOrderItemRepository, OrderItemRepository>();
             services.AddScoped<IWishlistService, WishlistService>();
             services.AddScoped<IWishlistRepository, WishlistRepository>();
+            services.AddScoped<IProductEnricher, ProductEnricher>();
 
 
 

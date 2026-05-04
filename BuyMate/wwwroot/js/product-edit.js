@@ -32,8 +32,13 @@ document.getElementById('files').addEventListener('change', function () {
         const reader = new FileReader();
         reader.onload = e => {
             const div = document.createElement('div');
-            div.className = 'relative';
-            div.innerHTML = `<img src="${e.target.result}" class="w-full h-32 object-contain rounded-lg border" />`;
+            div.className = 'col-6 col-sm-4 col-md-3 position-relative preview-image-wrapper p-2';
+            div.innerHTML = `<div class="bg-white p-2 rounded-4 shadow-sm border h-100">
+                                <img src="${e.target.result}" class="w-100 rounded-3 object-fit-cover" style="height:120px;" />
+                                <div class="position-absolute top-0 end-0 m-3">
+                                   <span class="badge bg-success rounded-circle p-2 shadow-sm"><i class="fas fa-check" style="font-size:12px;"></i></span>
+                                </div>
+                             </div>`;
             container.appendChild(div);
         };
         reader.readAsDataURL(file);
@@ -71,7 +76,7 @@ function validateEditForm() {
     if (desc === '') { Swal.fire('Error', 'Description is required', 'error'); return false; }
     if (!price || price <= 0) { Swal.fire('Error', 'Price must be greater than0', 'error'); return false; }
     if (isNaN(stock) || stock < 0) { Swal.fire('Error', 'Stock must be0 or more', 'error'); return false; }
-    if (categories.length == 0) { Swal.fire('Error', 'Select at least one category', 'error'); return false; }
+    if (categories.length === 0) { Swal.fire('Error', 'Select at least one category', 'error'); return false; }
 
     if (specifications.length !== 0) {
 

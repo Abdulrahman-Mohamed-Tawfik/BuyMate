@@ -6,37 +6,72 @@
 }
 
 <div class="container mb-5" style="max-width: 48rem;">
-    <div class="card p-4 p-md-5 mt-4">
-        <a asp-controller="Admin" asp-action="Index" class="d-inline-flex align-items-center small text-muted text-decoration-none mb-3">
-            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+    <div class="d-flex align-items-center mb-4 mt-4">
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-light rounded-circle shadow-sm border p-0 d-flex align-items-center justify-content-center me-3 hover-lift" style="width: 40px; height: 40px; transition: transform 0.2s;">
+            <i class="fas fa-arrow-left text-dark"></i>
         </a>
-        <h1 class="h4 fw-bold mb-3">Create New Category</h1>
+        <h1 class="h3 fw-bold mb-0">Create New Category</h1>
+    </div>
 
-        <form method="post" asp-action="Create" id="createCategoryForm" enctype="multipart/form-data">
-            @Html.AntiForgeryToken()
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-dark text-white p-4">
+            <h2 class="h5 mb-0 fw-semibold"><i class="fas fa-folder-plus me-2"></i>Category Information</h2>
+        </div>
+        <div class="card-body p-4 p-md-5">
+            <form method="post" asp-action="Create" id="createCategoryForm" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
 
-            <div class="mb-3">
-                <label asp-for="Name" class="form-label small">Name</label>
-                <input asp-for="Name" class="form-control" placeholder="Category name" />
-                <span asp-validation-for="Name" class="small text-danger"></span>
-            </div>
+                <div class="row g-4">
+                    <div class="col-12">
+                        <div class="bg-light p-4 rounded-4 border mb-4">
+                            <h3 class="h6 fw-bold mb-3 text-dark border-bottom pb-2">Basic Details</h3>
 
-            <div class="mb-3">
-                <label class="form-label small">Image</label>
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <label for="imageFile" class="btn btn-outline-secondary btn-sm">Select image</label>
-                    <span id="selectedFile" class="small text-muted">No file chosen</span>
+                            <div class="mb-3">
+                                <label asp-for="Name" class="form-label fw-semibold text-secondary small text-uppercase" style="letter-spacing: 1px;">Category Name</label>
+                                <input asp-for="Name" class="form-control form-control-lg border-0 shadow-sm" placeholder="Enter category name..." />
+                                <span asp-validation-for="Name" class="text-danger small"></span>
+                            </div>
+                        </div>
+
+                        <div class="bg-light p-4 rounded-4 border">
+                            <div class="text-center mb-4">
+                                <h3 class="h6 fw-bold mb-3 text-dark border-bottom pb-2 text-start">Category Image</h3>
+                            </div>
+
+                            <div class="text-center p-4 border border-2 border-dashed rounded-4 bg-white hover-bg-light transition-all cursor-pointer mb-3" onclick="document.getElementById('imageFile').click()" style="border-style: dashed !important; border-color: #ced4da !important;">
+                                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                    <i class="fas fa-cloud-upload-alt fa-2x text-primary opacity-75"></i>
+                                </div>
+                                <h4 class="h5 fw-bold mb-2">Drag & drop image or click to upload</h4>
+                                <p class="text-muted small mb-0">Allowed: JPG, JPEG, PNG, GIF, WEBP. Max 2MB.</p>
+                                <span id="selectedFile" class="badge bg-secondary mt-3 fs-6 px-3 py-2 rounded-pill">No file chosen</span>
+                            </div>
+
+                            <input type="file" name="imageFile" id="imageFile" class="d-none" accept="image/*" />
+
+                            <div id="imagePreview" class="row g-3 justify-content-center"></div>
+                        </div>
+                    </div>
                 </div>
-                <input type="file" name="imageFile" id="imageFile" class="d-none" accept="image/*" />
-                <small class="text-muted d-block">Max 2MB. Allowed: jpg, jpeg, png, gif, webp.</small>
-            </div>
 
-            <div id="imagePreview" class="row g-3 mb-3"></div>
-
-            <button type="submit" class="btn btn-dark w-100">Create Category</button>
-        </form>
+                <div class="border-top pt-4 mt-4 d-flex justify-content-end gap-3">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-lg rounded-pill px-4 fw-bold shadow-sm">Cancel</a>
+                    <button type="submit" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow-sm hover-lift">
+                        <i class="fas fa-save me-2"></i> Create Category
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
+
+<style>
+    .border-dashed { border-style: dashed !important; border-color: #dee2e6 !important; }
+    .cursor-pointer { cursor: pointer; }
+    .hover-bg-light:hover { background-color: #f8f9fa !important; }
+    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important; }
+</style>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

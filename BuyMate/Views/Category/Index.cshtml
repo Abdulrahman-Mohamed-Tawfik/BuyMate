@@ -6,51 +6,66 @@
 }
 
 <div class="container mb-5" style="max-width: 64rem;">
-    <a asp-controller="Admin" asp-action="Index" class="d-inline-flex align-items-center small text-muted text-decoration-none mb-3">
-        <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
-    </a>
-
-    <div class="d-flex align-items-center justify-content-between mb-3">
-        <h1 class="h4 fw-bold mb-0">Categories</h1>
-        <a asp-action="Create" class="btn btn-dark">Add New Category</a>
+    <div class="d-flex align-items-center mb-4 mt-4">
+        <a asp-action="Index" asp-controller="Admin" class="btn btn-light rounded-circle shadow-sm border p-0 d-flex align-items-center justify-content-center me-3 hover-lift" style="width: 40px; height: 40px; transition: transform 0.2s;">
+            <i class="fas fa-arrow-left text-dark"></i>
+        </a>
+        <div>
+            <h1 class="h3 fw-bold mb-0">Categories Management</h1>
+            <p class="text-muted small mb-0">Manage product categories to keep your store organized.</p>
+        </div>
+        <div class="ms-auto">
+            <a asp-action="Create" class="btn btn-primary rounded-pill px-4 fw-bold shadow-sm hover-lift d-inline-flex align-items-center">
+                <i class="fas fa-plus me-2"></i> Add New Category
+            </a>
+        </div>
     </div>
 
-    <div class="card">
-        <div class="table-responsive mb-0">
-            <table class="table align-middle mb-0">
-                <thead class="table-light">
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card-header bg-dark text-white p-3 px-4 d-flex align-items-center">
+            <h2 class="h6 mb-0 fw-semibold"><i class="fas fa-tags me-2"></i>All Categories</h2>
+        </div>
+        <div class="table-responsive mb-0 p-0">
+            <table class="table table-hover align-middle mb-0 border-0">
+                <thead class="table-light border-bottom">
                     <tr>
-                        <th scope="col">Category</th>
-                        <th scope="col" style="width: 150px;">Action</th>
+                        <th scope="col" class="py-3 px-4 fw-semibold text-uppercase text-secondary small" style="letter-spacing: 0.5px;">Category</th>
+                        <th scope="col" class="py-3 px-4 fw-semibold text-uppercase text-secondary small text-end" style="letter-spacing: 0.5px; width: 150px;">Action</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="border-top-0">
                     @if (Model != null && Model.Any())
                     {
                         foreach (var item in Model)
                         {
-                            <tr>
-                                <td>
+                            <tr class="align-middle">
+                                <td class="px-4 py-3">
                                     <div class="d-flex align-items-center gap-3">
-                                        @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
-                                        {
-                                            <img src="/@item.ImageUrl" alt="@item.Name" class="border rounded" style="width:48px;height:48px;object-fit:contain;" />
-                                        }
-                                        else
-                                        {
-                                            <div class="border rounded d-flex align-items-center justify-content-center bg-light text-muted" style="width:48px;height:48px;">
-                                                <i class="fas fa-image"></i>
-                                            </div>
-                                        }
-                                        <span class="small fw-semibold">@item.Name</span>
+                                        <div class="bg-light rounded-3 p-1 border d-flex align-items-center justify-content-center" style="width: 56px; height: 56px;">
+                                            @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                                            {
+                                                <img src="@(item.ImageUrl.StartsWith("/") ? item.ImageUrl : "/" + item.ImageUrl)" alt="@item.Name" class="img-fluid rounded-2" style="max-height: 100%; max-width: 100%; object-fit: contain;" />
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-image text-muted fs-4"></i>
+                                            }
+                                        </div>
+                                        <div>
+                                            <h6 class="mb-0 fw-bold text-dark">@item.Name</h6>
+                                        </div>
                                     </div>
                                 </td>
-                                <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-secondary btn-sm">Edit</a>
+                                <td class="px-4 text-end">
+                                    <div class="d-flex justify-content-end gap-2">
+                                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-light border shadow-sm text-secondary hover-lift rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
                                         <form asp-action="Delete" asp-route-id="@item.Id" method="post" class="swal-delete d-inline" data-confirm="Delete this category?">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-outline-danger btn-sm">Delete</button>
+                                            <button type="submit" class="btn btn-sm btn-light border shadow-sm text-danger hover-lift rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;" title="Delete">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
                                         </form>
                                     </div>
                                 </td>
@@ -60,7 +75,18 @@
                     else
                     {
                         <tr>
-                            <td colspan="2" class="text-center small text-muted py-4">No categories found.</td>
+                            <td colspan="2" class="text-center py-5">
+                                <div class="d-flex flex-column align-items-center justify-content-center">
+                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mb-3 text-muted" style="width: 80px; height: 80px;">
+                                        <i class="fas fa-tags fa-2x"></i>
+                                    </div>
+                                    <h4 class="h5 fw-bold text-dark mb-1">No Categories Found</h4>
+                                    <p class="text-muted mb-3">You haven't added any categories yet.</p>
+                                    <a asp-action="Create" class="btn btn-outline-primary rounded-pill px-4">
+                                        <i class="fas fa-plus me-1"></i> Add First Category
+                                    </a>
+                                </div>
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -68,6 +94,11 @@
         </div>
     </div>
 </div>
+
+<style>
+    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.08) !important; }
+</style>
 
 @section Scripts {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

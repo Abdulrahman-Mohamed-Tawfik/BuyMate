@@ -148,6 +148,22 @@ namespace BuyMate.BLL.Features.Product
 
         public async Task<Response<Guid>> CreateAsync(ProductCreateViewModel model, List<IFormFile> files)
         {
+            // 1. Basic Validations
+            if (string.IsNullOrWhiteSpace(model.Name))
+                return Response<Guid>.Fail("Product name is required.");
+            if (model.Price <= 0)
+                return Response<Guid>.Fail("Price must be greater than zero.");
+            if (model.StockQuantity < 0)
+                return Response<Guid>.Fail("Stock quantity cannot be negative.");
+            if (files == null || files.Count == 0 || files.All(f => f.Length == 0))
+                return Response<Guid>.Fail("At least one product image is required.");
+
+            // 2. Duplicate / Basic Idempotency Check
+         
+            bool exists = await _productRepository.ExistsByNameAsync(model.Name);
+            if (exists)
+                return Response<Guid>.Fail("A product with this exact name already exists.");
+
             //save images
             var result = await _fileService.SaveImagesAsync(
                 files,
@@ -205,6 +221,18 @@ namespace BuyMate.BLL.Features.Product
 
         public async Task<Response<bool>> UpdateAsync(Guid id, ProductUpdateViewModel model, List<IFormFile>? files)
         {
+            // 1. Basic Validations
+            if (string.IsNullOrWhiteSpace(model.Name))
+                return Response<bool>.Fail("Product name is required.");
+            if (model.Price <= 0)
+                return Response<bool>.Fail("Price must be greater than zero.");
+            if (model.StockQuantity < 0)
+                return Response<bool>.Fail("Stock quantity cannot be negative.");
+
+            // Prevent renaming product to an already existing name of a DIFFERENT product
+            bool nameConflict = await _productRepository.ExistsByNameAsync(model.Name, id);
+            if (nameConflict)
+                return Response<bool>.Fail("Another product with this exact name already exists.");
 
             var entity = await _productRepository.GetByIdAsync(id);
             if (entity == null)

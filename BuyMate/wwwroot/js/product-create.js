@@ -74,7 +74,7 @@ function validateCreateForm() {
 
 	if (!name) { Swal.fire('Error', 'Name is required', 'error'); return false; }
 	if (!desc) { Swal.fire('Error', 'Description is required', 'error'); return false; }
-	if (!price || price <= 0) { Swal.fire('Error', 'Price must be greater than0', 'error'); return false; }
+	if (!price || price <= 0) { Swal.fire('Error', 'Price must be greater than 0', 'error'); return false; }
 	if (isNaN(stock) || stock < 0) { Swal.fire('Error', 'Stock must be0 or more', 'error'); return false; }
 	if (files.length === 0) { Swal.fire('Error', 'Please select at least one valid image', 'error'); return false; }
 	if (categories.length === 0) { Swal.fire('Error', 'Please select at least one category', 'error'); return false; }
@@ -130,8 +130,8 @@ document.getElementById("addSpecBtn").addEventListener("click", function () {
 
 document.getElementById('createForm').addEventListener('submit', function (e) {
 	e.preventDefault();
+	console.log(":HE")
 	if (!validateCreateForm()) return;
-
 	Swal.fire({ title: 'Create Product?', icon: 'question', showCancelButton: true }).then(res => {
 		if (!res.isConfirmed) return;
 
@@ -142,10 +142,14 @@ document.getElementById('createForm').addEventListener('submit', function (e) {
 		const categories = Array.from(document.getElementById('categorySelect').selectedOptions).map(o => o.value);
 		if (categories.length) categories.forEach(c => formData.append('CategoryIds', c));
 
+		document.getElementById('createProductBtn').disabled = true; // prevent multiple submits
+
 		fetch(form.action, { method: 'POST', body: formData })
 			.then(r => {
 				if (r.redirected) { window.location = r.url; return; }
-				if (!r.ok) return r.text().then(t => { throw new Error(t); });
+				if (!r.ok) return r.text().then(t => {
+					document.getElementById('createProductBtn').disabled = false; 
+					throw new Error(t); });
 				return r.text().then(html => { document.open(); document.write(html); document.close(); });
 			})
 			.catch(err => Swal.fire('Error', err.message, 'error'));

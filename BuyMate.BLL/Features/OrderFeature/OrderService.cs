@@ -98,7 +98,11 @@ namespace BuyMate.BLL.Features.OrderFeature
 
             var discountAmount = 0m;  //To Be implemented
 
-            var fees = cartResponse.Data.Tax; //To Be implemented (shipping fees etc.)
+            decimal shippingFee = 0m;
+            if (model.DeliveryType == "Express") shippingFee = 9.99m;
+            else if (model.DeliveryType == "Scheduled") shippingFee = 4.99m;
+
+            var fees = cartResponse.Data.Tax + shippingFee;
             var total = subtotal - discountAmount + fees;
 
             // Create Order Entity
@@ -109,8 +113,8 @@ namespace BuyMate.BLL.Features.OrderFeature
                 ShippingAddress = address,
                 OrderStatus = 0,
                 PaymentStatus = 0,
-                Total = cartResponse.Data.Total,
-                Fees = cartResponse.Data.Tax,
+                Total = total,
+                Fees = fees,
                 Subtotal = subtotal,
                 DiscountAmount = discountAmount,
                 TrackingNumber = Guid.NewGuid().ToString("N").Substring(0, 9).ToUpper()

@@ -4,13 +4,14 @@
     ViewData["Title"] = "All Orders";
 }
 
-<div class="container mb-5 mt-4" style="max-width: 72rem;">
-    <div class="d-flex align-items-center justify-content-between mb-4">
+<div class="container mb-5" style="max-width: 72rem;">
+    <div class="d-flex align-items-center mb-4 mt-4">
+        <a asp-controller="Admin" asp-action="Index" class="btn btn-light rounded-circle shadow-sm border p-0 d-flex align-items-center justify-content-center me-3 hover-lift" style="width: 40px; height: 40px; transition: transform 0.2s;">
+            <i class="fas fa-arrow-left text-dark"></i>
+        </a>
         <div>
-            <h1 class="h3 fw-bold text-dark mb-1"><i class="fas fa-boxes text-primary me-2"></i>All Orders</h1>
-            <a asp-controller="Admin" asp-action="Index" class="small text-muted text-decoration-none d-inline-flex align-items-center hover-primary transition-all">
-                <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
-            </a>
+            <h1 class="h3 fw-bold mb-0">Orders Management</h1>
+            <p class="text-muted small mb-0">Manage and fulfill customer orders efficiently.</p>
         </div>
     </div>
 

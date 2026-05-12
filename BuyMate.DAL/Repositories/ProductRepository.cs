@@ -130,6 +130,18 @@ namespace BuyMate.DAL.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<bool> ExistsByNameAsync(string name, Guid? excludeId = null)
+        {
+            var query = _context.Products.Where(p => p.Name == name);
+            
+            if (excludeId.HasValue)
+            {
+                query = query.Where(p => p.Id != excludeId.Value);
+            }
+
+            return await query.AnyAsync();
+        }
+
         public override IQueryable<Product> OrderBy(IQueryable<Product> entities, string? orderBy, bool isAccending = true)
         {
             if (string.IsNullOrWhiteSpace(orderBy))

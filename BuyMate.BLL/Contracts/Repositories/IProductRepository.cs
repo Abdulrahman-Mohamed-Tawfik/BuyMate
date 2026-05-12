@@ -19,5 +19,6 @@ namespace BuyMate.BLL.Contracts.Repositories
         Task AddProductSpecificationsAsync(Guid productId, List<ProductSpecification> specifications);
         Task RemoveProductSpecificationsAsync(Guid productId);
         Task<List<string>> GetAllBrandsAsync();
+        Task<bool> ExistsByNameAsync(string name, Guid? excludeId = null);
     }
 }

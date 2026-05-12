@@ -4,65 +4,224 @@
     ViewData["Title"] = "Order Detail (Admin)";
 }
 
-<div class="container mb-5" style="max-width: 48rem;">
-    <div class="mb-3">
-        <a asp-controller="Order" asp-action="GetAll" class="btn btn-outline-secondary btn-sm mb-2">Back to All Orders</a>
-        <h1 class="h4 fw-bold mb-1">Order #@Model.Id</h1>
-        <p class="small text-muted">Placed on @Model.OrderDate.ToString("MMM dd, yyyy 'at' h:mm tt")</p>
+<div class="container mb-5" style="max-width: 64rem;">
+    <div class="d-flex align-items-center mb-4 mt-4">
+        <a asp-controller="Order" asp-action="GetAll" class="btn btn-light rounded-circle shadow-sm border p-0 d-flex align-items-center justify-content-center me-3 hover-lift" style="width: 40px; height: 40px; transition: transform 0.2s;">
+            <i class="fas fa-arrow-left text-dark"></i>
+        </a>
+        <div class="flex-grow-1">
+            <div class="d-flex align-items-center gap-3">
+                <h1 class="h3 fw-bold mb-0">Order #@Model.TrackingNumber</h1>
+                <span class="badge rounded-pill px-3 py-2 fw-medium shadow-sm @(
+                                Model.Status == OrderStatusViewModel.Delivered ? "bg-success text-white" :
+                                Model.Status == OrderStatusViewModel.Shipped ? "bg-primary text-white" :
+                                Model.Status == OrderStatusViewModel.Cancelled ? "bg-danger text-white" : "bg-warning text-dark")">
+                    <i class="fas @(
+                                    Model.Status == OrderStatusViewModel.Delivered ? "fa-check-circle" :
+                                    Model.Status == OrderStatusViewModel.Shipped ? "fa-truck" :
+                                    Model.Status == OrderStatusViewModel.Cancelled ? "fa-times-circle" : "fa-clock"
+                                ) me-1"></i>
+                    @Model.Status
+                </span>
+            </div>
+            <p class="text-muted small mb-0 mt-1"><i class="far fa-calendar-alt me-1"></i> Placed on @Model.OrderDate.ToString("MMM dd, yyyy 'at' h:mm tt")</p>
+        </div>
     </div>
 
     <div class="row g-4">
-        <div class="col-12 col-lg-8 d-flex flex-column gap-3">
-            <div class="card p-3">
-                <h2 class="h5 fw-bold mb-3">Order Items</h2>
-                <div class="d-flex flex-column gap-2">
-                    @foreach (var item in Model.Items)
-                    {
-                        <div class="d-flex align-items-center gap-3">
-                            <img src="@((!string.IsNullOrEmpty(item.ImageUrl) ? "/images/" + item.ImageUrl : "/images/placeholder.png"))" alt="@item.ProductName" class="rounded" style="width:80px;height:80px;object-fit:contain;" />
-                            <div class="flex-grow-1">
-                                <h3 class="small fw-semibold mb-0">@item.ProductName</h3>
-                                <p class="small text-muted mb-0">@item.Brand</p>
-                                <p class="small text-muted mb-0">Quantity: @item.Quantity</p>
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-header bg-dark text-white p-3 px-4 d-flex align-items-center">
+                    <h2 class="h6 mb-0 fw-semibold"><i class="fas fa-box-open me-2"></i>Order Items</h2>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush border-0">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="list-group-item p-4 border-bottom border-light">
+                                <div class="d-flex align-items-center gap-4">
+                                    <div class="bg-light rounded-3 p-2 border d-flex align-items-center justify-content-center" style="width: 80px; height: 80px; flex-shrink: 0;">
+                                            <img src="@((!string.IsNullOrEmpty(item.ImageUrl) ? (item.ImageUrl.StartsWith("/") ? item.ImageUrl : "/images/" + item.ImageUrl) : "/images/placeholder.png"))" alt="@item.ProductName" class="img-fluid rounded" style="max-height: 100%; max-width: 100%; object-fit: contain;" />
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h3 class="h6 fw-bold mb-1 text-dark">
+                                            <a asp-controller="Shop" asp-action="Product" asp-route-id="@item.ProductId" class="text-decoration-none text-dark hover-primary" target="_blank">@item.ProductName</a>
+                                        </h3>
+                                        <p class="small text-muted mb-2">@item.Brand</p>
+                                        <div class="d-flex align-items-center gap-3">
+                                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 rounded-pill px-2 py-1"><i class="fas fa-times me-1"></i>Qty: @item.Quantity</span>
+                                            <span class="text-dark small fw-medium">@item.UnitPrice.ToString("C") / each</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-end">
+                                        <p class="fs-5 fw-bold text-dark mb-0">@item.TotalPrice.ToString("C")</p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="text-end">
-                                <p class="small fw-semibold mb-0">$@item.UnitPrice</p>
-                                <p class="small text-muted mb-0">Total: $@item.TotalPrice</p>
-                            </div>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
 
-            <div class="card p-3">
-                <h2 class="h5 fw-bold mb-3">Shipping Information</h2>
-                <p class="small text-muted mb-0">@Model.Address.Street</p>
-                <p class="small text-muted mb-0">@Model.Address.City, @Model.Address.State @Model.Address.ZipCode</p>
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-header bg-dark text-white p-3 px-4 d-flex align-items-center">
+                    <h2 class="h6 mb-0 fw-semibold"><i class="fas fa-shipping-fast me-2"></i>Shipping & Tracking</h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-6 border-end-md">
+                            <h4 class="small text-muted text-uppercase fw-bold mb-3" style="letter-spacing: 0.5px;">Shipping Address</h4>
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-primary" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <p class="fw-medium text-dark mb-1">@Model.Address?.City, @Model.Address?.State</p>
+                                    <p class="small text-muted mb-0">@Model.Address?.Street</p>
+                                    <p class="small text-muted mb-0">@Model.Address?.ZipCode</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="small text-muted text-uppercase fw-bold mb-3" style="letter-spacing: 0.5px;">Delivery Info</h4>
+                            <div class="d-flex align-items-start gap-3 mb-3">
+                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-dark" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                    <i class="fas fa-barcode"></i>
+                                </div>
+                                <div>
+                                    <p class="small text-muted mb-0">Tracking Number</p>
+                                    @if (!string.IsNullOrEmpty(Model.TrackingId))
+                                    {
+                                        <p class="fw-medium text-dark mb-0 font-monospace">@Model.TrackingId</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="small text-muted mb-0 fst-italic">Not assigned</p>
+                                    }
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-start gap-3">
+                                <div class="bg-light rounded-circle d-flex align-items-center justify-content-center text-success" style="width: 40px; height: 40px; flex-shrink: 0;">
+                                    <i class="fas fa-calendar-check"></i>
+                                </div>
+                                <div>
+                                    <p class="small text-muted mb-0">Estimated Delivery</p>
+                                    @if (Model.EstimatedDelivery.HasValue)
+                                    {
+                                        <p class="fw-medium text-dark mb-0">@Model.EstimatedDelivery.Value.ToString("MMM dd, yyyy")</p>
+                                    }
+                                    else
+                                    {
+                                        <p class="small text-muted mb-0 fst-italic">Pending</p>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="col-12 col-lg-4 d-flex flex-column gap-3">
-            <div class="card p-3">
-                <h2 class="h5 fw-bold mb-3">Order Summary</h2>
-                <div class="d-flex flex-column gap-1 small">
-                    <div class="d-flex justify-content-between"><span>Subtotal</span><span>$@Model.Subtotal</span></div>
-                    <div class="d-flex justify-content-between"><span>Shipping</span><span>Free</span></div>
-                    <div class="d-flex justify-content-between"><span>Tax</span><span>$0.00</span></div>
-                    <hr class="my-2" />
-                    <div class="d-flex justify-content-between fw-bold"><span>Total</span><span>$@Model.Total</span></div>
+        <div class="col-12 col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4 bg-light">
+                <div class="card-body p-4">
+                    <h2 class="h5 fw-bold mb-4 text-dark border-bottom pb-3"><i class="fas fa-receipt text-primary me-2"></i>Order Summary</h2>
+
+                    <div class="d-flex flex-column gap-3 mb-4">
+                        <div class="d-flex justify-content-between text-secondary">
+                            <span class="small fw-medium">Subtotal (@Model.Items.Sum(i => i.Quantity) items)</span>
+                            <span class="fw-medium text-dark">@Model.Subtotal.ToString("C")</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-secondary">
+                            <span class="small fw-medium">Shipping Fee</span>
+                            <span class="fw-medium @(Model.Fees == 0 ? "text-success" : "text-dark")">@(Model.Fees == 0 ? "Free" : Model.Fees.ToString("C"))</span>
+                        </div>
+                        <div class="d-flex justify-content-between text-secondary">
+                            <span class="small fw-medium">Tax</span>
+                            <span class="fw-medium text-dark">$0.00</span>
+                        </div>
+                        @if (Model.DiscountAmount > 0)
+                        {
+                            <div class="d-flex justify-content-between text-danger">
+                                <span class="small fw-medium">Discount</span>
+                                <span class="fw-medium">-$@Model.DiscountAmount.ToString("F2")</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="border-top border-dark border-opacity-10 pt-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-uppercase" style="letter-spacing: 1px;">Total</span>
+                            <span class="fs-3 fw-bold text-dark">@Model.Total.ToString("C")</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="card p-3">
-                <h2 class="h5 fw-bold mb-3">Order Actions</h2>
-                <div class="d-flex flex-column gap-2">
-                    <a asp-controller="Order" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit Status</a>
-                    <form asp-controller="Order" asp-action="Delete" method="post" onsubmit="return confirm('Are you sure?');">
-                        <input type="hidden" name="id" value="@Model.Id" />
-                        <button type="submit" class="btn btn-danger">Delete Order</button>
-                    </form>
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+                <div class="card-header bg-dark text-white p-3 px-4 d-flex align-items-center">
+                    <h2 class="h6 mb-0 fw-semibold"><i class="fas fa-cog me-2"></i>Actions</h2>
+                </div>
+                <div class="card-body p-4">
+                    <div class="d-flex flex-column gap-3">
+                        <a asp-controller="Order" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning rounded-pill px-4 py-2 fw-bold shadow-sm hover-lift w-100 d-flex align-items-center justify-content-center">
+                            <i class="fas fa-edit me-2"></i> Update Order Status
+                        </a>
+
+                        <hr class="my-2 border-light">
+
+                        <form asp-controller="Order" asp-action="Delete" method="post" class="delete-order-form w-100">
+                            <input type="hidden" name="id" value="@Model.Id" />
+                            <button type="submit" class="btn btn-outline-danger rounded-pill px-4 py-2 fw-bold hover-lift w-100 d-flex align-items-center justify-content-center">
+                                <i class="fas fa-trash-alt me-2"></i> Delete Order
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-4 text-center">
+                     <p class="small text-muted mb-2"><i class="fas fa-user-circle me-1"></i> Customer Info</p>
+                     <div class="font-monospace ms-1 bg-light px-3 py-2 rounded border small text-break">@Model.UserId</div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hover-lift:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.08) !important; }
+    .hover-primary:hover { color: var(--bs-primary) !important; }
+    .border-end-md { border-right: 1px solid #dee2e6; }
+    @@media (max-width: 767.98px) {
+        .border-end-md { border-right: none; border-bottom: 1px solid #dee2e6; padding-bottom: 1.5rem; }
+    }
+</style>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var forms = document.querySelectorAll('.delete-order-form');
+            forms.forEach(function (form) {
+                form.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Delete order?',
+                        text: 'Are you sure you want to delete this order? This action cannot be undone.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it',
+                        cancelButtonText: 'Cancel'
+                    }).then(function (result) {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+}

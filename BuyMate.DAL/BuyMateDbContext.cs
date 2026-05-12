@@ -189,6 +189,9 @@ namespace BuyMate.DAL
 
             // filter configurations
             OnModelCreatingPartial(builder);
+
+            builder.Entity<Product>()
+                .HasIndex(p => p.Name);
         }
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
     }

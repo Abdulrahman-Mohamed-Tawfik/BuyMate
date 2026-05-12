@@ -11,49 +11,56 @@
 
     @if (Model != null && Model.Any())
     {
-        <div class="d-flex flex-column gap-4">
+        <div class="d-flex flex-column gap-3">
             @foreach (var order in Model)
             {
-                <div class="card p-4 rounded-4 shadow-sm border-0 hover-lift transition-all" style="transition: transform 0.2s ease;">
-                    <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between mb-3 border-bottom pb-3">
+                <div class="card p-3 rounded-4 shadow-sm border-0 hover-lift transition-all" style="transition: transform 0.2s ease;">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-2 border-bottom pb-2">
                         <div class="mb-2 mb-md-0">
                             <h3 class="h6 fw-bold mb-1 text-dark">Order #@order.TrackingNumber</h3>
                             <p class="small text-muted mb-0"><i class="far fa-calendar-alt me-1"></i> Placed on @order.OrderDate.ToString("MMM dd, yyyy")</p>
                         </div>
                         <div class="text-md-end">
-                            <p class="fs-5 fw-bold text-dark mb-1">@order.Total.ToString("C")</p>
-                            <span class="badge rounded-pill px-3 py-2 fw-medium shadow-sm @((order.Status == OrderStatusViewModel.Delivered) ? "bg-success" : (order.Status == OrderStatusViewModel.Shipped ? "bg-primary" : "bg-warning text-dark"))">
-                                <i class="fas @((order.Status == OrderStatusViewModel.Delivered) ? "fa-check-circle" : (order.Status == OrderStatusViewModel.Shipped ? "fa-truck" : "fa-clock")) me-1"></i>
+                            <p class="fs-6 fw-bold text-dark mb-1">@order.Total.ToString("C")</p>
+                            <span class="badge rounded-pill px-2 py-1 fw-medium shadow-sm @(
+                                order.Status == OrderStatusViewModel.Delivered ? "bg-success text-white" :
+                                order.Status == OrderStatusViewModel.Shipped ? "bg-primary text-white" :
+                                order.Status == OrderStatusViewModel.Cancelled ? "bg-danger text-white" : "bg-warning text-dark")">
+                                <i class="fas @(
+                                    order.Status == OrderStatusViewModel.Delivered ? "fa-check-circle" :
+                                    order.Status == OrderStatusViewModel.Shipped ? "fa-truck" :
+                                    order.Status == OrderStatusViewModel.Cancelled ? "fa-times-circle" : "fa-clock"
+                                ) me-1"></i>
                                 @order.Status
                             </span>
                         </div>
                     </div>
 
-                    <div class="d-flex flex-column gap-3 mb-3">
+                    <div class="d-flex flex-column gap-2 mb-2">
                         @foreach (var item in order.Items)
                         {
-                            <div class="d-flex align-items-center gap-3 bg-light p-2 rounded-3 border">
-                                <div class="bg-white rounded-2 p-1 border shadow-sm d-flex align-items-center justify-content-center" style="width: 72px; height: 72px; flex-shrink: 0;">
-                                    <img src="@(item.ImageUrl ?? "/images/placeholder.png")" alt="@item.ProductName" class="img-fluid" style="max-height: 100%; object-fit: contain;" />
+                            <div class="d-flex align-items-center gap-2 bg-light p-2 rounded-3 border">
+                                <div class="bg-white rounded-2 p-1 border shadow-sm d-flex align-items-center justify-content-center" style="width: 56px; height: 56px; flex-shrink: 0;">
+                                    <img src="@((!string.IsNullOrEmpty(item.ImageUrl) ? (item.ImageUrl.StartsWith("/") ? item.ImageUrl : "/" + item.ImageUrl) : "/images/placeholder.png"))" alt="@item.ProductName" class="img-fluid" style="max-height: 100%; object-fit: contain;" />
                                 </div>
                                 <div class="flex-grow-1 min-vw-0">
-                                    <h4 class="h6 fw-semibold mb-1 text-truncate" title="@item.ProductName">@item.ProductName</h4>
+                                    <h4 class="small fw-semibold mb-0 text-truncate" title="@item.ProductName">@item.ProductName</h4>
                                     <p class="small text-muted mb-0">Qty: @item.Quantity</p>
                                 </div>
-                                <span class="fw-bold text-dark me-2 pe-2 border-end d-none d-sm-block">@item.TotalPrice.ToString("C")</span>
+                                <span class="small fw-bold text-dark me-2 pe-2 border-end d-none d-sm-block">@item.TotalPrice.ToString("C")</span>
                             </div>
                         }
                     </div>
 
-                    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between bg-light rounded-3 p-3">
+                    <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center bg-light rounded-3 p-2 px-3 mt-1">
                         <div class="small fw-medium text-secondary mb-2 mb-sm-0 d-flex align-items-center">
                             @if (order.EstimatedDelivery.HasValue)
                             {
-                                <i class="fas fa-shipping-fast text-primary me-2 fs-5"></i>
+                                <i class="fas fa-shipping-fast text-primary me-2"></i>
                                 <span>Est. delivery: <span class="text-dark">@order.EstimatedDelivery.Value.ToString("MMM dd, yyyy")</span></span>
                             }
                         </div>
-                        <a asp-controller="Order" asp-action="Get" asp-route-orderid="@order.Id" class="btn btn-outline-dark btn-sm rounded-pill px-4 fw-bold shadow-sm hover-scale hover-bg-dark">
+                        <a asp-controller="Order" asp-action="Get" asp-route-orderid="@order.Id" class="btn btn-outline-dark btn-sm rounded-pill px-3 fw-bold shadow-sm hover-scale hover-bg-dark">
                             View Details
                         </a>
                     </div>
